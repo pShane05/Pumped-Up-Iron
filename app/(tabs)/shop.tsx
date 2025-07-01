@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
+import { COLORS } from '../costants'
 
 
 export default function ShopScreen() {
@@ -34,6 +35,10 @@ export default function ShopScreen() {
   return (
     <View style={ styles.container}>
 
+      <View style={ styles.shop }>
+
+      </View>
+
       <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Shop </Text>
 
     </View>
@@ -48,6 +53,18 @@ const styles = StyleSheet.create({
     padding: 50,
     alignContent: 'center',
     justifyContent: 'center',
+  },
+  shop: {
+    flex: 0,
+        backgroundColor: COLORS.GRAY,
+        width: '100%',
+        height: '30%',
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        zIndex: 1,
   },
   boxView: {
     backgroundColor: '#10002b',
