@@ -1,12 +1,12 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { Image, Pressable, StyleSheet, View, Text, Alert } from 'react-native'
+import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 
 
-export default function App() {
+export default function ShopScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -33,29 +33,8 @@ export default function App() {
 
   return (
     <View style={ styles.container}>
-      <View style={ styles.titleView  }>
-        <Image style={{ resizeMode: 'contain', width: '100%', height: "100%", marginTop: 30}} source={require('../../assets/crownbell.png')}/>
-        {session && session.user && <Text style={{color: '#cbeef3' }}>{session.user.email}</Text>}
-      </View>
 
-      <View style={ styles.boxView} >
-        <Text style={{ 
-          color: '#cbeef3', alignSelf: 'center', fontSize: 20,}}> 
-            Daily Quests 
-        </Text>
-        <View style={ styles.horizontalLine }/>
-      </View>
-      
-
-      
-      
-      <Pressable style={styles.logout} onPress={() => {
-        supabase.auth.signOut()
-        router.replace('../login')
-        Alert.alert('Logged Out of Account')
-      }}>
-          <Text style={{ color: 'black' }}>Logout</Text>
-      </Pressable>
+      <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Shop </Text>
 
     </View>
   )
@@ -64,9 +43,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //rowGap: 20,
+    rowGap: 20,
     backgroundColor: '#202020',
-    paddingBottom: 50,
+    padding: 50,
     alignContent: 'center',
     justifyContent: 'center',
   },
@@ -76,16 +55,10 @@ const styles = StyleSheet.create({
     borderColor: '#cbeef3',
     borderWidth: 3,
     padding: 2,
-    marginHorizontal: 30,
-    paddingTop: 15,
   },
   logout: {
-    margin: 20,
-    position: 'absolute',
-    top: 20,
-    right: 0,
     backgroundColor: '#cbeef3', 
-    marginTop: 30,
+    marginTop: 25,
     width: '20%',
     borderRadius: 20,
     alignItems: 'center',
@@ -101,23 +74,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
     color: '#cbeef3'
-  },
-  titleView: {
-    flex: 0,
-    backgroundColor: '#404040',
-    width: '100%',
-    height: '30%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-  },
-  horizontalLine: {
-        width: '60%',
-        height: 1,
-        backgroundColor: '#cbeef3', 
-        marginVertical: 10, 
-        alignSelf: 'center',
-      },
+  }
 });

@@ -2,7 +2,7 @@ import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Login } from '../components/Auth'
-import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
+import { ImageBackground, Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link } from "expo-router"
 
@@ -25,7 +25,7 @@ export default function LoginScreen() {
             <Text style={{ alignSelf: 'center', color: '#E113C5', marginTop: 20 }}> Don't have an account? </Text>
             
             <Link href={"/signup"} style={[styles.button, {marginTop: 0 }]}> Create Account </Link>
-            
+
         </View>
     );
 }
