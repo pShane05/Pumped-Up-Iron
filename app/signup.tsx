@@ -1,11 +1,13 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import Auth from '../components/Auth'
+import Signup from '../components/Auth'
 import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
+import { Link } from "expo-router"
 
-export default function App() {
+
+export default function SignupScreen() {
   const [session, setSession] = useState<Session | null>(null)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -17,19 +19,18 @@ export default function App() {
   }, [])
   return (
     <View style={ styles.container}>
-      <View style={styles.boxView}>
-        <Auth />
-      
-        
+
+      <View style={ [styles.boxView, { marginTop: 75 }] }>
+        <Signup />
       </View>
+
+      <Text style={{ alignSelf: 'center', color: '#cbeef3', marginTop: 20 }}> Have an Account? </Text>
+
+      <Link href={"/login"} style={[styles.button, {marginTop: 0 }]}> Sign in </Link>
+
+
         {session && session.user && <Text style={{color: '#cbeef3', marginTop: 30}}>{session.user.id}</Text>}
 
-        {session && session.user && <Pressable style={styles.logout} onPress={() => {
-          supabase.auth.signOut()
-          Alert.alert('Logged Out of Account')
-        }}>
-            <Text style={{ color: 'black' }}>Logout</Text>
-          </Pressable>}
     </View>
   )
 }
@@ -37,7 +38,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#404040',
+    rowGap: 20,
+    backgroundColor: '#202020',
     padding: 50,
     alignContent: 'center',
     justifyContent: 'center',
@@ -48,7 +50,6 @@ const styles = StyleSheet.create({
     borderColor: '#cbeef3',
     borderWidth: 3,
     padding: 2,
-    height: '45%',
   },
   logout: {
     backgroundColor: '#cbeef3', 
@@ -58,5 +59,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 4,
     alignSelf: 'center',
+  },
+  button: {
+    padding: 10,
+    borderRadius: 25,
+    backgroundColor: '#0D6B93',
+    borderColor: '#cbeef3',
+    borderWidth: 2,
+    marginTop: 10,
+    alignSelf: 'center',
+    color: '#cbeef3'
   }
 });
