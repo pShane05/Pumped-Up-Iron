@@ -1,17 +1,27 @@
+import { Link } from "expo-router";
 import { COLORS } from "./costants";
 import { StyleSheet, View, Text, Pressable } from 'react-native'
 
 export default function WorkoutScreen() {
-    <View style={ styles.container }>
-        <Text style={{ fontSize: 20, color: COLORS.TEAL}}> Workout </Text>
-    </View>
 
+    return (
+        <View style={ styles.container }>
+            
+          <BackButton />
+
+        </View>
+    );
+}
+
+export function BackButton() {
+  return (
+    <Link href='/(tabs)' style={ styles.button }> Back </Link>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: COLORS.DARK_GRAY,
     alignContent: 'center',
     justifyContent: 'center',
@@ -39,14 +49,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 25,
     backgroundColor: COLORS.CYAN,
-    borderColor: COLORS.TEAL,
-    borderWidth: 2,
     marginTop: 10,
     alignSelf: 'center',
-    color: COLORS.TEAL
+    color: COLORS.TEAL,
+    position: 'absolute',
+    top: 50,
+    left: 20
   },
   titleView: {
     flex: 0,
@@ -70,5 +82,6 @@ const styles = StyleSheet.create({
   scrollableView: {
     paddingBottom: 50,
     rowGap: 40,
-  }
+  },
+
 });

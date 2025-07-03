@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View } from 'react-native'
-import { supabase } from '../lib/supabase'
-import { Session } from '@supabase/supabase-js'
-import { Link, useRouter } from 'expo-router'
+import { Link } from 'expo-router'
 import { COLORS } from '../app/costants'
 
   export default function WorkoutCard() {
@@ -23,7 +21,7 @@ import { COLORS } from '../app/costants'
         <Text style={{ color: COLORS.TEAL }}> Edit Workout </Text>
       </Pressable>
 
-      <Link href={ '../app/workout' } style={[ styles.Button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25} ]}>
+      <Link href="/workout" style={[ styles.Button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25} ]}>
         View Workout 
       </Link>
 
