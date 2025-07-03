@@ -53,9 +53,10 @@ export default function App() {
             <Text style={{ color: 'black' }}> Logout </Text>
         </Pressable>
       </View>
+      <View style={{ height:  headerHeight}} />
 
       <ScrollView contentContainerStyle={ styles.scrollableView }>
-        <View style={{ height:  headerHeight}} />
+        
 
         <DailyQuestCard />
 
@@ -74,7 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     //rowGap: 20,
     backgroundColor: COLORS.DARK_GRAY,
-    paddingBottom: 50,
     alignContent: 'center',
     justifyContent: 'center',
   },
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   scrollableView: {
-    marginBottom: 50,
-    rowGap: 20,
+    paddingBottom: 50,
+    rowGap: 40,
   }
 
 });

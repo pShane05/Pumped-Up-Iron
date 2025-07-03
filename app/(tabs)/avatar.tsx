@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
+import { GoldCounter } from '../../components/UI'
+import { COLORS } from '../costants'
 
 
 export default function AvatarScreen() {
@@ -34,7 +36,26 @@ export default function AvatarScreen() {
   return (
     <View style={ styles.container}>
 
+      <GoldCounter /> 
+      
       <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Avatar </Text>
+      <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
+
+      <Pressable style={[ styles.button, { marginTop: 30 } ]}>
+        <Text style={{ color: COLORS.BLACK, fontSize: 20 }}> Wardrobe </Text>
+      </Pressable>
+
+       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
+
+       <View style={ styles.XpDisplay }>
+
+        <Text style={{ color: COLORS.CYAN, fontSize: 20, alignSelf: 'center', marginTop: 20}}>
+          Lvl. [level]
+        </Text>
+
+        <View style={ styles.XpBar } />
+
+       </View>
 
     </View>
   )
@@ -43,11 +64,9 @@ export default function AvatarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    rowGap: 20,
     backgroundColor: '#202020',
-    padding: 50,
+    paddingTop: '20%',
     alignContent: 'center',
-    justifyContent: 'center',
   },
   boxView: {
     backgroundColor: '#10002b',
@@ -68,11 +87,32 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     borderRadius: 25,
-    backgroundColor: '#0D6B93',
-    borderColor: '#cbeef3',
-    borderWidth: 2,
-    marginTop: 10,
+    backgroundColor: COLORS.PINK,
+    marginTop: 20,
     alignSelf: 'center',
-    color: '#cbeef3'
-  }
+  },
+  horizontalLine: {
+      width: '60%',
+      height: 1,
+      backgroundColor: COLORS.TEAL, 
+      alignSelf: 'center',
+    },
+    XpDisplay: {
+      height: '20%',
+      width: '100%',
+      backgroundColor: COLORS.BACKGROUND_BLUE,
+      position: 'absolute',
+      bottom: 0,
+
+    },
+    XpBar: {
+      width: '80%',
+      height: '20%',
+      backgroundColor: COLORS.BLACK,
+      borderRadius: '20%',
+      borderWidth: 2,
+      borderColor: COLORS.CYAN,
+      alignSelf: 'center',
+      marginTop: 10
+    }
 });

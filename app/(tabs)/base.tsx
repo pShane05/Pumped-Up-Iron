@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
+import { GoldCounter } from '../../components/UI'
+import { COLORS } from '../costants'
 
 
 export default function BaseScreen() {
@@ -34,12 +36,16 @@ export default function BaseScreen() {
   return (
     <View style={ styles.container}>
 
+      <GoldCounter /> 
+
       <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Base </Text>
+
+      <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 
       <View style={styles.editBar}>
 
         <View style={ styles.editIcons }> 
-            <Text style={{ alignSelf: 'center', color: '#cbeef3' }}> edit base menu </Text>
+            <Text style={{ alignSelf: 'center', color: '#cbeef3' }}> [Will open edit base menu] </Text>
         </View>
 
       </View>
@@ -91,5 +97,11 @@ const styles = StyleSheet.create({
   editIcons: {
     //flexDirection: 'row',
     width: '100%',
-  }
+  },
+  horizontalLine: {
+      width: '60%',
+      height: 1,
+      backgroundColor: COLORS.TEAL, 
+      alignSelf: 'center',
+    },
 });

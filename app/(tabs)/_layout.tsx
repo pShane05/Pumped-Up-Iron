@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router"
+import { COLORS } from "../costants"
 
 export default function TabsLayout() {
     return (
@@ -6,7 +7,7 @@ export default function TabsLayout() {
             headerShown: false,
             tabBarActiveBackgroundColor: '#E113C5',
             tabBarActiveTintColor: '#10002B',
-            tabBarInactiveBackgroundColor: '#550577',
+            tabBarInactiveBackgroundColor: COLORS.PURPLE,
             headerStyle: {
                 backgroundColor: '#10002B'
             },
