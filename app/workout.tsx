@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { COLORS } from "./costants";
-import { StyleSheet, View, Text, Pressable } from 'react-native'
+import { StyleSheet, View, Text, Pressable, Dimensions } from 'react-native'
 
 export default function WorkoutScreen() {
 
@@ -8,6 +8,27 @@ export default function WorkoutScreen() {
         <View style={ styles.container }>
             
           <BackButton />
+
+          <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
+
+          <View style={[ styles.horizontalLine, { marginTop: 40}]} />
+
+          <Pressable style={ styles.editWorkout } >
+            <Text style={{ color: COLORS.TEAL}}>
+              Edit Workout
+            </Text>
+          </Pressable>
+
+          <Pressable style={ styles.startWorkout }>
+            <Text style={{ fontSize: 20,}}>
+              Start Workout
+            </Text>
+          </Pressable>
+
+          <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
+
+          <ExerciseCard />
+          <ExerciseCard />
 
         </View>
     );
@@ -19,12 +40,27 @@ export function BackButton() {
   )
 }
 
+export function ExerciseCard() {
+  return (
+    <View style={ styles.cardView }>
+
+      <View style={{ width: '25%', margin: '2%'}}></View>
+
+      <View style={{ flexDirection: 'column', rowGap: 12}}>
+        <Text style={ styles.exerciseText }> [Exercise name] </Text>
+        <Text style={ styles.exerciseText }> weight: [weight]</Text>
+        <Text style={ styles.exerciseText }> reps:  [reps]</Text>
+      </View>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.DARK_GRAY,
-    alignContent: 'center',
-    justifyContent: 'center',
+    backgroundColor: COLORS.BACKGROUND_BLUE,
+    alignItems: 'center',
+    paddingTop: '30%'
   },
   boxView: {
     backgroundColor: COLORS.BACKGROUND_BLUE,
@@ -83,5 +119,41 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     rowGap: 40,
   },
-
+  editWorkout: {
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: '13%',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: 'center',
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: COLORS.PINK,
+    overflow: 'hidden'
+  },
+  startWorkout: {
+    backgroundColor: COLORS.TEAL,
+    borderRadius: '13%',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    alignItems: 'center',
+    marginTop: 25
+  },
+  exerciseText: {
+    color: COLORS.PINK,
+    fontSize: 16
+  },
+  cardView: {
+    flexDirection: 'row', 
+    backgroundColor: COLORS.PURPLE, 
+    borderRadius: "10%", 
+    borderWidth: 2,
+    borderColor: COLORS.PINK,
+    width: '75%', 
+    height: (Dimensions.get('window').height) * .15, 
+    marginTop: 30,
+    marginBottom: 25,
+    padding: 5,
+    paddingVertical: 15,
+    overflow: 'hidden',
+  }
 });
