@@ -1,10 +1,10 @@
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
 import { View, Text, Dimensions, StyleSheet } from 'react-native'
 
-export function GoldCounter() {
+export function GoldCounter(props: { goldCount: number }) {
     return(
         <View style={ styles.GoldCounter }>
-            <Text style={{ fontSize: 20, color: '#FFFE00' }}> { 200 } </Text>
+            <Text style={{ fontSize: 20, color: '#FFFE00' }}> { props.goldCount } </Text>
         </View>
     )
 }
