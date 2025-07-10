@@ -42,11 +42,11 @@ export function ExercisePreview() {
     <View style={{ width: '100%', alignItems: 'center'}}>
       {exercises.slice(0, 5).map((item) => (        
 
-        <View style={ styles.ExercisePreview }>
+        <View key={item.id} style={ styles.ExercisePreview }>
 
           <Text style={{ color: COLORS.TEAL, flexShrink: 1}} key={item.id}>{ item.name}</Text>
 
-          <Text 
+          <Text
             style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
               [4 x 8-10]
           </Text>

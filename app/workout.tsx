@@ -48,7 +48,7 @@ export function ExerciseCards() {
 
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />;
   
-  else {  return (
+  else {  console.log(exercises[0].name); return (
 
     <FlatList
       style={{ width: '100%'}}
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
   exerciseNameText: {
     color: COLORS.TEAL,
     fontSize: 16,
+    paddingLeft: 2
   },
   exerciseText: {
     color: COLORS.PINK,
