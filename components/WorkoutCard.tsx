@@ -35,7 +35,6 @@ import { useExercises } from '../hooks/useExercises'
 export function ExercisePreview() {
 
   const { exercises, loading } = useExercises("chest")
-  
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />
 
   return (
