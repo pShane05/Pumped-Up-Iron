@@ -4,18 +4,24 @@ import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
-import { GoldCounter } from '../../components/UI'
+import { GoldCounter, XpDisplay } from '../../components/UI'
 import { COLORS } from '../costants'
+import { useProfile } from '../hooks/useProfile'
+import { updateProfile } from '../../lib/profile'
 
 
 export default function AvatarScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const profile = useProfile(session?.user.id).profile
+  const gold = profile?.gold_count
+  const userId = profile?.id
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      
       setLoading(false)
     })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -36,7 +42,7 @@ export default function AvatarScreen() {
   return (
     <View style={ styles.container}>
 
-      <GoldCounter /> 
+      <GoldCounter goldCount={ gold }/> 
       
       <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Avatar </Text>
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
@@ -47,15 +53,7 @@ export default function AvatarScreen() {
 
        <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
 
-       <View style={ styles.XpDisplay }>
-
-        <Text style={{ color: COLORS.CYAN, fontSize: 20, alignSelf: 'center', marginTop: 20}}>
-          Lvl. [level]
-        </Text>
-
-        <View style={ styles.XpBar } />
-
-       </View>
+       <XpDisplay userId= { userId }/>
 
     </View>
   )
@@ -92,27 +90,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   horizontalLine: {
-      width: '60%',
-      height: 1,
-      backgroundColor: COLORS.TEAL, 
-      alignSelf: 'center',
-    },
-    XpDisplay: {
-      height: '20%',
-      width: '100%',
-      backgroundColor: COLORS.BACKGROUND_BLUE,
-      position: 'absolute',
-      bottom: 0,
-
-    },
-    XpBar: {
-      width: '80%',
-      height: '20%',
-      backgroundColor: COLORS.BLACK,
-      borderRadius: '20%',
-      borderWidth: 2,
-      borderColor: COLORS.CYAN,
-      alignSelf: 'center',
-      marginTop: 10
-    }
+    width: '60%',
+    height: 1,
+    backgroundColor: COLORS.TEAL, 
+    alignSelf: 'center',
+  },
+  
 });

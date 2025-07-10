@@ -1,13 +1,12 @@
-// hooks/useProfile.ts
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Alert } from 'react-native'
 import { Profile } from '../../lib/profile'
 
-export function useProfile(userId: string | null) {
-  const [profile, setProfile] = useState<Profile | null>(null)
+export function useProfile(userId: string | undefined) {
+  const [profile, setProfile] = useState<Profile | undefined>(undefined)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     if (!userId) return
@@ -29,7 +28,9 @@ export function useProfile(userId: string | null) {
       } catch (error) {
 
         if (error instanceof Error)
-          Alert.alert(error.message)
+
+          setError(error)
+          console.log(error)
 
       } finally {
         

@@ -6,12 +6,15 @@ import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter } from '../../components/UI'
 import { COLORS } from '../costants'
+import { useProfile } from '../hooks/useProfile'
 
 
 export default function BaseScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const profile = useProfile(session?.user.id).profile
+  const gold = profile?.gold_count
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -36,7 +39,7 @@ export default function BaseScreen() {
   return (
     <View style={ styles.container}>
 
-      <GoldCounter /> 
+      <GoldCounter goldCount={ gold }/> 
 
       <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Base </Text>
 

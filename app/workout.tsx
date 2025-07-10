@@ -1,37 +1,47 @@
 import { Link } from "expo-router";
 import { COLORS } from "./costants";
 import { StyleSheet, View, Text, Pressable, Dimensions } from 'react-native'
+import { Exercise } from "../lib/exercise";
 
 export default function WorkoutScreen() {
 
-    return (
-        <View style={ styles.container }>
+  const ex = {
+    name: 'dumbbell flat bench press',
+    muscle_group: 'chest',
+    equipment: 'Dumbbells',
+    sets: 4,
+    reps: '8-10',
+    weight: 60,
+  }
+
+  return (
+      <View style={ styles.container }>
             
-          <BackButton />
+        <BackButton />
 
-          <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
+        <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
 
-          <View style={[ styles.horizontalLine, { marginTop: 40}]} />
+        <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-          <Pressable style={ styles.editWorkout } >
-            <Text style={{ color: COLORS.TEAL}}>
-              Edit Workout
-            </Text>
-          </Pressable>
+        <Pressable style={ styles.editWorkout } >
+          <Text style={{ color: COLORS.TEAL}}>
+            Edit Workout
+          </Text>
+        </Pressable>
 
-          <Pressable style={ styles.startWorkout }>
-            <Text style={{ fontSize: 20,}}>
-              Start Workout
-            </Text>
-          </Pressable>
+        <Pressable style={ styles.startWorkout }>
+          <Text style={{ fontSize: 20,}}>
+            Start Workout
+          </Text>
+        </Pressable>
 
-          <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
+        <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-          <ExerciseCard />
-          <ExerciseCard />
+        <ExerciseCard exercise={ ex }/>
+        <ExerciseCard exercise={ ex }/>
 
-        </View>
-    );
+      </View>
+  );
 }
 
 export function BackButton() {
@@ -40,16 +50,19 @@ export function BackButton() {
   )
 }
 
-export function ExerciseCard() {
+export function ExerciseCard(props: { exercise: Exercise | null}) {
+
+  const exercise = props.exercise
+
   return (
     <View style={ styles.cardView }>
 
-      <View style={{ width: '25%', margin: '2%'}}></View>
+      <View style={{ width: '20%', margin: '2%'}}></View>
 
       <View style={{ flexDirection: 'column', rowGap: 12}}>
-        <Text style={ styles.exerciseText }> [Exercise name] </Text>
-        <Text style={ styles.exerciseText }> weight: [weight]</Text>
-        <Text style={ styles.exerciseText }> reps:  [reps]</Text>
+        <Text style={[ styles.exerciseText, { fontWeight: 'bold'} ]}> { exercise?.name } </Text>
+        <Text style={ styles.exerciseText }> weight: { exercise?.weight }</Text>
+        <Text style={ styles.exerciseText }> reps:  { exercise?.reps }</Text>
       </View>
     </View>
   )

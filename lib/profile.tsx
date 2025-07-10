@@ -11,17 +11,23 @@ export type Profile = {
   username: string
   avatar_url: string
   level: number
+  xp: number
+  gold_count: number
 }
 
-async function updateProfile({ 
+export async function updateProfile({ 
     username,
     avatar_url,
     level,
+    xp,
+    gold_count,
 
 }:  {
     username: string,
     avatar_url: string,
     level: number,
+    xp: number,
+    gold_count: number,
 })  {
 
     try {
@@ -34,6 +40,8 @@ async function updateProfile({
             username,
             avatar_url,
             level,
+            xp,
+            gold_count,
             updated_at: new Date()
         }
 
