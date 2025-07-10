@@ -1,46 +1,38 @@
 import { Link } from "expo-router";
 import { COLORS } from "./costants";
-import { StyleSheet, View, Text, Pressable, Dimensions } from 'react-native'
-import { Exercise } from "../lib/exercise";
+import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator } from 'react-native'
+import { useExercises } from "../hooks/useExercises";
 
 export default function WorkoutScreen() {
 
-  const ex = {
-    name: 'dumbbell flat bench press',
-    muscle_group: 'chest',
-    equipment: 'Dumbbells',
-    sets: 4,
-    reps: '8-10',
-    weight: 60,
-  }
 
   return (
-      <View style={ styles.container }>
+    
+    <View style={ styles.container }>
             
-        <BackButton />
+      <BackButton />
 
-        <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
+      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
 
-        <View style={[ styles.horizontalLine, { marginTop: 40}]} />
+      <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-        <Pressable style={ styles.editWorkout } >
-          <Text style={{ color: COLORS.TEAL}}>
-            Edit Workout
-          </Text>
-        </Pressable>
+      <Pressable style={ styles.editWorkout } >
+        <Text style={{ color: COLORS.TEAL}}>
+          Edit Workout
+        </Text>
+      </Pressable>
 
-        <Pressable style={ styles.startWorkout }>
-          <Text style={{ fontSize: 20,}}>
-            Start Workout
-          </Text>
-        </Pressable>
+      <Pressable style={ styles.startWorkout }>
+        <Text style={{ fontSize: 20,}}>
+          Start Workout
+        </Text>
+      </Pressable>
 
-        <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
+      <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-        <ExerciseCard exercise={ ex }/>
-        <ExerciseCard exercise={ ex }/>
+      <ExerciseCards />
 
-      </View>
+    </View>
   );
 }
 
@@ -50,22 +42,34 @@ export function BackButton() {
   )
 }
 
-export function ExerciseCard(props: { exercise: Exercise | null}) {
+export function ExerciseCards() {
 
-  const exercise = props.exercise
+  const { exercises, loading } = useExercises("chest")
 
-  return (
-    <View style={ styles.cardView }>
+  if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />;
+  
+  else {  console.log(exercises[0].name); return (
 
-      <View style={{ width: '20%', margin: '2%'}}></View>
+    <FlatList
+      style={{ width: '100%'}}
+      data={exercises}
+      renderItem={({ item }) => (
 
-      <View style={{ flexDirection: 'column', rowGap: 12}}>
-        <Text style={[ styles.exerciseText, { fontWeight: 'bold'} ]}> { exercise?.name } </Text>
-        <Text style={ styles.exerciseText }> weight: { exercise?.weight }</Text>
-        <Text style={ styles.exerciseText }> reps:  { exercise?.reps }</Text>
+      <View style={ styles.cardView }>
+
+        <View style={{ width: '25%', margin: '2%'}}></View>
+
+      
+        <View style={{ justifyContent: 'space-between', width: '60%'}}>
+          <Text style={ styles.exerciseNameText }> {item.name} </Text>
+          <Text style={ styles.exerciseText }> weight: [weight]</Text>
+          <Text style={ styles.exerciseText }> reps:  8-10</Text>
+        </View>        
+      
       </View>
-    </View>
-  )
+      )}
+    />
+  )}
 }
 
 const styles = StyleSheet.create({
@@ -151,9 +155,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 25
   },
+  exerciseNameText: {
+    color: COLORS.TEAL,
+    fontSize: 16,
+    paddingLeft: 2
+  },
   exerciseText: {
     color: COLORS.PINK,
-    fontSize: 16
+    fontSize: 14,
+    height: '20%',
   },
   cardView: {
     flexDirection: 'row', 
@@ -168,5 +178,6 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingVertical: 15,
     overflow: 'hidden',
+    alignSelf: 'center'
   }
 });
