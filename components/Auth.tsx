@@ -48,8 +48,8 @@ export default function Signup() {
     if (error) Alert.alert(error.message)
     
 
-    signInWithEmail();
     Alert.alert('New Account Created!')
+    signInWithEmail();
     setLoading(false)
   }
 
