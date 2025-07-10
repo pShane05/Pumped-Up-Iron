@@ -48,7 +48,7 @@ export function ExerciseCards() {
 
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />;
   
-  else {  console.log(exercises[0].name); return (
+  else {  return (
 
     <FlatList
       style={{ width: '100%'}}

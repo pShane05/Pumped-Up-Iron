@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../lib/supabase'
 import { Alert } from 'react-native'
-import { Profile } from '../../lib/profile'
+import { Profile } from '../lib/profile'
 
 export function useProfile(userId: string | undefined) {
   const [profile, setProfile] = useState<Profile | undefined>(undefined)

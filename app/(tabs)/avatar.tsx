@@ -6,7 +6,7 @@ import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
 import { COLORS } from '../costants'
-import { useProfile } from '../hooks/useProfile'
+import { useProfile } from '../../hooks/useProfile'
 import { updateProfile } from '../../lib/profile'
 
 

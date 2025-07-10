@@ -6,7 +6,7 @@ import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter } from '../../components/UI'
 import { COLORS } from '../costants'
-import { useProfile } from '../hooks/useProfile'
+import { useProfile } from '../../hooks/useProfile'
 
 
 export default function BaseScreen() {

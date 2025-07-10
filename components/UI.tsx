@@ -1,7 +1,7 @@
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
 import { View, Text, Dimensions, StyleSheet } from 'react-native'
 import { COLORS } from '../app/costants'
-import { useProfile } from '../app/hooks/useProfile'
+import { useProfile } from '../hooks/useProfile'
 
 export function GoldCounter(props: { goldCount: number | undefined }) {
 

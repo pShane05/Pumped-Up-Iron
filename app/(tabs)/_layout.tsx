@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router"
 import { COLORS } from "../costants"
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 
 export default function TabsLayout() {
     return (
@@ -19,31 +20,40 @@ export default function TabsLayout() {
                 <Tabs.Screen
                     name="index"
                     options={{
-                        headerTitle: 'Home',
-                        /*tabBarIcon: ({ focused, color }) => (
-
-                        ),*/
+                        title: 'Train',
+                        tabBarIcon: ({ color, size }) => (
+                            <FontAwesome6 name="dumbbell" color={ color } size={ size } />
+                        ),
                     }}
                 />
 
                 <Tabs.Screen
                     name="shop"
                     options={{
-                        headerTitle: "Shop",
+                        title: "Shop",
+                        tabBarIcon: ({ color, size }) => (
+                            <FontAwesome6 name="basket-shopping" color={ color } size={ size } />
+                        ),
                     }}
                 />
 
                 <Tabs.Screen
                     name="base"
                     options={{
-                        headerTitle: "Base",
+                        title: "Base",
+                        tabBarIcon: ({ color, size }) => (
+                            <FontAwesome6 name="house-chimney" color={ color } size={ size } />
+                        ),
                     }}
                 />
 
                 <Tabs.Screen
                     name="avatar"
                     options={{
-                        headerTitle: "Avatar",
+                        title: "Avatar",
+                        tabBarIcon: ({ color, size }) => (
+                            <FontAwesome6 name="person-half-dress" color={ color } size={ size } />
+                        ),
                     }}
                 />
         </Tabs>
