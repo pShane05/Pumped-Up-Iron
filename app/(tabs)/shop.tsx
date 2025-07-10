@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
-import { COLORS } from '../costants'
+import { COLORS, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
 import { useProfile } from '../../hooks/useProfile'
 
@@ -66,7 +66,7 @@ export default function ShopScreen() {
 
 
 
-      <ScrollView style={ styles.scrollableView }>
+      <ScrollView style={[ styles.scrollableView, { backgroundColor: '#25130f'} ]}>
         <View style={{ height: headerHeight}}/>
         <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20}}> Daily </Text>
         <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
@@ -139,7 +139,7 @@ export function ItemSelector() {
   )
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#202020',
@@ -211,3 +211,4 @@ const styles = StyleSheet.create({
     width: (Dimensions.get('window').width) * 0.25,      
   }
 });
+*/

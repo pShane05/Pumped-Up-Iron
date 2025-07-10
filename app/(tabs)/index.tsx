@@ -1,12 +1,12 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import DailyQuestCard from '../../components/DailyQuests'
 import WorkoutCard from '../../components/WorkoutCard'
-import { COLORS } from '../costants'
+import { COLORS, styles } from '../costants'
 
 
 export default function App() {
@@ -70,7 +70,7 @@ export default function App() {
   )
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     flex: 1,
     //rowGap: 20,
@@ -135,3 +135,4 @@ const styles = StyleSheet.create({
   }
 
 });
+*/
