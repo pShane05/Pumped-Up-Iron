@@ -5,9 +5,10 @@ import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator } from 'rea
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
-import { COLORS } from '../costants'
+import { COLORS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import { updateProfile } from '../../lib/profile'
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 
 
 export default function AvatarScreen() {
@@ -17,6 +18,13 @@ export default function AvatarScreen() {
   const profile = useProfile(session?.user.id).profile
   const gold = profile?.gold_count
   const userId = profile?.id
+  const startDate = profile?.date_started; // "2000-05-17T00:00:00.000Z"
+
+  const formattedDate = new Date(startDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -49,7 +57,7 @@ export default function AvatarScreen() {
   }
 
   return (
-    <View style={ styles.container}>
+    <View style={[styles.container, { justifyContent: 'flex-start', paddingTop: '20%', height: '100%'}]}>
 
       <GoldCounter goldCount={ gold }/> 
       
@@ -60,15 +68,38 @@ export default function AvatarScreen() {
         <Text style={{ color: COLORS.BLACK, fontSize: 20 }}> Wardrobe </Text>
       </Pressable>
 
-       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
+      <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
+
+      <View style={{marginHorizontal: 50, position: 'absolute', bottom: '20%', paddingBottom: 20, height: '20%', justifyContent: 'space-between'}}>
+
+        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Class: 
+          <Text style={{ color: COLORS.TEAL}}>  {"Boxer"} </Text>
+
+        </Text>
+
+        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Lvl: 
+          <Text style={{ color: COLORS.TEAL}}>  { profile?.level}  </Text>
+        </Text>
+
+        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Started: 
+          <Text style={{ color: COLORS.TEAL}}>  { formattedDate }  </Text>
+        </Text>
+
+        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Streak: 
+          <Text style={{ color: COLORS.TEAL}}>  {"1 Day"} </Text>
+          <FontAwesome6 name="fire-flame-curved" size={20} color="#ff5e00ff" />
+        </Text>
+        
+
+      </View>
 
        <XpDisplay userId= { userId }/>
-
+        
     </View>
   )
 }
 
-const styles = StyleSheet.create({
+{/*const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#202020',
@@ -105,4 +136,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   
-});
+});*/}

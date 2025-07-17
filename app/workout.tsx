@@ -1,9 +1,15 @@
 import { Link } from "expo-router";
 import { COLORS } from "./costants";
-import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity } from 'react-native'
 import { useExercises } from "../hooks/useExercises";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useState } from "react";
+
 
 export default function WorkoutScreen() {
+
+  const [showInfo, setShowInfo] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
 
 
   return (
@@ -28,9 +34,19 @@ export default function WorkoutScreen() {
         </Text>
       </Pressable>
 
+
       <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-      <ExerciseCards />
+      <ExerciseCards setSelectedItem={ setSelectedItem } setShowInfo={ setShowInfo }/>
+      
+      <InfoWindow
+        visible={showInfo}
+        onClose={() => setShowInfo(false)}
+        title={ selectedItem?.name || ''}
+        desc={ selectedItem?.description || ''}
+        diff={ selectedItem?.difficulty || ''}
+        cat={ selectedItem?.category || ''}
+      />
 
     </View>
   );
@@ -42,7 +58,9 @@ export function BackButton() {
   )
 }
 
-export function ExerciseCards() {
+
+
+export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void}) {
 
   const { exercises, loading } = useExercises("chest")
 
@@ -57,20 +75,96 @@ export function ExerciseCards() {
 
       <View style={ styles.cardView }>
 
-        <View style={{ width: '25%', margin: '2%'}}></View>
+        <View style={{ width: 80, height: 80, margin: '2%', borderRadius: '20%', marginRight: 10, justifyContent: 'center', alignItems: 'center'}}>
+            <MaterialCommunityIcons name="weight-lifter" size={60} color="black" />
+        </View>
 
       
-        <View style={{ justifyContent: 'space-between', width: '60%'}}>
-          <Text style={ styles.exerciseNameText }> {item.name} </Text>
+        <View style={{ 
+          justifyContent: 'space-between', width: '60%', height: '100%', position: 'absolute', right: 10, marginVertical: 10
+        }}>
+
+          <Text style={[ styles.exerciseNameText ]}> { item.name.charAt(0).toUpperCase() + item.name.slice(1)} </Text>
+          <View style={[ styles.horizontalLine, {width: '20%'} ]} />
           <Text style={ styles.exerciseText }> weight: [weight]</Text>
           <Text style={ styles.exerciseText }> reps:  8-10</Text>
-        </View>        
+        </View>  
+
+        <TouchableOpacity 
+          onPress={() => {
+            props.setShowInfo(true)
+          }}
+        >
+          <Text >ℹ️</Text>
+        </TouchableOpacity>
       
       </View>
       )}
     />
   )}
+
+  
+
 }
+
+const InfoWindow = (props: { visible: boolean, onClose: () => void, title: string, desc: string, diff: string, cat: string }) => {
+  
+  return (
+    <Modal
+      transparent={true}
+      visible={props.visible}
+      animationType="fade"
+      onRequestClose={ props.onClose}
+    >
+
+      <TouchableOpacity 
+        style={styles.infoWindow} 
+        activeOpacity={1} 
+        onPress={ props.onClose}
+      >
+
+        <TouchableOpacity 
+          style={styles.boxView} 
+          activeOpacity={1}
+          onPress={() => {}} // Prevent closing when tapping the window itself
+        >
+
+          <Text style={{ color: COLORS.TEAL, fontSize: 20, alignSelf: 'center'}}>{ props.title }</Text>
+
+          <TouchableOpacity style={styles.closeButton} onPress={ props.onClose}>
+            <Text style={styles.closeButtonText}>×</Text>
+
+          </TouchableOpacity>
+
+          <View style={[ styles.horizontalLine, {width: '75%'} ]} />
+
+
+          <Text style={styles.content}> 
+
+            <Text style={{ color: COLORS.PINK, fontWeight: 'bold'}}> Description: </Text>
+
+            {props.desc}
+          </Text>
+
+          <Text style={styles.content}> 
+
+            <Text style={{ color: COLORS.PINK, fontWeight: 'bold'}}> Difficulty: </Text>
+
+            {props.diff}
+          </Text>
+
+          <Text style={styles.content}> 
+
+            <Text style={{ color: COLORS.PINK, fontWeight: 'bold'}}> Category: </Text>
+
+            {props.cat}
+          </Text>
+
+        </TouchableOpacity>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -84,9 +178,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: COLORS.TEAL,
     borderWidth: 3,
-    padding: 2,
-    marginHorizontal: 30,
-    paddingTop: 15,
+    padding: 15,
+    marginHorizontal: 50,
+    paddingTop: 30,
   },
   logout: {
     margin: 20,
@@ -158,12 +252,15 @@ const styles = StyleSheet.create({
   exerciseNameText: {
     color: COLORS.TEAL,
     fontSize: 16,
-    paddingLeft: 2
+    //paddingLeft: 2,
+    textAlign: 'center', 
+    fontWeight: 'bold'
   },
   exerciseText: {
     color: COLORS.PINK,
     fontSize: 14,
     height: '20%',
+    marginLeft: 10
   },
   cardView: {
     flexDirection: 'row', 
@@ -171,13 +268,37 @@ const styles = StyleSheet.create({
     borderRadius: "10%", 
     borderWidth: 2,
     borderColor: COLORS.PINK,
-    width: '75%', 
+    width: '80%', 
     height: (Dimensions.get('window').height) * .15, 
     marginTop: 30,
     marginBottom: 25,
-    padding: 5,
+    padding: 10,
     paddingVertical: 15,
     overflow: 'hidden',
     alignSelf: 'center'
-  }
+  },
+  infoWindow: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  closeButton: {
+    padding: 5,
+    position: 'absolute',
+    left: 15, 
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#666',
+    fontWeight: 'bold',
+  },
+  content: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: COLORS.TEAL,
+    alignSelf: 'center',
+    marginHorizontal: 10
+  },
+
 });

@@ -31,7 +31,6 @@ export default function App() {
   }, [])
 
   const profile = useProfile(session?.user.id).profile
-
   
   useEffect(() => {
     

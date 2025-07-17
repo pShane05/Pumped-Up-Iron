@@ -4,6 +4,7 @@ import { Link } from 'expo-router'
 import { COLORS } from '../app/costants'
 import { useExercises } from '../hooks/useExercises'
 
+
   export default function WorkoutCard() {
   const [loading, setLoading] = useState(false)
 

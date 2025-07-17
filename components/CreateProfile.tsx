@@ -93,6 +93,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 username: username,
                 height_in: fullHeightIn,
                 weight_lbs: userWeight,
+                date_started: new Date(),
             }
         })
 

@@ -18,7 +18,7 @@ export default function LoginScreen() {
         })
       }, [])
     return (
-        <View style={[ styles.container, { rowGap: 20} ]}>
+        <View style={[ styles.container, { rowGap: 20, justifyContent: 'center'} ]}>
             <View style={ [styles.boxView, { marginTop: 75, height: 350 }] }>
                 <Login />
             </View>

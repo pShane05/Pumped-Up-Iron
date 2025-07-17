@@ -29,7 +29,7 @@ export default function ProfileScreen() {
 
     return (
 
-        <View style={ styles.container}>
+        <View style={[ styles.container, { justifyContent: 'center'}]}>
 
             <View style={[styles.boxView, {height: '75%'}]}>
                 <BirthdayPicker session={ session } />

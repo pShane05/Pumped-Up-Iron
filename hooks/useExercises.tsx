@@ -8,6 +8,7 @@ export function useExercises(bodyPart: string) {
 
   useEffect(() => {
     fetchExercisesByBodyPart(bodyPart).then((data) => {
+      console.log('Recieved data:', data)
       setExercises(data.slice(0, 10));
       setLoading(false);
     });
