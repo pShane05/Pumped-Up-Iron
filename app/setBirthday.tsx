@@ -35,6 +35,12 @@ export default function ProfileScreen() {
                 <BirthdayPicker session={ session } />
             </View>
 
+            <Pressable style={[  {  alignSelf: 'center', position: 'absolute', bottom: 50}]} onPress={() => {
+                supabase.auth.signOut()
+                router.replace('../signup')
+            }}> 
+                <Text style={{ color: COLORS.PINK, fontSize: 16}}> Back to Signup </Text>
+            </Pressable>
         </View>
         
 

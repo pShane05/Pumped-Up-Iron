@@ -28,11 +28,22 @@ export default function App() {
     }
   }, [])
 
-  useEffect(() => {
-    if (!loading && !session) {
-      router.replace('../login')
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username, dob')
+    .eq('id', currentSession.user.id)
+    .single()
+  
+    if (!profile?.username) {
+      
+      router.replace('/makeProfile')
+  
+    } else if (!profile?.dob) {
+      router.replace('/setBirthday')
+  
+    } else {
+      setProfileComplete(true)
     }
-  }, [session])
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.3;  // Matches your titleView height
