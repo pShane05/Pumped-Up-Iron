@@ -31,12 +31,11 @@ export default function App() {
   }, [])
 
   const profile = useProfile(session?.user.id).profile
-  console.log(profile)
+
   
   useEffect(() => {
     
     if (profile === undefined || loading) {
-      console.log(loading)
       return // session still loading
     }
     else {
@@ -44,7 +43,6 @@ export default function App() {
         router.replace("/login")
 
       else if (!profile?.username) {
-        console.log(profile)
         router.replace('/makeProfile')
     
       }
