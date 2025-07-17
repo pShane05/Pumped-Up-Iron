@@ -1,7 +1,7 @@
 import { Session } from "@supabase/supabase-js"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
-import { View, Text, Pressable, Alert } from "react-native"
+import { View, Text, Pressable, Alert, Platform } from "react-native"
 import RNDateTimePicker from "@react-native-community/datetimepicker"
 import { COLORS, styles } from "../app/costants"
 import { NavigatorContext } from "expo-router/build/views/Navigator"
@@ -56,14 +56,22 @@ export default function BirthdayPicker(props: {session: Session | null }) {
 
             <Text style={{ fontSize: 20, color: COLORS.TEAL, alignSelf: 'center', marginTop: 75}}> Enter your Birthday </Text>
             <View style={{ marginTop: 10, alignContent: 'center'}}>
+
                 <RNDateTimePicker 
                     value={ userBirthday } 
-                    display="spinner" 
+                    display={Platform.OS === 'ios' ? "spinner"  : 'default'}
                     textColor= {COLORS.TEAL} 
                     
                     onChange={( event, date ) => {
+                        if (Platform.OS === 'android') {
+                            setUserBirthday(date)
+                            setUpdated(true)
+                            confirmBirthday()
+                        }
+
                         setUserBirthday(date)
                         setUpdated(true)
+                        
                     }}
                 />
             </View>

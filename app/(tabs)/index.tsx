@@ -43,12 +43,12 @@ export default function App() {
       if (!session) 
         router.replace("/login")
 
-      if (!profile?.username) {
+      else if (!profile?.username) {
         console.log(profile)
         router.replace('/makeProfile')
     
       }
-      if (!profile?.dob) 
+      else if (!profile?.dob) 
         router.replace('/setBirthday')
     }
   }, [session, profile, loading])
