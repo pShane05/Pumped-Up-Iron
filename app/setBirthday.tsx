@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import CreateProfileCard from "../components/CreateProfile";
 import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import BirthdayPicker from "../components/BirthdayPicker";
 
 export default function ProfileScreen() {
 
@@ -30,19 +31,13 @@ export default function ProfileScreen() {
 
         <View style={ styles.container}>
 
-            <View style={[styles.boxView, {height: 600}]}>
-                <CreateProfileCard session={ session }/>
+            <View style={[styles.boxView, {height: '75%'}]}>
+                <BirthdayPicker session={ session } />
             </View>
 
-            <Pressable style={[  {  alignSelf: 'center', position: 'absolute', bottom: 50}]} onPress={() => {
-                supabase.auth.signOut()
-                router.replace('../signup')
-            }}> 
-                <Text style={{ color: COLORS.PINK, fontSize: 16}}> Back to Signup </Text>
-            </Pressable>
         </View>
         
-        
+
     )
 
 }

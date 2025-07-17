@@ -9,43 +9,41 @@ const [session, setSession] = useState<Session | null>(null)
 export type Profile = {
   id: string
   username: string
+  full_name: string
+  dob: Date
   avatar_url: string
   level: number
   xp: number
   gold_count: number
+  height_in: number
+  weight_lbs: number
 }
 
 export async function updateProfile({ 
-    username,
-    avatar_url,
-    level,
-    xp,
-    gold_count,
-
+    session,
+    setLoading,
+    updates,
 }:  {
-    username: string,
-    avatar_url: string,
-    level: number,
-    xp: number,
-    gold_count: number,
-})  {
+    session: Session | null,
+    setLoading: (loading: boolean) => void,
+    updates: Partial<Profile>
+}) {
 
     try {
         setLoading(true)
 
         if (!session?.user) throw new Error("No user on the session!")
 
-        const updates = {
+        const updateData = {
+            ...updates,
             id: session.user.id,
-            username,
-            avatar_url,
-            level,
-            xp,
-            gold_count,
+
             updated_at: new Date()
         }
 
-        const { error }= await supabase.from("profiles").upsert(updates)
+        console.log("Updates going to DB:", updateData)
+        const { error }= await supabase.from("profiles").upsert(updateData, { onConflict: "id" })
+        console.log ( error )
 
         if (error) throw error
     } catch (error) {
