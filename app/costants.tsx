@@ -17,7 +17,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.DARK_GRAY,
     alignContent: 'center',
-    justifyContent: 'center',
   },
   boxView: {
 

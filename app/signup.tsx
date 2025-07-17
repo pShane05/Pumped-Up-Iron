@@ -19,7 +19,7 @@ export default function SignupScreen() {
     })
   }, [])
   return (
-    <View style={[ styles.container, {rowGap: 20, paddingVertical: 75}]}>
+    <View style={[ styles.container, {rowGap: 20, paddingVertical: 75, justifyContent: 'center'}]}>
 
       <View style={ [styles.boxView, { marginTop: 75, height: 450 }] }>
         <Signup />

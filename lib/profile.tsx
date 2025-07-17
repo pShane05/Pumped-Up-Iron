@@ -17,6 +17,7 @@ export type Profile = {
   gold_count: number
   height_in: number
   weight_lbs: number
+  date_started: Date
 }
 
 export async function updateProfile({ 
