@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { COLORS } from "./costants";
-import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useExercises } from "../hooks/useExercises";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from "react";
@@ -14,7 +14,7 @@ export default function WorkoutScreen() {
 
   return (
     
-    <View style={ styles.container }>
+    <SafeAreaView style={ styles.container }>
             
       <BackButton />
 
@@ -48,7 +48,7 @@ export default function WorkoutScreen() {
         cat={ selectedItem?.category || ''}
       />
 
-    </View>
+    </SafeAreaView>
   );
 }
 

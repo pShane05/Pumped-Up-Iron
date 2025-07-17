@@ -1,7 +1,7 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, ActivityIndicator } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { COLORS, styles } from '../costants'
@@ -49,7 +49,7 @@ export default function ShopScreen() {
   }
     
   return (
-    <View style={ styles.container}>
+    <SafeAreaView style={ styles.container}>
 
       <GoldCounter goldCount={ gold }/> 
 
@@ -127,7 +127,7 @@ export default function ShopScreen() {
       </ScrollView>
       
 
-    </View>
+    </SafeAreaView>
   )
 }
 

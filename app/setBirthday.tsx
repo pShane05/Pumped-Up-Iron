@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, SafeAreaView } from "react-native";
 import { COLORS, styles } from "./costants"
 import { Link, router, useRouter } from "expo-router";
 import { supabase } from "../lib/supabase";
@@ -29,7 +29,7 @@ export default function ProfileScreen() {
 
     return (
 
-        <View style={[ styles.container, { justifyContent: 'center'}]}>
+        <SafeAreaView style={[ styles.container, { justifyContent: 'center'}]}>
 
             <View style={[styles.boxView, {height: '75%'}]}>
                 <BirthdayPicker session={ session } />
@@ -41,7 +41,7 @@ export default function ProfileScreen() {
             }}> 
                 <Text style={{ color: COLORS.PINK, fontSize: 16}}> Back to Signup </Text>
             </Pressable>
-        </View>
+        </SafeAreaView>
         
 
     )

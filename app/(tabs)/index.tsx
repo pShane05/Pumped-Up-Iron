@@ -63,10 +63,10 @@ export default function App() {
   }
       
   return (
-    <View style={ styles.container}>
+    <SafeAreaView style={ styles.container}>
       <View style={ styles.titleView  }>
         
-        <Image style={{ resizeMode: 'contain', width: '100%', height: "100%"}} source={require('../../assets/images/crownbell-logo.png')}/>
+        <Image style={{ marginTop: 15, resizeMode: 'contain', width: '100%', height: "100%"}} source={require('../../assets/images/crownbell-logo.png')}/>
         
         {session && session.user && <Text style={{color: COLORS.TEAL, position: 'absolute', bottom: 15 }}>{session.user.email}</Text>}
         
@@ -79,10 +79,10 @@ export default function App() {
         </Pressable>
 
       </View>
-      <View style={{ height:  headerHeight}} />
+      
 
       <ScrollView contentContainerStyle={ styles.scrollableView }>
-        
+        <View style={{ height: '30%'}} />
 
         <DailyQuestCard />
 
@@ -92,6 +92,6 @@ export default function App() {
       
       
 
-    </View>
+    </SafeAreaView>
   )
 }

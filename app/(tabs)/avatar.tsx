@@ -1,7 +1,7 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator } from 'react-native'
+import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
@@ -57,11 +57,11 @@ export default function AvatarScreen() {
   }
 
   return (
-    <View style={[styles.container, { justifyContent: 'flex-start', paddingTop: '20%', height: '100%'}]}>
+    <SafeAreaView style={[styles.container, { justifyContent: 'flex-start', height: '100%'}]}>
 
       <GoldCounter goldCount={ gold }/> 
       
-      <Text style= {{ alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Avatar </Text>
+      <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Avatar </Text>
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 
       <Pressable style={[ styles.button, { marginTop: 30 } ]}>
@@ -95,7 +95,7 @@ export default function AvatarScreen() {
 
        <XpDisplay userId= { userId }/>
         
-    </View>
+    </SafeAreaView>
   )
 }
 
