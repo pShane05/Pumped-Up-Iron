@@ -1,18 +1,20 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import DailyQuestCard from '../../components/DailyQuests'
 import WorkoutCard from '../../components/WorkoutCard'
-import { COLORS } from '../costants'
+import { COLORS, styles } from '../costants'
+import { useProfile } from '../../hooks/useProfile'
 
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,15 +30,41 @@ export default function App() {
     }
   }, [])
 
+  const profile = useProfile(session?.user.id).profile
+  console.log(profile)
+  
   useEffect(() => {
-    if (!loading && !session) {
-      router.replace('../login')
+    
+    if (profile === undefined || loading) {
+      console.log(loading)
+      return // session still loading
     }
-  }, [session])
+    else {
+      if (!session) 
+        router.replace("/login")
+
+      else if (!profile?.username) {
+        console.log(profile)
+        router.replace('/makeProfile')
+    
+      }
+      else if (!profile?.dob) 
+        router.replace('/setBirthday')
+    }
+  }, [session, profile, loading])
+   
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.3;  // Matches your titleView height
 
+  if (loading) {
+    return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+    </View>
+    )
+  }
+      
   return (
     <View style={ styles.container}>
       <View style={ styles.titleView  }>
@@ -52,6 +80,7 @@ export default function App() {
         }}>
             <Text style={{ color: 'black' }}> Logout </Text>
         </Pressable>
+
       </View>
       <View style={{ height:  headerHeight}} />
 
@@ -69,69 +98,3 @@ export default function App() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //rowGap: 20,
-    backgroundColor: COLORS.DARK_GRAY,
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  boxView: {
-    backgroundColor: COLORS.BACKGROUND_BLUE,
-    borderRadius: 25,
-    borderColor: COLORS.TEAL,
-    borderWidth: 3,
-    padding: 2,
-    marginHorizontal: 30,
-    paddingTop: 25,
-  },
-  logout: {
-    margin: 20,
-    position: 'absolute',
-    top: 20,
-    right: 0,
-    backgroundColor: COLORS.TEAL, 
-    marginTop: 30,
-    width: '20%',
-    borderRadius: 20,
-    alignItems: 'center',
-    padding: 4,
-    alignSelf: 'center',
-  },
-  button: {
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: COLORS.CYAN,
-    borderColor: COLORS.TEAL,
-    borderWidth: 2,
-    marginTop: 10,
-    alignSelf: 'center',
-    color: COLORS.TEAL
-  },
-  titleView: {
-    flex: 0,
-    backgroundColor: COLORS.GRAY,
-    width: '100%',
-    height: '30%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    zIndex: 1,
-  },
-  horizontalLine: {
-    width: '60%',
-    height: 1,
-    backgroundColor: COLORS.TEAL, 
-    marginVertical: 10, 
-    alignSelf: 'center',
-  },
-  scrollableView: {
-    paddingBottom: 50,
-    rowGap: 40,
-  }
-
-});

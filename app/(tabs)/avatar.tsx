@@ -1,7 +1,7 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { Pressable, StyleSheet, View, Text, Alert } from 'react-native'
+import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
@@ -38,6 +38,15 @@ export default function AvatarScreen() {
       router.replace('../login')
     }
   }, [session])
+
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
 
   return (
     <View style={ styles.container}>

@@ -5,6 +5,7 @@ import { Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 import { navigate } from 'expo-router/build/global-state/routing'
 import { useRouter } from 'expo-router'
+import { COLORS, styles } from '../app/costants'
 
 
 
@@ -17,7 +18,7 @@ export default function Signup() {
   var notSession = !session;
   const router = useRouter()
 
-  async function signInWithEmail() {
+  async function signInWithEmail(newUser: boolean) {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -26,8 +27,12 @@ export default function Signup() {
 
     if (error) 
       Alert.alert(error.message)
-    else
+    else if (!newUser)
       router.push('/')
+    else {
+      console.log("made it")
+      router.push('/makeProfile')
+    }
     setLoading(false)
   }
 
@@ -49,15 +54,17 @@ export default function Signup() {
     
 
     Alert.alert('New Account Created!')
-    signInWithEmail();
+    signInWithEmail(true);
+
     setLoading(false)
   }
 
 
   return (
-    <View style={styles.container}>
+    <View style={styles.authContainer}>
 
-      <Text style={{ color: '#cbeef3', fontSize: 16}}> Create Account</Text>
+      <Text style={{ color: COLORS.TEAL, fontSize: 16, fontWeight: 'bold'}}> Create Account</Text>
+      <View style={ styles.horizontalLine } />
 
       <View style={[styles.input, styles.mt25]}>
         <Input
@@ -91,14 +98,10 @@ export default function Signup() {
         />
       </View>
 
-      <View style={[styles.button, styles.mt25, 
-        {backgroundColor: '#550577', borderColor: '#E113C5', borderWidth: 2} ]}>
+      <Pressable style={{ marginVertical: 20, position: 'absolute', bottom: 0}} disabled={loading || !notSession} onPress={() => signUpWithEmail()}>
+        <Text style={[ styles.button]}>Create Account</Text>
+      </Pressable>
 
-        <Pressable disabled={loading || !notSession} onPress={() => signUpWithEmail()}>
-            <Text style={{color: '#E113C5', borderColor: '#E113C5'}}>Create Account</Text>
-        </Pressable>
-
-      </View>
     </View>
   )
 }
@@ -128,11 +131,12 @@ export function Login() {
 
 
   return (
-    <View style={styles.container}>
+    <View style={styles.authContainer}>
 
-      <Text style={{ color: '#cbeef3', fontSize: 16}}> Login </Text>
+      <Text style={{ color: '#cbeef3', fontSize: 16, fontWeight: 'bold'}}> Login </Text>
+      <View style={ styles.horizontalLine } />
 
-      <View style={[styles.input, styles.mt25]}>
+      <View style={[styles.input, styles.mt25, { marginHorizontal: 20}]}>
         <Input
           onChangeText={(text) => setEmail(text)}
           value={email}
@@ -154,43 +158,10 @@ export function Login() {
       </View>
 
 
-      <View style={[styles.button, styles.mt25, 
-        {backgroundColor: '#550577', borderColor: '#E113C5', borderWidth: 2} ]}>
+      <Pressable style={{ marginVertical: 20, position: 'absolute', bottom: 0}} disabled={loading || !notSession} onPress={() => signInWithEmail()}>
+            <Text style={[ styles.button ]}>Login</Text>
+      </Pressable>
 
-        <Pressable disabled={loading || !notSession} onPress={() => signInWithEmail()}>
-            <Text style={{color: '#E113C5', borderColor: '#E113C5'}}>Login</Text>
-        </Pressable>
-
-      </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    marginTop: 20,
-    padding: 10,
-    alignItems: 'center',
-  },
-  input: {
-    width: '95%',
-    margin: 3,
-    marginTop: 15,
-    backgroundColor: '#f0f0f0',
-    borderColor: '#000000',
-    borderWidth: 3,
-    borderRadius: 20,
-    //height: '15%',
-  },
-  mt25: {
-    marginTop: 25,
-  },
-  button: {
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: '#0D6B93',
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-})

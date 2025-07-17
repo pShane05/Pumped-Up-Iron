@@ -1,10 +1,10 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
-import { COLORS } from '../costants'
+import { COLORS, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
 import { useProfile } from '../../hooks/useProfile'
 
@@ -39,6 +39,15 @@ export default function ShopScreen() {
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
 
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
+    
   return (
     <View style={ styles.container}>
 
@@ -66,7 +75,7 @@ export default function ShopScreen() {
 
 
 
-      <ScrollView style={ styles.scrollableView }>
+      <ScrollView style={[ styles.scrollableView, { backgroundColor: '#25130f'} ]}>
         <View style={{ height: headerHeight}}/>
         <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20}}> Daily </Text>
         <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
@@ -139,7 +148,7 @@ export function ItemSelector() {
   )
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#202020',
@@ -211,3 +220,4 @@ const styles = StyleSheet.create({
     width: (Dimensions.get('window').width) * 0.25,      
   }
 });
+*/
