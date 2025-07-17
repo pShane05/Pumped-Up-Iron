@@ -1,4 +1,4 @@
-import { Stack, router } from "expo-router"
+import { Slot, Stack, router } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
@@ -27,7 +27,6 @@ export default function RootLayout() {
                 .single()
 
             if (!profile?.username) {
-                console.log(profile?.username)
                 router.replace('/makeProfile')
 
             } else if (!profile?.dob) {
@@ -41,14 +40,16 @@ export default function RootLayout() {
         loadSession()
     }, [])
 
+    
    
 
     return (
         <>
             <StatusBar style="light"/>
             <Stack screenOptions={{ headerShown: false }}>
-            
+                <Slot/>
             </Stack>
+
         </>
     )
 }

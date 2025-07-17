@@ -1,18 +1,20 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import DailyQuestCard from '../../components/DailyQuests'
 import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, styles } from '../costants'
+import { useProfile } from '../../hooks/useProfile'
 
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,26 +30,41 @@ export default function App() {
     }
   }, [])
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('username, dob')
-    .eq('id', currentSession.user.id)
-    .single()
+  const profile = useProfile(session?.user.id).profile
+  console.log(profile)
   
-    if (!profile?.username) {
-      
-      router.replace('/makeProfile')
-  
-    } else if (!profile?.dob) {
-      router.replace('/setBirthday')
-  
-    } else {
-      setProfileComplete(true)
+  useEffect(() => {
+    
+    if (profile === undefined || loading) {
+      console.log(loading)
+      return // session still loading
     }
+    else {
+      if (!session) 
+        router.replace("/login")
+
+      if (!profile?.username) {
+        console.log(profile)
+        router.replace('/makeProfile')
+    
+      }
+      if (!profile?.dob) 
+        router.replace('/setBirthday')
+    }
+  }, [session, profile, loading])
+   
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.3;  // Matches your titleView height
 
+  if (loading) {
+    return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+    </View>
+    )
+  }
+      
   return (
     <View style={ styles.container}>
       <View style={ styles.titleView  }>

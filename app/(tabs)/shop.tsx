@@ -1,7 +1,7 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { COLORS, styles } from '../costants'
@@ -39,6 +39,15 @@ export default function ShopScreen() {
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
 
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
+    
   return (
     <View style={ styles.container}>
 
