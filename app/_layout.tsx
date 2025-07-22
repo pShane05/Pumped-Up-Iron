@@ -3,11 +3,14 @@ import { StatusBar } from "expo-status-bar"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Session } from "@supabase/supabase-js"
-import { ActivityIndicator, View } from "react-native"
+import { ActivityIndicator, View, Text } from "react-native"
 
 export default function RootLayout() {
     const [session, setSession] = useState<Session | null>(null)
-    const [profileComplete, setProfileComplete] = useState<boolean | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [debugMessage, setDebugMessage] = useState('Initializing...')
+
+    
 
     useEffect(() => {
         const loadSession = async () => {
@@ -16,7 +19,8 @@ export default function RootLayout() {
             setSession(currentSession)
 
             if (!currentSession) {
-                router.replace('/login')
+                setIsLoading(false)
+                setTimeout(() => router.replace('/login'), 100)
                 return
             }
 
@@ -27,21 +31,31 @@ export default function RootLayout() {
                 .single()
 
             if (!profile?.username) {
-                router.replace('/makeProfile')
-
+                setIsLoading(false)
+                setTimeout(() => router.replace('/makeProfile'), 100)
             } else if (!profile?.dob) {
-                router.replace('/setBirthday')
+                setIsLoading(false)
+                setTimeout(() => router.replace('/setBirthday'), 100)
 
             } else {
-                setProfileComplete(true)
+                setIsLoading(false)
             }
         }
 
         loadSession()
     }, [])
 
-    
-   
+    if (isLoading) {
+        console.log('loading')
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+                <ActivityIndicator size="large" color="#fff" />
+                <Text style={{ color: '#fff', marginTop: 20 }}>{debugMessage}</Text>
+                <StatusBar style="light"/>
+            </View>
+        )
+    }
+
 
     return (
         <>

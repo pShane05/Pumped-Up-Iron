@@ -4,14 +4,14 @@ export const COLORS = {
     BLACK: '#000000',
     DARK_GRAY: '#202020',
     TEAL: '#cbeef3',
-    GRAY: '#404040',
-    BACKGROUND_BLUE: '#10002b',
+    
     CYAN: '#0D6B93',
     PINK: '#E113C5',
     PURPLE: '#550577',
 
-    PRIMARY: '#6930C3',
+    PRIMARY: '#10002b',
     SECONDARY: '#80FFDB',
+    ALT: '#0D6B93',
     BORDER: '#64DFDF',
     BACKGROUND: '#252525'
 }
@@ -20,14 +20,14 @@ export const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: COLORS.DARK_GRAY,
+    backgroundColor: COLORS.BACKGROUND,
     alignContent: 'center',
   },
   boxView: {
 
-    backgroundColor: COLORS.BACKGROUND_BLUE,
+    backgroundColor: COLORS.PRIMARY,
     borderRadius: 25,
-    borderColor: COLORS.TEAL,
+    borderColor: COLORS.BORDER,
     borderWidth: 3,
     padding: 2,
     marginHorizontal: 30,
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   shopPic: {
     flex: 0,
-    backgroundColor: COLORS.GRAY,
+    backgroundColor: COLORS.BACKGROUND,
     width: '100%',
     height: '40%',
     alignSelf: 'center',
@@ -61,37 +61,43 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 0,
-    backgroundColor: COLORS.TEAL, 
+    backgroundColor: COLORS.ALT, 
     marginTop: 30,
     width: '20%',
     borderRadius: 20,
     alignItems: 'center',
     padding: 4,
+    paddingVertical: 6,
     alignSelf: 'center',
+    borderColor: COLORS.BORDER,
+    borderWidth: 1,
+    
   },
   button: {
-    padding: 10,
+    padding: 12,
     borderRadius: 25,
     backgroundColor: COLORS.SECONDARY,
     borderColor: COLORS.BORDER,
     borderWidth: 2,
     marginTop: 10,
     alignSelf: 'center',
-    color: COLORS.BACKGROUND
+    color: COLORS.PRIMARY,
+    fontSize: 16,
+    fontWeight: '500'
   },
   altButton: {
     padding: 10,
     borderRadius: 25,
-    backgroundColor: COLORS.PURPLE,
-    borderColor: COLORS.PINK,
+    backgroundColor: COLORS.ALT,
+    borderColor: COLORS.BORDER,
     borderWidth: 2,
     marginTop: 10,
     alignSelf: 'center',
-    color: COLORS.PINK
+    color: COLORS.SECONDARY
   },
   titleView: {
     flex: 0,
-    backgroundColor: COLORS.GRAY,
+    backgroundColor: COLORS.BACKGROUND,
     width: '100%',
     height: '30%',
     alignSelf: 'center',
@@ -104,7 +110,7 @@ export const styles = StyleSheet.create({
   horizontalLine: {
     width: '60%',
     height: 1,
-    backgroundColor: COLORS.TEAL, 
+    backgroundColor: COLORS.BORDER, 
     marginVertical: 10, 
     alignSelf: 'center',
   },
@@ -165,5 +171,24 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden', 
     justifyContent: 'center'
-  }
+  },
+  singleQuest: {
+    width: '80%',
+    backgroundColor: '#20204b',
+    padding: 10,
+    borderRadius: 25,
+    marginVertical: 5
+  },
+  ExercisePreview: {
+    width: '80%',
+    height: 60,
+    backgroundColor: '#20204b',
+    padding: 8,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
 })

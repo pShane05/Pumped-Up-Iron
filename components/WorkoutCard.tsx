@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
-import { COLORS } from '../app/costants'
+import { COLORS, styles } from '../app/costants'
 import { useExercises } from '../hooks/useExercises'
 
 
@@ -19,11 +19,11 @@ import { useExercises } from '../hooks/useExercises'
       
       <View style={ styles.horizontalLine }/>
 
-      <Pressable style={ styles.Button }>
+      <Pressable style={ styles.altButton }>
         <Text style={{ color: COLORS.TEAL }}> Edit Workout </Text>
       </Pressable>
 
-      <Link href="/workout" style={[ styles.Button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25} ]}>
+      <Link href="/workout" style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25} ]}>
         View Workout 
       </Link>
 
@@ -58,46 +58,3 @@ export function ExercisePreview() {
   )
 }
 
-
-const styles = StyleSheet.create({
-  boxView: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.BACKGROUND_BLUE,
-    borderRadius: 25,
-    borderColor: COLORS.TEAL,
-    borderWidth: 3,
-    padding: 2,
-    marginHorizontal: 30,
-    paddingTop: 25,
-    paddingBottom: 20,
-
-  },
-  horizontalLine: {
-    width: '60%',
-    height: 1,
-    backgroundColor: COLORS.TEAL, 
-    marginTop: 10, 
-    marginBottom: 25,
-    alignSelf: 'center',
-  },
-  ExercisePreview: {
-    width: '80%',
-    height: 60,
-    backgroundColor: '#20204b',
-    padding: 8,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    marginVertical: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  Button: {
-    backgroundColor: COLORS.CYAN,
-    padding: 10,
-    borderRadius: 25,
-    margin: 10,
-    alignSelf: 'center',
-  },
-});

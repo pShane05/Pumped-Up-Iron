@@ -75,7 +75,7 @@ export default function App() {
           router.replace('../login')
           Alert.alert('Logged Out of Account')
         }}>
-            <Text style={{ color: 'black' }}> Logout </Text>
+            <Text style={{ color: COLORS.BORDER }}> Logout </Text>
         </Pressable>
 
       </View>
