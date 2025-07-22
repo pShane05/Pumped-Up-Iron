@@ -9,6 +9,11 @@ export const COLORS = {
     CYAN: '#0D6B93',
     PINK: '#E113C5',
     PURPLE: '#550577',
+
+    PRIMARY: '#6930C3',
+    SECONDARY: '#80FFDB',
+    BORDER: '#64DFDF',
+    BACKGROUND: '#252525'
 }
 
 export const styles = StyleSheet.create({
@@ -67,12 +72,12 @@ export const styles = StyleSheet.create({
   button: {
     padding: 10,
     borderRadius: 25,
-    backgroundColor: COLORS.CYAN,
-    borderColor: COLORS.TEAL,
+    backgroundColor: COLORS.SECONDARY,
+    borderColor: COLORS.BORDER,
     borderWidth: 2,
     marginTop: 10,
     alignSelf: 'center',
-    color: COLORS.TEAL
+    color: COLORS.BACKGROUND
   },
   altButton: {
     padding: 10,
