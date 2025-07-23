@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native"
+import { Colors } from "react-native/Libraries/NewAppScreen"
 
 export const COLORS = {
     BLACK: '#000000',
@@ -141,9 +142,9 @@ export const styles = StyleSheet.create({
   smallInput: {
     width: '40%',
     marginTop: 15,
-    backgroundColor: '#f0f0f0',
-    borderColor: '#000000',
-    borderWidth: 3,
+    backgroundColor: COLORS.BACKGROUND,
+    borderColor: COLORS.BORDER,
+    borderWidth: 1,
     borderRadius: 20,
     height: 50
   },
@@ -151,9 +152,9 @@ export const styles = StyleSheet.create({
     width: '85%',
     margin: 3,
     marginTop: 15,
-    backgroundColor: '#f0f0f0',
-    borderColor: '#000000',
-    borderWidth: 3,
+    backgroundColor: COLORS.BACKGROUND,
+    borderColor: COLORS.BORDER,
+    borderWidth: 1,
     borderRadius: 20,
     height: 50,
   },
@@ -170,7 +171,9 @@ export const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 20,
     overflow: 'hidden', 
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignContent: 'center',
+    fontSize: 20
   },
   singleQuest: {
     width: '80%',

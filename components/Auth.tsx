@@ -6,6 +6,7 @@ import { Session } from '@supabase/supabase-js'
 import { navigate } from 'expo-router/build/global-state/routing'
 import { useRouter } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
+import { color } from '@rneui/themed/dist/config'
 
 
 
@@ -50,13 +51,22 @@ export default function Signup() {
     })
 
 
-    if (error) Alert.alert(error.message)
+    if (error) {
+      Alert.alert(error.message)
+      setLoading(false)
+      return
+    }
+    else
+    {
+      Alert.alert('New Account Created!')
+      signInWithEmail(true);
+
+      setLoading(false)
+      return
+    }
     
 
-    Alert.alert('New Account Created!')
-    signInWithEmail(true);
-
-    setLoading(false)
+    
   }
 
 
@@ -73,6 +83,7 @@ export default function Signup() {
           placeholder="email@address.com"
           autoCapitalize={'none'}
           disabled={!notSession}
+          inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
@@ -84,6 +95,7 @@ export default function Signup() {
           placeholder="Password"
           autoCapitalize={'none'}
           disabled={!notSession}
+          inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
@@ -95,6 +107,7 @@ export default function Signup() {
           placeholder="Confirm Password"
           autoCapitalize={'none'}
           disabled={!notSession}
+          inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
@@ -143,6 +156,7 @@ export function Login() {
           placeholder="email@address.com"
           autoCapitalize={'none'}
           disabled={!notSession}
+          inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
@@ -154,6 +168,7 @@ export function Login() {
           placeholder="Password"
           autoCapitalize={'none'}
           disabled={!notSession}
+          inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 

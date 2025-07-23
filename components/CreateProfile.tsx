@@ -139,7 +139,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 </View>
 
                 
-                <Text style={{ color: COLORS.TEAL, marginLeft: 20, fontSize: 20 ,marginTop: 20, alignSelf: 'flex-start'}}> Height: </Text>
+                <Text style={{ color: COLORS.TEAL, marginLeft: 20, fontSize: 20 ,marginTop: 25, alignSelf: 'flex-start'}}> Height: </Text>
 
                 <View style={[ 
                     styles.row, {height: '16%', width: '100%', justifyContent: 'flex-start', marginTop: 8, columnGap: 20,} ]} 
@@ -148,11 +148,13 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                     <View style={{ flexDirection: 'column', width: wheelWidth, marginLeft: 20 }} >
 
                         <Text style={{ color: COLORS.TEAL}}> Ft </Text>
-                        <View style={[styles.scrollWheel, { height: 75, width: '100%', marginTop: 5 }]}>
+                        <View style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5 }]}>
                             <WheelPickerExpo
-                                height={ 75 }
+                                height={ 150 }
                                 width={ 75 }
-                                initialSelectedIndex={0}                            
+                                initialSelectedIndex={0}   
+                                haptics={ true }              
+                                backgroundColor={ COLORS.BACKGROUND}           
                                 items={feet.map(n => ({ label: n, value: n }))}
 
                                 onChange={({ index }) => setUserHeightFt(index + 1)}
@@ -163,12 +165,13 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                     <View style={{ flexDirection: 'column', width: wheelWidth}} >
 
                         <Text style={{ color: COLORS.TEAL}}> In </Text>
-                        <View style={[styles.scrollWheel, { height: 75, width: '100%', marginTop: 5}]}>
+                        <View style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5}]}>
                             <WheelPickerExpo
-                                height={ 75 }
+                                height={ 150 }
                                 width={ 75 }
                                 initialSelectedIndex={0}
-                            
+                                haptics= {true}
+                                backgroundColor={ COLORS.BACKGROUND}    
                                 items={inches.map(n => ({ label: n, value: n }))}
 
                                 onChange={({ index }) => setUserHeightIn(index)}
@@ -179,13 +182,14 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 
                 <View style={{ height: '16%', width: '100%', marginTop: 25, justifyContent: 'flex-start'}}>
                     <Text style={{ marginLeft: 20, color: COLORS.TEAL, fontSize: 20 }}> Weight </Text>
-                    <View style={[styles.scrollWheel, { height: 75, width: wheelWidth, marginTop: 5, marginLeft: 20}]}>
+                    <View style={[styles.scrollWheel, { height: 65, width: wheelWidth, marginTop: 5, marginLeft: 20}]}>
                         {weights.length > 0 && (
                         <WheelPickerExpo
-                            height={ 75}
+                            height={ 150 }
                             width={ 75 }
                             initialSelectedIndex={200}
-                            
+                            haptics={ true}
+                            backgroundColor={ COLORS.BACKGROUND}    
                             items={weights.map(n => ({ label: n, value: n }))}
 
                             onChange={({ index }) => setUserWeight(index)}
