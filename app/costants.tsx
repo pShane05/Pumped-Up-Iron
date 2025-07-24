@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native"
-import { Colors } from "react-native/Libraries/NewAppScreen"
+
 
 export const COLORS = {
     BLACK: '#000000',

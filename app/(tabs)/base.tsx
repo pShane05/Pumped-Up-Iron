@@ -7,6 +7,7 @@ import { Link, useRouter } from "expo-router"
 import { GoldCounter } from '../../components/UI'
 import { COLORS } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
+import LoadingScreen from '../../components/LoadingScreen'
 
 
 export default function BaseScreen() {
@@ -15,6 +16,8 @@ export default function BaseScreen() {
   const router = useRouter()
   const profile = useProfile(session?.user.id).profile
   const gold = profile?.gold_count
+  const isDataReady = session && profile && gold !== undefined
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,11 +40,9 @@ export default function BaseScreen() {
   }, [session])
 
 
-  if (loading) {
+  if (loading || !isDataReady) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <LoadingScreen />
     )
   }
 

@@ -8,6 +8,7 @@ import DailyQuestCard from '../../components/DailyQuests'
 import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
+import LoadingScreen from '../../components/LoadingScreen'
 
 
 export default function App() {
@@ -51,14 +52,10 @@ export default function App() {
   }, [session, profile, loading])
    
 
-  const screenHeight = Dimensions.get('window').height;
-  const headerHeight = screenHeight * 0.3;  // Matches your titleView height
 
   if (loading) {
     return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" />
-    </View>
+    <LoadingScreen />
     )
   }
       

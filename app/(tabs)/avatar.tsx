@@ -9,16 +9,19 @@ import { COLORS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import { updateProfile } from '../../lib/profile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
+import LoadingScreen from '../../components/LoadingScreen'
 
 
 export default function AvatarScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+
   const router = useRouter()
   const profile = useProfile(session?.user.id).profile
   const gold = profile?.gold_count
   const userId = profile?.id
   const startDate = profile?.date_started; // "2000-05-17T00:00:00.000Z"
+  const isDataReady = session && profile && gold && startDate !== undefined
 
   const formattedDate = new Date(startDate).toLocaleDateString("en-US", {
     year: "numeric",
@@ -48,11 +51,9 @@ export default function AvatarScreen() {
   }, [session])
 
 
-  if (loading) {
+  if (loading || !isDataReady) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <LoadingScreen />
     )
   }
 

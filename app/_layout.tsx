@@ -46,7 +46,6 @@ export default function RootLayout() {
     }, [])
 
     if (isLoading) {
-        console.log('loading')
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
                 <ActivityIndicator size="large" color="#fff" />

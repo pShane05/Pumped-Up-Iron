@@ -1,12 +1,13 @@
 import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native'
+import { ScrollView, Image, Pressable, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { COLORS, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
 import { useProfile } from '../../hooks/useProfile'
+import LoadingScreen from '../../components/LoadingScreen'
 
 
 export default function ShopScreen() {
@@ -15,6 +16,9 @@ export default function ShopScreen() {
   const router = useRouter()
   const profile = useProfile(session?.user.id).profile
   const gold = profile?.gold_count
+  const isDataReady = session && profile && gold !== undefined
+  const shopImage = require('../../assets/images/ai_shop.png')
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -40,11 +44,10 @@ export default function ShopScreen() {
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
 
 
-  if (loading) {
+
+  if (loading || !isDataReady) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <LoadingScreen />
     )
   }
     
@@ -70,7 +73,10 @@ export default function ShopScreen() {
       </View>
 
       <View style={ styles.shopPic }>
-        <Image style={{ resizeMode: 'cover', width: '100%', height: "100%"}} source={require('../../assets/images/ai_shop.png')}/>
+        <Image 
+          style={{ resizeMode: 'cover', width: '100%', height: "100%"}} 
+          source={ shopImage }
+        />
       </View>
 
 
@@ -147,77 +153,3 @@ export function ItemSelector() {
     </View>
   )
 }
-
-/*const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#202020',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  shopPic: {
-    flex: 0,
-    backgroundColor: COLORS.GRAY,
-    width: '100%',
-    height: '40%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    zIndex: 1,
-  },
-  shopHeader: {
-    width: '100%',
-    height: '40%',
-    paddingTop: '20%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    zIndex: 2,
-    
-  },
-  boxView: {
-    backgroundColor: '#10002b',
-    borderRadius: 25,
-    borderColor: '#cbeef3',
-    borderWidth: 3,
-    padding: 2,
-  },
-  button: {
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: '#0D6B93',
-    borderColor: '#cbeef3',
-    borderWidth: 2,
-    marginTop: 10,
-    alignSelf: 'center',
-    color: '#cbeef3'
-  },
-  horizontalLine: {
-    width: '60%',
-    height: 1,
-    backgroundColor: COLORS.TEAL, 
-    alignSelf: 'center',
-  },
-  scrollableView: {
-    flex: 1,
-    paddingBottom: 200,
-    rowGap: 20,
-    backgroundColor: '#25130f'
-  },
-  CatSelector: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 20,
-    height: (Dimensions.get('window').width) * 0.15,
-    width: (Dimensions.get('window').width) * 0.15,      
-  },
-  ItemSelector: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    borderRadius: 25,
-    height: (Dimensions.get('window').width) * 0.25,
-    width: (Dimensions.get('window').width) * 0.25,      
-  }
-});
-*/
