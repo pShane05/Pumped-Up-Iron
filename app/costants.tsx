@@ -14,7 +14,7 @@ export const COLORS = {
     SECONDARY: '#80FFDB',
     ALT: '#0D6B93',
     BORDER: '#64DFDF',
-    BACKGROUND: '#252525'
+    BACKGROUND: '#151515'
 }
 
 export const styles = StyleSheet.create({

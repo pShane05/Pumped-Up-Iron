@@ -8,7 +8,7 @@ export default function LoadingScreen() {
         <SafeAreaView style={[ styles.container, { justifyContent: "center", alignItems: 'center'}]} >
             <View style={{ height: 200, width: 200, }}>
                 <Image 
-                style={{ marginTop: 15, resizeMode: 'contain', width: '100%', height: "100%"}} 
+                style={{ marginTop: 15, resizeMode: 'contain', width: '100%', height: "100%", tintColor: COLORS.PURPLE}} 
                 source={require('../assets/images/crownbell-logo.png')}
             />
             </View>

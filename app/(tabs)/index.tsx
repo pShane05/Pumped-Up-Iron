@@ -63,9 +63,7 @@ export default function App() {
     <SafeAreaView style={ styles.container}>
       <View style={ styles.titleView  }>
         
-        <Image style={{ marginTop: 15, resizeMode: 'contain', width: '100%', height: "100%"}} source={require('../../assets/images/crownbell-logo.png')}/>
-        
-        {session && session.user && <Text style={{color: COLORS.TEAL, position: 'absolute', bottom: 15 }}>{session.user.email}</Text>}
+        <Image style={{ marginTop: 15, resizeMode: 'contain', width: '100%', height: "100%", tintColor: COLORS.PINK}} source={require('../../assets/images/crownbell-logo.png')}/>
         
         <Pressable style={styles.logout} onPress={() => {
           supabase.auth.signOut()

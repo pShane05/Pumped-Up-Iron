@@ -71,6 +71,8 @@ export default function AvatarScreen() {
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
 
+      
+
       <View style={{marginHorizontal: 50, position: 'absolute', bottom: '20%', paddingBottom: 20, height: '20%', justifyContent: 'space-between'}}>
 
         <Text style={{ color: COLORS.PINK, fontSize: 20}}> Class: 
