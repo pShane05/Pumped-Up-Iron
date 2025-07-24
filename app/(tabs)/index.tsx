@@ -77,7 +77,7 @@ export default function App() {
       
 
       <ScrollView contentContainerStyle={ styles.scrollableView }>
-        <View style={{ height: '30%'}} />
+        <View style={{ height: '25%'}} />
 
         <DailyQuestCard />
 

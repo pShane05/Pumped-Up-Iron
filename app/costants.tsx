@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     left: 0,
     backgroundColor: COLORS.ALT, 
     marginTop: 30,
-    width: '20%',
+    //width: '20%',
     borderRadius: 20,
     alignItems: 'center',
     padding: 4,
@@ -193,5 +193,56 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  exerciseNameText: {
+    color: COLORS.TEAL,
+    fontSize: 16,
+    //paddingLeft: 2,
+    textAlign: 'center', 
+    fontWeight: 'bold'
+  },
+  exerciseText: {
+    color: COLORS.PINK,
+    fontSize: 14,
+    height: '20%',
+    marginLeft: 10
+  },
+  cardView: {
+    flexDirection: 'row', 
+    backgroundColor: COLORS.PURPLE, 
+    borderRadius: "10%", 
+    borderWidth: 2,
+    borderColor: COLORS.PINK,
+    width: '80%', 
+    height: (Dimensions.get('window').height) * .15, 
+    marginTop: 30,
+    marginBottom: 25,
+    padding: 10,
+    paddingVertical: 15,
+    overflow: 'hidden',
+    alignSelf: 'center'
+  },
+  infoWindow: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  closeButton: {
+    padding: 5,
+    position: 'absolute',
+    left: 15, 
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#666',
+    fontWeight: 'bold',
+  },
+  content: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: COLORS.TEAL,
+    alignSelf: 'center',
+    marginHorizontal: 10
   },
 })

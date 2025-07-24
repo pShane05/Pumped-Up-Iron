@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
-import { COLORS } from "./costants";
-import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
+import { COLORS, styles } from "./costants";
+import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useExercises } from "../hooks/useExercises";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from "react";
@@ -18,17 +18,17 @@ export default function WorkoutScreen() {
             
       <BackButton />
 
-      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL}}> Chest and Shoulders </Text>
+      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> Chest and Shoulders </Text>
 
       <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-      <Pressable style={ styles.editWorkout } >
+      <Pressable style={ styles.altButton } >
         <Text style={{ color: COLORS.TEAL}}>
           Edit Workout
         </Text>
       </Pressable>
 
-      <Pressable style={ styles.startWorkout }>
+      <Pressable style={[ styles.button, { marginTop: 15} ]}>
         <Text style={{ fontSize: 20,}}>
           Start Workout
         </Text>
@@ -54,7 +54,7 @@ export default function WorkoutScreen() {
 
 export function BackButton() {
   return (
-    <Link href='/(tabs)' style={ styles.button }> Back </Link>
+    <Link href='/(tabs)' style={[ styles.logout, { position: 'absolute', top: 20, left: 0} ]}> Back </Link>
   )
 }
 
@@ -81,10 +81,10 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
 
       
         <View style={{ 
-          justifyContent: 'space-between', width: '60%', height: '100%', position: 'absolute', right: 10, marginVertical: 10
+          justifyContent: 'space-between', width: '60%', height: '100%', position: 'absolute', right: 10, marginBottom: 10, marginTop: 20
         }}>
 
-          <Text style={[ styles.exerciseNameText ]}> { item.name.charAt(0).toUpperCase() + item.name.slice(1)} </Text>
+          <Text style={[ styles.exerciseNameText, { width: '80%'} ]}> { item.name.charAt(0).toUpperCase() + item.name.slice(1)} </Text>
           <View style={[ styles.horizontalLine, {width: '20%'} ]} />
           <Text style={ styles.exerciseText }> weight: [weight]</Text>
           <Text style={ styles.exerciseText }> reps:  8-10</Text>
@@ -94,6 +94,7 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
           onPress={() => {
             props.setShowInfo(true)
           }}
+          style={{ position: 'absolute', right: 10, top: 10}}
         >
           <Text >ℹ️</Text>
         </TouchableOpacity>
@@ -165,140 +166,3 @@ const InfoWindow = (props: { visible: boolean, onClose: () => void, title: strin
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.BACKGROUND_BLUE,
-    alignItems: 'center',
-    paddingTop: '30%'
-  },
-  boxView: {
-    backgroundColor: COLORS.BACKGROUND_BLUE,
-    borderRadius: 25,
-    borderColor: COLORS.TEAL,
-    borderWidth: 3,
-    padding: 15,
-    marginHorizontal: 50,
-    paddingTop: 30,
-  },
-  logout: {
-    margin: 20,
-    position: 'absolute',
-    top: 20,
-    right: 0,
-    backgroundColor: COLORS.TEAL, 
-    marginTop: 30,
-    width: '20%',
-    borderRadius: 20,
-    alignItems: 'center',
-    padding: 4,
-    alignSelf: 'center',
-  },
-  button: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 25,
-    backgroundColor: COLORS.CYAN,
-    marginTop: 10,
-    alignSelf: 'center',
-    color: COLORS.TEAL,
-    position: 'absolute',
-    top: 50,
-    left: 20
-  },
-  titleView: {
-    flex: 0,
-    backgroundColor: COLORS.GRAY,
-    width: '100%',
-    height: '30%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    zIndex: 1,
-  },
-  horizontalLine: {
-    width: '60%',
-    height: 1,
-    backgroundColor: COLORS.TEAL, 
-    marginVertical: 10, 
-    alignSelf: 'center',
-  },
-  scrollableView: {
-    paddingBottom: 50,
-    rowGap: 40,
-  },
-  editWorkout: {
-    backgroundColor: COLORS.PURPLE,
-    borderRadius: '13%',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    alignItems: 'center',
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: COLORS.PINK,
-    overflow: 'hidden'
-  },
-  startWorkout: {
-    backgroundColor: COLORS.TEAL,
-    borderRadius: '13%',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    alignItems: 'center',
-    marginTop: 25
-  },
-  exerciseNameText: {
-    color: COLORS.TEAL,
-    fontSize: 16,
-    //paddingLeft: 2,
-    textAlign: 'center', 
-    fontWeight: 'bold'
-  },
-  exerciseText: {
-    color: COLORS.PINK,
-    fontSize: 14,
-    height: '20%',
-    marginLeft: 10
-  },
-  cardView: {
-    flexDirection: 'row', 
-    backgroundColor: COLORS.PURPLE, 
-    borderRadius: "10%", 
-    borderWidth: 2,
-    borderColor: COLORS.PINK,
-    width: '80%', 
-    height: (Dimensions.get('window').height) * .15, 
-    marginTop: 30,
-    marginBottom: 25,
-    padding: 10,
-    paddingVertical: 15,
-    overflow: 'hidden',
-    alignSelf: 'center'
-  },
-  infoWindow: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  closeButton: {
-    padding: 5,
-    position: 'absolute',
-    left: 15, 
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  content: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: COLORS.TEAL,
-    alignSelf: 'center',
-    marginHorizontal: 10
-  },
-
-});
