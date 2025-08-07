@@ -19,8 +19,10 @@ export default function RootLayout() {
 
     useEffect(() => {
         const loadSession = async () => {
+            console.log("starts loadSession function")
             const { data } = await supabase.auth.getSession()
             const currentSession = data.session
+            console.log(currentSession)
             setSession(currentSession)
 
             if (!currentSession) {
@@ -36,9 +38,11 @@ export default function RootLayout() {
                 .single()
 
             if (!profile?.username) {
+                console.log(currentSession.user.id)
                 setIsLoading(false)
                 setTimeout(() => router.replace('/makeProfile'), 100)
             } else if (!profile?.dob) {
+                console.log("dob check")
                 setIsLoading(false)
                 setTimeout(() => router.replace('/setBirthday'), 100)
 
