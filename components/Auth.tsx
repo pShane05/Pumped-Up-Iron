@@ -73,7 +73,7 @@ export default function Signup() {
   return (
     <View style={styles.authContainer}>
 
-      <Text style={{ color: COLORS.TEAL, fontSize: 16, fontWeight: 'bold'}}> Create Account</Text>
+      <Text style={ styles.headerText }> Create Account</Text>
       <View style={ styles.horizontalLine } />
 
       <View style={[styles.input, styles.mt25]}>
@@ -112,7 +112,7 @@ export default function Signup() {
       </View>
 
       <Pressable style={{ marginVertical: 20, position: 'absolute', bottom: 0}} disabled={loading || !notSession} onPress={() => signUpWithEmail()}>
-        <Text style={[ styles.button]}>Create Account</Text>
+        <Text style={[ styles.button, { fontFamily: 'Electrolize-Regular' }]}>Create Account</Text>
       </Pressable>
 
     </View>
@@ -146,11 +146,12 @@ export function Login() {
   return (
     <View style={styles.authContainer}>
 
-      <Text style={{ color: '#cbeef3', fontSize: 16, fontWeight: 'bold'}}> Login </Text>
+      <Text style={ styles.headerText }> Login </Text>
       <View style={ styles.horizontalLine } />
 
       <View style={[styles.input, styles.mt25, { marginHorizontal: 20}]}>
         <Input
+          style={ styles.subText }
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
@@ -174,7 +175,7 @@ export function Login() {
 
 
       <Pressable style={{ marginVertical: 20, position: 'absolute', bottom: 0}} disabled={loading || !notSession} onPress={() => signInWithEmail()}>
-            <Text style={[ styles.button ]}>Login</Text>
+            <Text style={[ styles.button, { fontFamily: 'Electrolize-Regular'} ]}>Login</Text>
       </Pressable>
 
     </View>

@@ -103,7 +103,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
     return (
         <View style={[ styles.authContainer]}>
-            <Text style={{ color: COLORS.TEAL, fontSize: 16, fontWeight: 'bold'}}> Create Account</Text>
+            <Text style={ styles.headerText }> Create Account</Text>
             <View style={ styles.horizontalLine } />
 
             
@@ -139,7 +139,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 </View>
 
                 
-                <Text style={{ color: COLORS.TEAL, marginLeft: 20, fontSize: 20 ,marginTop: 25, alignSelf: 'flex-start'}}> Height: </Text>
+                <Text style={{ color: COLORS.TEAL, marginLeft: 20, fontSize: 20 ,marginTop: 25, alignSelf: 'flex-start', fontFamily: 'Electrolize-Regular'}}> Height: </Text>
 
                 <View style={[ 
                     styles.row, {height: '16%', width: '100%', justifyContent: 'flex-start', marginTop: 8, columnGap: 20,} ]} 
@@ -147,7 +147,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
                     <View style={{ flexDirection: 'column', width: wheelWidth, marginLeft: 20 }} >
 
-                        <Text style={{ color: COLORS.TEAL}}> Ft </Text>
+                        <Text style={{ color: COLORS.TEAL, fontFamily: 'Electrolize-Regular'}}> Ft </Text>
                         <View style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5 }]}>
                             <WheelPickerExpo
                                 height={ 150 }
@@ -164,7 +164,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
                     <View style={{ flexDirection: 'column', width: wheelWidth}} >
 
-                        <Text style={{ color: COLORS.TEAL}}> In </Text>
+                        <Text style={{ color: COLORS.TEAL, fontFamily: 'Electrolize-Regular'}}> In </Text>
                         <View style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5}]}>
                             <WheelPickerExpo
                                 height={ 150 }
@@ -181,7 +181,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 </View>
                 
                 <View style={{ height: '16%', width: '100%', marginTop: 25, justifyContent: 'flex-start'}}>
-                    <Text style={{ marginLeft: 20, color: COLORS.TEAL, fontSize: 20 }}> Weight </Text>
+                    <Text style={{ marginLeft: 20, color: COLORS.TEAL, fontSize: 20, fontFamily: 'Electrolize-Regular' }}> Weight </Text>
                     <View style={[styles.scrollWheel, { height: 65, width: wheelWidth, marginTop: 5, marginLeft: 20}]}>
                         {weights.length > 0 && (
                         <WheelPickerExpo
@@ -199,7 +199,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 </View>
 
                 <Pressable style={{ marginTop: 40, position: 'absolute', bottom: 20, alignSelf: 'center'}} disabled={loading} onPress={() => confirmProfileInfo()}>
-                    <Text style={[ styles.button]}> Confirm </Text> 
+                    <Text style={[ styles.button, { fontFamily: 'Electrolize-Regular' }]}> Confirm </Text> 
                 </Pressable>
 
             </View>
