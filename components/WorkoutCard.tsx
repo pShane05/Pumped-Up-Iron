@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
-import { useExercises } from '../hooks/useExercises'
+import { useExercisesByGroup } from '../hooks/useExercises'
 
 
   export default function WorkoutCard() {
-  const [loading, setLoading] = useState(false)
 
   return (
     
@@ -35,11 +34,11 @@ import { useExercises } from '../hooks/useExercises'
 
 export function ExercisePreview() {
 
-  const { exercises, loading } = useExercises("chest")
+  const { exercises, loading } = useExercisesByGroup("chest")
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />
 
   return (
-    <View style={{ width: '100%', alignItems: 'center'}}>
+    <View style={{ width: '100%', alignItems: 'center', padding: 15}}>
       {exercises.slice(0, 5).map((item) => (        
 
         <View key={item.id} style={ styles.ExercisePreview }>

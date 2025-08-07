@@ -215,7 +215,6 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.PINK,
     width: '80%', 
     height: (Dimensions.get('window').height) * .15, 
-    marginTop: 30,
     marginBottom: 25,
     padding: 10,
     paddingVertical: 15,
@@ -242,7 +241,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: COLORS.TEAL,
-    alignSelf: 'center',
-    marginHorizontal: 10
+    alignSelf: 'flex-start',
+    marginHorizontal: 15
   },
 })
