@@ -23,9 +23,9 @@ export default function LoginScreen() {
                 <Login />
             </View>
 
-            <Text style={{ alignSelf: 'center', color: COLORS.TEAL, marginTop: 20 }}> Don't have an account? </Text>
+            <Text style={{ alignSelf: 'center', color: COLORS.TEAL, marginTop: 20, fontFamily: 'Electrolize-Regular' }}> Don't have an account? </Text>
             
-            <Link href={"/signup"} style={[styles.altButton, {marginTop: 0 }]}> Create Account </Link>
+            <Link href={"/signup"} style={[styles.altButton, {marginTop: 0, fontFamily: 'Electrolize-Regular' }]}> Create Account </Link>
 
         </SafeAreaView>
     );

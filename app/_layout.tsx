@@ -4,12 +4,17 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Session } from "@supabase/supabase-js"
 import { ActivityIndicator, View, Text } from "react-native"
+import { useFonts } from 'expo-font';
 
 export default function RootLayout() {
     const [session, setSession] = useState<Session | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [debugMessage, setDebugMessage] = useState('Initializing...')
 
+    const [fontsLoaded] = useFonts({
+        'Electrolize-Regular': require('../assets/fonts/Electrolize/Electrolize-Regular.ttf'),
+        'Geo-Regular': require('../assets/fonts/Geo/Geo-Regular.ttf'),
+    });
     
 
     useEffect(() => {
@@ -45,7 +50,7 @@ export default function RootLayout() {
         loadSession()
     }, [])
 
-    if (isLoading) {
+    if (isLoading || !fontsLoaded) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
                 <ActivityIndicator size="large" color="#fff" />

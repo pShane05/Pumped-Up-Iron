@@ -38,7 +38,7 @@ export default function ProfileScreen() {
                 supabase.auth.signOut()
                 router.replace('../signup')
             }}> 
-                <Text style={{ color: COLORS.PINK, fontSize: 16}}> Back to Signup </Text>
+                <Text style={{ color: COLORS.PINK, fontSize: 16, fontFamily: 'Electrolize-Regular'}}> Back to Signup </Text>
             </Pressable>
         </SafeAreaView>
         

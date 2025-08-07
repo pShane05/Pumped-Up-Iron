@@ -19,6 +19,15 @@ export const COLORS = {
 
 export const styles = StyleSheet.create({
 
+  headerText: {
+    color: COLORS.TEAL, 
+    fontSize: 32, 
+    fontWeight: 'bold',
+    fontFamily: 'Geo-Regular'
+  },
+  subText: {
+    fontFamily: 'Electolize-Regular'
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.BACKGROUND,
@@ -135,7 +144,7 @@ export const styles = StyleSheet.create({
   authContainer: {
     flex: 1,
     flexDirection: 'column',
-    marginTop: 20,
+    marginTop: 10,
     padding: 10,
     alignItems: 'center',
   },
@@ -157,6 +166,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     height: 50,
+    fontFamily: 'Electrolize-Regular'
   },
   mt25: {
     marginTop: 25,
