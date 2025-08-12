@@ -6,7 +6,7 @@ import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import DailyQuestCard from '../../components/DailyQuests'
 import WorkoutCard from '../../components/WorkoutCard'
-import { COLORS, styles } from '../costants'
+import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
 import { getPlanDayByProfile } from '../../hooks/usePlan'
@@ -70,7 +70,7 @@ export default function App() {
           router.replace('../login')
           Alert.alert('Logged Out of Account')
         }}>
-            <Text style={{ color: COLORS.BORDER }}> Logout </Text>
+            <Text style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY }}> Logout </Text>
         </Pressable>
 
       </View>

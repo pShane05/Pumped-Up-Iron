@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
-import { COLORS, styles } from '../app/costants'
+import { COLORS, FONTS, styles } from '../app/costants'
 import { usePlanDayByProfile } from '../hooks/usePlan'
 import { useProfile } from '../hooks/useProfile'
 import { Session } from '@supabase/supabase-js'
@@ -17,18 +17,17 @@ import { PlanDay } from '../lib/planDay'
     
     <View style={ styles.boxView } >
       
-      <Text style={{ 
-        color: COLORS.TEAL, alignSelf: 'center', fontSize: 20,}}> 
+      <Text style={[ styles.headerText, { paddingHorizontal: 10, textAlign: 'center' } ]}> 
           {day?.name + " Training"}
       </Text>
       
       <View style={ styles.horizontalLine }/>
 
       <Pressable style={ styles.altButton }>
-        <Text style={{ color: COLORS.TEAL }}> Edit Workout </Text>
+        <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY }}> Edit Workout </Text>
       </Pressable>
 
-      <Link href="/workout" style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25} ]}>
+      <Link href="/workout" style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25, fontFamily: FONTS.BODY} ]}>
         View Workout 
       </Link>
 
@@ -63,10 +62,10 @@ export function TargetPreview(props: {target: {id: number, name: string}}) {
   return (
     <View style={ styles.ExercisePreview }>
 
-      <Text style={{ color: COLORS.TEAL, flexShrink: 1}}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
+      <Text style={{ color: COLORS.TEAL, flexShrink: 1, fontFamily: FONTS.BODY }}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
 
       <Text
-        style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
+        style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15, fontFamily: FONTS.BODY}} > 
           [3 x 6-8]
       </Text>
 

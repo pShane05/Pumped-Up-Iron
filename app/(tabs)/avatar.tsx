@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaVi
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
-import { COLORS, styles } from '../costants'
+import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import { updateProfile } from '../../lib/profile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
@@ -62,11 +62,11 @@ export default function AvatarScreen() {
 
       <GoldCounter goldCount={ gold }/> 
       
-      <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Avatar </Text>
+      <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 40, color: '#cbeef3', fontFamily: FONTS.HEADER}}> Avatar </Text>
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 
       <Pressable style={[ styles.button, { marginTop: 30 } ]}>
-        <Text style={{ color: COLORS.BLACK, fontSize: 20 }}> Wardrobe </Text>
+        <Text style={{ color: COLORS.BLACK, fontSize: 20, fontFamily: FONTS.BODY }}> Wardrobe </Text>
       </Pressable>
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
@@ -75,21 +75,21 @@ export default function AvatarScreen() {
 
       <View style={{marginHorizontal: 50, position: 'absolute', bottom: '20%', paddingBottom: 20, height: '20%', justifyContent: 'space-between'}}>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Class: 
+        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Class: 
           <Text style={{ color: COLORS.TEAL}}>  {"Boxer"} </Text>
 
         </Text>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Lvl: 
-          <Text style={{ color: COLORS.TEAL}}>  { profile?.level}  </Text>
+        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Lvl: 
+          <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  { profile?.level}  </Text>
         </Text>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Started: 
-          <Text style={{ color: COLORS.TEAL}}>  { formattedDate }  </Text>
+        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Started: 
+          <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  { formattedDate }  </Text>
         </Text>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20}}> Streak: 
-          <Text style={{ color: COLORS.TEAL}}>  {"1 Day"} </Text>
+        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Streak: 
+          <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  {"1 Day"} </Text>
           <FontAwesome6 name="fire-flame-curved" size={20} color="#ff5e00ff" />
         </Text>
         

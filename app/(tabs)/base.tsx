@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaVi
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter } from '../../components/UI'
-import { COLORS } from '../costants'
+import { COLORS, FONTS } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
 
@@ -51,7 +51,7 @@ export default function BaseScreen() {
 
       <GoldCounter goldCount={ gold }/> 
 
-      <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 32, color: '#cbeef3'}}> Base </Text>
+      <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 40, color: '#cbeef3', fontFamily: FONTS.HEADER}}> Base </Text>
 
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 

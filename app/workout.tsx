@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { COLORS, styles } from "./costants";
+import { COLORS, FONTS, styles } from "./costants";
 import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -72,14 +72,14 @@ export default function WorkoutScreen() {
             
       <BackButton />
 
-      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> {day?.name} </Text>
+      <Text style={[ styles.headerText, { fontSize: 40, alignSelf: 'center', marginTop: 60}]}> {day?.name} </Text>
 
       <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10 }]}>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
         Rewards:
       </Text>
-      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10 }]}>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
         [insert rewards]
       </Text>
 
@@ -87,7 +87,7 @@ export default function WorkoutScreen() {
         style={[ styles.button, { marginTop: 15}]}
         onPress={() => { handleStartButtonClick()  }}
       >
-        <Text style={{ fontSize: 20,}}>
+        <Text style={{ fontSize: 20, fontFamily: FONTS.BODY}}>
           Start Workout
         </Text>
       </Pressable>
@@ -112,7 +112,7 @@ export default function WorkoutScreen() {
 
 export function BackButton() {
   return (
-    <Link href='/(tabs)' style={[ styles.logout, { position: 'absolute', top: 20, left: 0} ]}> Back </Link>
+    <Link href='/(tabs)' style={[ styles.logout, { position: 'absolute', top: 20, left: 0, fontFamily: FONTS.BODY} ]}> Back </Link>
   )
 }
 
@@ -150,9 +150,10 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
           style={{ 
             alignSelf: 'center', 
             marginTop: 20, marginBottom: 10,
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: '500',
-            color: COLORS.BORDER }}
+            color: COLORS.BORDER,
+            fontFamily: FONTS.BODY }}
         >
           {
             props.target.name.charAt(0).toUpperCase() + props.target.name.slice(1) // capitalize the target string

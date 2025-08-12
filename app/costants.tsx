@@ -19,6 +19,12 @@ export const COLORS = {
     TRANSPURPLE: 'rgba(85, 5, 119, 0.25)'
 }
 
+export const FONTS = {
+    HEADER: 'Geo-Regular',
+    BODY: 'Electrolize-Regular'
+}
+
+
 export const styles = StyleSheet.create({
 
   headerText: {

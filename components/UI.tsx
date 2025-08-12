@@ -1,6 +1,6 @@
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
 import { View, Text, Dimensions, StyleSheet, Alert } from 'react-native'
-import { COLORS } from '../app/costants'
+import { COLORS, FONTS } from '../app/costants'
 import { useProfile } from '../hooks/useProfile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import * as Progress from 'react-native-progress';
@@ -11,7 +11,7 @@ export function GoldCounter(props: { goldCount: number | undefined }) {
     return(
         <View style={ styles.GoldCounter }>
             <FontAwesome6 name="coins" size={24} color="#fffe00" />
-            <Text style={{ fontSize: 20, color: '#FFFE00' }}> { props.goldCount } </Text>
+            <Text style={{ fontSize: 20, color: '#FFFE00', fontFamily: FONTS.BODY }}> { props.goldCount } </Text>
         </View>
     )
 }
@@ -27,7 +27,7 @@ export function XpDisplay(props: { userId: string | undefined }) {
     return (
         <View style={ styles.XpDisplay }> 
         
-            <Text style={{ color: COLORS.PINK, fontSize: 20, alignSelf: 'center', marginTop: 20, fontWeight: 'bold'}}>
+            <Text style={{ color: COLORS.PINK, fontSize: 20, alignSelf: 'center', marginTop: 20, fontWeight: 'bold', fontFamily: FONTS.BODY}}>
               Lvl. { profile?.level }
             </Text>
         
@@ -43,7 +43,7 @@ export function XpDisplay(props: { userId: string | undefined }) {
             </View>
            
 
-            <Text style={{ color: COLORS.CYAN, fontSize: 18, marginLeft: '10%', marginTop: 10}}>
+            <Text style={{ color: COLORS.CYAN, fontSize: 18, marginLeft: '10%', marginTop: 10, fontFamily: FONTS.BODY}}>
                 Xp: { profile?.xp }
             </Text>
         

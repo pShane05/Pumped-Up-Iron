@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { ScrollView, Image, Pressable, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
-import { COLORS, styles } from '../costants'
+import { COLORS, FONTS, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
@@ -57,7 +57,9 @@ export default function ShopScreen() {
       <GoldCounter goldCount={ gold }/> 
 
       <View style={ styles.shopHeader }>
-        <Text style={{ color: COLORS.TEAL, fontSize: 36, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5  }}> Shop </Text>
+        <Text style={{ color: COLORS.TEAL, fontSize: 40, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5, fontFamily: FONTS.HEADER  }}> 
+          Shop 
+        </Text>
 
         <View style={[ styles.horizontalLine, { width: '40%', position: 'absolute', bottom: '70%' } ]} />
 
@@ -68,7 +70,7 @@ export default function ShopScreen() {
           <CatSelector />
         </View>
 
-        <Text style={{ color: COLORS.TEAL, fontSize: 20, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5, position: 'absolute', bottom: '15%'  }}> [Shop Category] </Text>
+        <Text style={{ color: COLORS.TEAL, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5, position: 'absolute', bottom: '15%', fontFamily: FONTS.HEADER  }}> [Shop Category] </Text>
         <View style={[ styles.horizontalLine, { marginTop: 20, width: '60%', position: 'absolute', bottom: '10%'} ]} />
       </View>
 
@@ -83,7 +85,7 @@ export default function ShopScreen() {
 
       <ScrollView style={[ styles.scrollableView, { backgroundColor: '#25130f'} ]}>
         <View style={{ height: headerHeight}}/>
-        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20}}> Daily </Text>
+        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, fontFamily: FONTS.BODY}}> Daily </Text>
         <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
 
         <View style={{ marginTop: 20, rowGap: 15, alignItems: 'center'}}>
@@ -101,7 +103,7 @@ export default function ShopScreen() {
         </View>
 
 
-        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, marginTop: 50}}> Weekly </Text>
+        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, marginTop: 50, fontFamily: FONTS.BODY}}> Weekly </Text>
         <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
 
         <View style={{ marginBottom: 100, marginTop: 20, rowGap: 15, alignItems: 'center'}}>
