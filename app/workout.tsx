@@ -1,15 +1,69 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { COLORS, styles } from "./costants";
 import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
-import { useExercises } from "../hooks/useExercises";
+import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePlanByProfile, usePlanDayByProfile } from "../hooks/usePlan"
+import { useProfile } from "../hooks/useProfile"
+import { Session } from '@supabase/supabase-js'
+import { supabase } from "../lib/supabase";
+import { updateProfile } from "../lib/profile";
+import { TargetPreview } from "../components/WorkoutComponents";
 
+type Target = {
+  id: string,
+  name: string
+}
 
 export default function WorkoutScreen() {
 
   const [showInfo, setShowInfo] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setLoading(false)
+    })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => {
+      listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!loading && !session) {
+      router.replace('../login')
+    }
+  }, [session])
+
+  const profile = useProfile(session?.user.id).profile    
+  const plan = usePlanByProfile(profile).plan
+  const day = usePlanDayByProfile(profile).day
+
+  
+  async function handleStartButtonClick() {
+    
+    if (!plan || !profile || !day) return
+
+    const nextDay = (profile?.plan_day % plan?.days) + 1;
+          
+    await updateProfile({
+      session,
+      setLoading,
+      updates: {
+        plan_day: nextDay
+      }
+    })
+
+    router.replace('/')
+  }
 
 
   return (
@@ -18,17 +72,21 @@ export default function WorkoutScreen() {
             
       <BackButton />
 
-      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> Chest and Shoulders </Text>
+      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> {day?.name} </Text>
 
       <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-      <Pressable style={ styles.altButton } >
-        <Text style={{ color: COLORS.TEAL}}>
-          Edit Workout
-        </Text>
-      </Pressable>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10 }]}>
+        Rewards:
+      </Text>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10 }]}>
+        [insert rewards]
+      </Text>
 
-      <Pressable style={[ styles.button, { marginTop: 15} ]}>
+      <Pressable 
+        style={[ styles.button, { marginTop: 15}]}
+        onPress={() => { handleStartButtonClick()  }}
+      >
         <Text style={{ fontSize: 20,}}>
           Start Workout
         </Text>
@@ -37,7 +95,7 @@ export default function WorkoutScreen() {
 
       <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-      <ExerciseCards setSelectedItem={ setSelectedItem } setShowInfo={ setShowInfo }/>
+      <ExerciseCards setSelectedItem={ setSelectedItem } setShowInfo={ setShowInfo } session={ session }/>
       
       <InfoWindow
         visible={showInfo}
@@ -60,51 +118,53 @@ export function BackButton() {
 
 
 
-export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void}) {
+export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void, session: Session | null}) {
 
-  const { exercises, loading } = useExercises("chest")
-
+  const { day, error, loading } = (usePlanDayByProfile(useProfile(props.session?.user.id).profile))
+  const targets = day?.target_muscles
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />;
   
-  else {  return (
+  else {  
 
-    <FlatList
-      style={{ width: '100%'}}
-      data={exercises}
-      renderItem={({ item }) => (
+    return (
 
-      <View style={ styles.cardView }>
+      <FlatList
+        style={{ width: '100%'}}
+        data={targets}
+        renderItem={({ item }) => (
+          <CardGroup target={ item } />
+        )}
+      />
 
-        <View style={{ width: 80, height: 80, margin: '2%', borderRadius: '20%', marginRight: 10, justifyContent: 'center', alignItems: 'center'}}>
-            <MaterialCommunityIcons name="weight-lifter" size={60} color="black" />
-        </View>
-
-      
-        <View style={{ 
-          justifyContent: 'space-between', width: '60%', height: '100%', position: 'absolute', right: 10, marginBottom: 10, marginTop: 20
-        }}>
-
-          <Text style={[ styles.exerciseNameText, { width: '80%'} ]}> { item.name.charAt(0).toUpperCase() + item.name.slice(1)} </Text>
-          <View style={[ styles.horizontalLine, {width: '20%'} ]} />
-          <Text style={ styles.exerciseText }> weight: [weight]</Text>
-          <Text style={ styles.exerciseText }> reps:  8-10</Text>
-        </View>  
-
-        <TouchableOpacity 
-          onPress={() => {
-            props.setShowInfo(true)
-          }}
-          style={{ position: 'absolute', right: 10, top: 10}}
-        >
-          <Text >ℹ️</Text>
-        </TouchableOpacity>
-      
-      </View>
-      )}
-    />
   )}
 
-  
+  function CardGroup(props: { target: {id: number, name: string}}) {
+
+    if (!props.target) return
+
+    return (
+
+      <View>
+
+        <Text 
+          style={{ 
+            alignSelf: 'center', 
+            marginTop: 20, marginBottom: 10,
+            fontSize: 20,
+            fontWeight: '500',
+            color: COLORS.BORDER }}
+        >
+          {
+            props.target.name.charAt(0).toUpperCase() + props.target.name.slice(1) // capitalize the target string
+          }
+
+        </Text>
+
+          <TargetPreview target={props.target} />
+          
+      </View>
+    )
+  }
 
 }
 

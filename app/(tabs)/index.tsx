@@ -9,6 +9,7 @@ import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
+import { getPlanDayByProfile } from '../../hooks/usePlan'
 
 
 export default function App() {
@@ -52,7 +53,6 @@ export default function App() {
   }, [session, profile, loading])
    
 
-
   if (loading) {
     return (
     <LoadingScreen />
@@ -77,11 +77,11 @@ export default function App() {
       
 
       <ScrollView contentContainerStyle={ styles.scrollableView }>
-        <View style={{ height: '25%'}} />
+        <View style={{ height: 180}} />
 
         <DailyQuestCard />
 
-        <WorkoutCard />
+        <WorkoutCard session={session}/>
 
       </ScrollView>
       

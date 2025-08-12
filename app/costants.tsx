@@ -14,7 +14,9 @@ export const COLORS = {
     SECONDARY: '#80FFDB',
     ALT: '#0D6B93',
     BORDER: '#64DFDF',
-    BACKGROUND: '#151515'
+    BACKGROUND: '#151515',
+
+    TRANSPURPLE: 'rgba(85, 5, 119, 0.25)'
 }
 
 export const styles = StyleSheet.create({
@@ -109,7 +111,7 @@ export const styles = StyleSheet.create({
     flex: 0,
     backgroundColor: COLORS.BACKGROUND,
     width: '100%',
-    height: '30%',
+    height: 200,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
@@ -209,7 +211,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     //paddingLeft: 2,
     textAlign: 'center', 
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    
   },
   exerciseText: {
     color: COLORS.PINK,
@@ -225,7 +228,6 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.PINK,
     width: '80%', 
     height: (Dimensions.get('window').height) * .15, 
-    marginTop: 30,
     marginBottom: 25,
     padding: 10,
     paddingVertical: 15,
@@ -245,14 +247,14 @@ export const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 24,
-    color: '#666',
+    color: '#606060',
     fontWeight: 'bold',
   },
   content: {
     fontSize: 16,
     lineHeight: 24,
     color: COLORS.TEAL,
-    alignSelf: 'center',
-    marginHorizontal: 10
+    alignSelf: 'flex-start',
+    marginHorizontal: 15
   },
 })

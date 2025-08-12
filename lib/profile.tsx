@@ -17,6 +17,8 @@ export type Profile = {
   gold_count: number
   height_in: number
   weight_lbs: number
+  plan_id: number
+  plan_day: number
   date_started: Date
 }
 

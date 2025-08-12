@@ -2,11 +2,16 @@ import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
-import { useExercises } from '../hooks/useExercises'
+import { usePlanDayByProfile } from '../hooks/usePlan'
+import { useProfile } from '../hooks/useProfile'
+import { Session } from '@supabase/supabase-js'
+import { PlanDay } from '../lib/planDay'
 
 
-  export default function WorkoutCard() {
-  const [loading, setLoading] = useState(false)
+  export default function WorkoutCard(props: {session: Session | null}) {
+
+  const profile = useProfile(props.session?.user.id).profile 
+  const day = usePlanDayByProfile(profile).day
 
   return (
     
@@ -14,7 +19,7 @@ import { useExercises } from '../hooks/useExercises'
       
       <Text style={{ 
         color: COLORS.TEAL, alignSelf: 'center', fontSize: 20,}}> 
-          Chest and Shoulders 
+          {day?.name + " Training"}
       </Text>
       
       <View style={ styles.horizontalLine }/>
@@ -27,34 +32,44 @@ import { useExercises } from '../hooks/useExercises'
         View Workout 
       </Link>
 
-      <ExercisePreview />
+      <ExercisePreview day={day}/>
 
     </View>
   )
 }
 
-export function ExercisePreview() {
+export function ExercisePreview(props: {day: PlanDay | null}) {
 
-  const { exercises, loading } = useExercises("chest")
-  if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />
+  const targets = props.day?.target_muscles
+
+  if (!targets) return
 
   return (
-    <View style={{ width: '100%', alignItems: 'center'}}>
-      {exercises.slice(0, 5).map((item) => (        
+    <View style={{ width: '100%', alignItems: 'center', padding: 15}}>
+      {targets.slice(0, 5).map((item) => (        
 
-        <View key={item.id} style={ styles.ExercisePreview }>
-
-          <Text style={{ color: COLORS.TEAL, flexShrink: 1}} key={item.id}>{ item.name}</Text>
-
-          <Text
-            style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
-              [4 x 8-10]
-          </Text>
-
-        </View>
+        <TargetPreview target={item} key={item.id} />
       
       ))}
     </View>
   )
 }
 
+
+export function TargetPreview(props: {target: {id: number, name: string}}) {
+
+  if (!props.target) return
+
+  return (
+    <View style={ styles.ExercisePreview }>
+
+      <Text style={{ color: COLORS.TEAL, flexShrink: 1}}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
+
+      <Text
+        style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
+          [3 x 6-8]
+      </Text>
+
+    </View>
+  )
+}
