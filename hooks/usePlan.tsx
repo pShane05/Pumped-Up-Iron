@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Profile } from "../lib/profile"
+import { PlanDay } from "../lib/planDay"
 
-export function getTargetsByProfile(profile: Profile | undefined) {
+export function usePlanDayByProfile(profile: Profile | undefined) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  const [targets, setTargets] = useState<string | null>(null)
+  const [day, setDay] = useState<PlanDay | null>(null)
 
-    if (!profile) return 
 
   useEffect(() => {
     
-    const fetchTargets = async () => {
+    if (!profile) return 
+
+    const fetchDay = async () => {
       setLoading(true)
+
+
       try {
         const { data, error } = await supabase
           .from('plan_days')
-          .select('target_muscles')
+          .select('*')
           .eq('plan_id', profile.plan_id)
           .eq('plan_day', profile.plan_day)
           .single()
@@ -24,14 +28,13 @@ export function getTargetsByProfile(profile: Profile | undefined) {
         if (error) 
           throw error
 
-        setTargets(data.target_muscles)
+        setDay(data)
 
       } catch (error) {
 
         if (error instanceof Error)
 
           setError(error)
-          console.log(error)
 
       } finally {
         
@@ -39,8 +42,52 @@ export function getTargetsByProfile(profile: Profile | undefined) {
       }
     }
 
-    fetchTargets()
-  })
+    fetchDay()
+  }, [profile])
 
-  return { targets, loading, error }
+  return { day, loading, error }
+}
+
+export function usePlanByProfile(profile: Profile | undefined) {
+
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  const [plan, setPlan] = useState<{id: number, name: string, description: string, days: number} | null>(null)
+
+
+  useEffect(() => {
+    
+    if (!profile) return 
+
+    const fetchPlan = async () => {
+      setLoading(true)
+
+      try {
+        const { data, error } = await supabase
+          .from('workout_plans')
+          .select('*')
+          .eq('id', profile.plan_id)
+          .single()
+
+          console.log(data)
+        if (error) 
+          throw error
+
+        setPlan(data)
+      }
+      catch {
+        if (error instanceof Error)
+
+          setError(error)
+
+      } finally {
+        
+        setLoading(false)
+      }
+    }
+
+    fetchPlan()
+  }, [profile])
+
+   return { plan, loading, error }
 }

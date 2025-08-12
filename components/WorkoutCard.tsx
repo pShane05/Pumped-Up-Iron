@@ -3,9 +3,17 @@ import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator }
 import { Link } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
 import { useExercisesByGroup } from '../hooks/useExercises'
+import { usePlanDayByProfile } from '../hooks/usePlan'
+import { useProfile } from '../hooks/useProfile'
+import { Session } from '@supabase/supabase-js'
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
+import { PlanDay } from '../lib/planDay'
 
 
-  export default function WorkoutCard() {
+  export default function WorkoutCard(props: {session: Session | null}) {
+
+  const profile = useProfile(props.session?.user.id).profile 
+  const day = usePlanDayByProfile(profile).day
 
   return (
     
@@ -13,7 +21,7 @@ import { useExercisesByGroup } from '../hooks/useExercises'
       
       <Text style={{ 
         color: COLORS.TEAL, alignSelf: 'center', fontSize: 20,}}> 
-          Chest and Shoulders 
+          {day?.name + " Training"}
       </Text>
       
       <View style={ styles.horizontalLine }/>
@@ -26,28 +34,29 @@ import { useExercisesByGroup } from '../hooks/useExercises'
         View Workout 
       </Link>
 
-      <ExercisePreview />
+      <ExercisePreview day={day}/>
 
     </View>
   )
 }
 
-export function ExercisePreview() {
+export function ExercisePreview(props: {day: PlanDay | null}) {
 
-  const { exercises, loading } = useExercisesByGroup("chest")
-  if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />
+  const targets = props.day?.target_muscles
+
+  if (!targets) return
 
   return (
     <View style={{ width: '100%', alignItems: 'center', padding: 15}}>
-      {exercises.slice(0, 5).map((item) => (        
+      {targets.slice(0, 5).map((item, index) => (        
 
-        <View key={item.id} style={ styles.ExercisePreview }>
+        <View key={`${item.id}-${index}`} style={ styles.ExercisePreview }>
 
-          <Text style={{ color: COLORS.TEAL, flexShrink: 1}} key={item.id}>{ item.name}</Text>
+          <Text style={{ color: COLORS.TEAL, flexShrink: 1}}>{ item.name}</Text>
 
           <Text
             style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
-              [4 x 8-10]
+              [3 x 6-8]
           </Text>
 
         </View>

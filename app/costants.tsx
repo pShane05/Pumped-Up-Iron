@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
     flex: 0,
     backgroundColor: COLORS.BACKGROUND,
     width: '100%',
-    height: '30%',
+    height: 200,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',

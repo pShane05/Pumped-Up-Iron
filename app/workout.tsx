@@ -4,10 +4,11 @@ import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image,
 import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useEffect, useState } from "react";
-import { getTargetsByProfile } from "../hooks/usePlan"
+import { usePlanByProfile, usePlanDayByProfile } from "../hooks/usePlan"
 import { useProfile } from "../hooks/useProfile"
 import { Session } from '@supabase/supabase-js'
 import { supabase } from "../lib/supabase";
+import { updateProfile } from "../lib/profile";
 
 type Target = {
   id: string,
@@ -41,13 +42,35 @@ export default function WorkoutScreen() {
     }
   }, [session])
 
+  const profile = useProfile(session?.user.id).profile    
+  const plan = usePlanByProfile(profile).plan
+  const day = usePlanDayByProfile(profile).day
+
+  async function handleStartButtonClick() {
+    
+    if (!plan || !profile || !day) return
+
+    const nextDay = (profile?.plan_day % plan?.days) + 1;
+          
+    await updateProfile({
+      session,
+      setLoading,
+      updates: {
+        plan_day: nextDay
+      }
+    })
+
+    router.replace('/')
+  }
+
+
   return (
     
     <SafeAreaView style={ styles.container }>
             
       <BackButton />
 
-      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> Chest and Shoulders </Text>
+      <Text style={{ alignSelf: 'center', fontSize: 32, color: COLORS.TEAL, marginTop: 60}}> {day?.name} </Text>
 
       <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
@@ -57,7 +80,10 @@ export default function WorkoutScreen() {
         </Text>
       </Pressable>
 
-      <Pressable style={[ styles.button, { marginTop: 15} ]}>
+      <Pressable 
+        style={[ styles.button, { marginTop: 15}]}
+        onPress={() => { handleStartButtonClick()  }}
+      >
         <Text style={{ fontSize: 20,}}>
           Start Workout
         </Text>
@@ -66,7 +92,7 @@ export default function WorkoutScreen() {
 
       <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-      <ExerciseCards setSelectedItem={ setSelectedItem } setShowInfo={ setShowInfo }/>
+      <ExerciseCards setSelectedItem={ setSelectedItem } setShowInfo={ setShowInfo } session={ session }/>
       
       <InfoWindow
         visible={showInfo}
@@ -91,25 +117,27 @@ export function BackButton() {
 
 export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void, session: Session | null}) {
 
-  const { exercises, loading } = useExercisesByTarget("pectorals")
-  const [ targets, setTargets ] = useState<Target[]>([])
-
-  const profile = getTargetsByProfile(useProfile(props.session?.user.id).profile)
-
+  const { day, error, loading } = (usePlanDayByProfile(useProfile(props.session?.user.id).profile))
+  const targets = day?.target_muscles
   if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />;
   
-  else {  return (
-    <FlatList
-      style={{ width: '100%'}}
-      data={profile?.targets}
-      renderItem={({ item }) => (
-        <CardGroup target={ item } setShowInfo={ props.setShowInfo } setSelectedItem={ props.setSelectedItem }/>
-      )}
-    />
+  else {  
+
+    return (
+
+      <FlatList
+        style={{ width: '100%'}}
+        data={targets}
+        renderItem={({ item }) => (
+          <CardGroup target={ item } setShowInfo={ props.setShowInfo } setSelectedItem={ props.setSelectedItem }/>
+        )}
+      />
 
   )}
 
-  function CardGroup(props: { target: string | undefined, setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void} ) {
+  function CardGroup(props: { target: {id: number, name: string}, setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void} ) {
+
+    const { exercises, loading } = useExercisesByTarget(props.target.name)
 
     if (!props.target) return
 
@@ -125,7 +153,10 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
             fontWeight: '500',
             color: COLORS.BORDER }}
         >
-          {props.target.charAt(0).toUpperCase() + props.target.slice(1)}
+          {
+            props.target.name.charAt(0).toUpperCase() + props.target.name.slice(1) // capitalize the target string
+          }
+          
         </Text>
 
           <FlatList
@@ -153,7 +184,7 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
 
                 <TouchableOpacity 
                   onPress={() => {
-                    props.setSelectedItem(item)
+                    props.setSelectedItem(item) 
                     props.setShowInfo(true)
                     }}
                     style={{ position: 'absolute', right: 10, top: 10}}
