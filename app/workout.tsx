@@ -9,6 +9,7 @@ import { useProfile } from "../hooks/useProfile"
 import { Session } from '@supabase/supabase-js'
 import { supabase } from "../lib/supabase";
 import { updateProfile } from "../lib/profile";
+import { TargetPreview } from "../components/WorkoutComponents";
 
 type Target = {
   id: string,
@@ -46,6 +47,7 @@ export default function WorkoutScreen() {
   const plan = usePlanByProfile(profile).plan
   const day = usePlanDayByProfile(profile).day
 
+  
   async function handleStartButtonClick() {
     
     if (!plan || !profile || !day) return
@@ -74,11 +76,12 @@ export default function WorkoutScreen() {
 
       <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-      <Pressable style={ styles.altButton } >
-        <Text style={{ color: COLORS.TEAL}}>
-          Edit Workout
-        </Text>
-      </Pressable>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10 }]}>
+        Rewards:
+      </Text>
+      <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10 }]}>
+        [insert rewards]
+      </Text>
 
       <Pressable 
         style={[ styles.button, { marginTop: 15}]}
@@ -129,15 +132,13 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
         style={{ width: '100%'}}
         data={targets}
         renderItem={({ item }) => (
-          <CardGroup target={ item } setShowInfo={ props.setShowInfo } setSelectedItem={ props.setSelectedItem }/>
+          <CardGroup target={ item } />
         )}
       />
 
   )}
 
-  function CardGroup(props: { target: {id: number, name: string}, setShowInfo: (item: any) => void, setSelectedItem: (item: any) => void} ) {
-
-    const { exercises, loading } = useExercisesByTarget(props.target.name)
+  function CardGroup(props: { target: {id: number, name: string}}) {
 
     if (!props.target) return
 
@@ -156,45 +157,10 @@ export function ExerciseCards(props: { setShowInfo: (item: any) => void, setSele
           {
             props.target.name.charAt(0).toUpperCase() + props.target.name.slice(1) // capitalize the target string
           }
-          
+
         </Text>
 
-          <FlatList
-            style={{ width: '100%'}}
-            data={exercises}
-            renderItem={({ item }) => (
-
-              <View style={ styles.cardView }>
-              
-                <View style={{ width: 80, height: 80, margin: '2%', borderRadius: '20%', marginRight: 10, justifyContent: 'center', alignItems: 'center'}}>
-                  <MaterialCommunityIcons name="weight-lifter" size={60} color="black" />
-                </View>
-
-                
-                <View style={{ 
-                  justifyContent: 'space-between', width: '60%', height: '100%', position: 'absolute', right: 10, marginBottom: 10, marginTop: 20
-                }}>
-
-                <Text style={[ styles.exerciseNameText, { width: '80%'} ]}> { item.name.charAt(0).toUpperCase() + item.name.slice(1)} </Text>
-                <View style={[ styles.horizontalLine, {width: '20%'} ]} />
-
-                <Text style={ styles.exerciseText }> weight: [weight]</Text>
-                <Text style={ styles.exerciseText }> reps:  8-10</Text>
-                </View>  
-
-                <TouchableOpacity 
-                  onPress={() => {
-                    props.setSelectedItem(item) 
-                    props.setShowInfo(true)
-                    }}
-                    style={{ position: 'absolute', right: 10, top: 10}}
-                >
-                  <Text >ℹ️</Text>
-                </TouchableOpacity>
-              </View>
-      
-            )}
-          />
+          <TargetPreview target={props.target} />
           
       </View>
     )

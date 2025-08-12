@@ -14,7 +14,9 @@ export const COLORS = {
     SECONDARY: '#80FFDB',
     ALT: '#0D6B93',
     BORDER: '#64DFDF',
-    BACKGROUND: '#151515'
+    BACKGROUND: '#151515',
+
+    TRANSPURPLE: 'rgba(85, 5, 119, 0.25)'
 }
 
 export const styles = StyleSheet.create({
@@ -199,7 +201,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     //paddingLeft: 2,
     textAlign: 'center', 
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    
   },
   exerciseText: {
     color: COLORS.PINK,
@@ -234,7 +237,7 @@ export const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 24,
-    color: '#666',
+    color: '#606060',
     fontWeight: 'bold',
   },
   content: {

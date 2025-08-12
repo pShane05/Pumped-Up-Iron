@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
-import { useExercisesByGroup } from '../hooks/useExercises'
 import { usePlanDayByProfile } from '../hooks/usePlan'
 import { useProfile } from '../hooks/useProfile'
 import { Session } from '@supabase/supabase-js'
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
 import { PlanDay } from '../lib/planDay'
 
 
@@ -48,21 +46,30 @@ export function ExercisePreview(props: {day: PlanDay | null}) {
 
   return (
     <View style={{ width: '100%', alignItems: 'center', padding: 15}}>
-      {targets.slice(0, 5).map((item, index) => (        
+      {targets.slice(0, 5).map((item) => (        
 
-        <View key={`${item.id}-${index}`} style={ styles.ExercisePreview }>
-
-          <Text style={{ color: COLORS.TEAL, flexShrink: 1}}>{ item.name}</Text>
-
-          <Text
-            style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
-              [3 x 6-8]
-          </Text>
-
-        </View>
+        <TargetPreview target={item} key={item.id} />
       
       ))}
     </View>
   )
 }
 
+
+export function TargetPreview(props: {target: {id: number, name: string}}) {
+
+  if (!props.target) return
+
+  return (
+    <View style={ styles.ExercisePreview }>
+
+      <Text style={{ color: COLORS.TEAL, flexShrink: 1}}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
+
+      <Text
+        style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15}} > 
+          [3 x 6-8]
+      </Text>
+
+    </View>
+  )
+}
