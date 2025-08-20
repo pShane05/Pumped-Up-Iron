@@ -82,8 +82,6 @@ export default function CreateProfileCard(props: {session: Session | null}) {
         const capLastName = capitalizeFirst(lastname)
 
         const fullName = capFirstName + ' ' + capLastName;
-        console.log(fullHeightIn)
-        console.log(fullName)
 
         await updateProfile({
             session,

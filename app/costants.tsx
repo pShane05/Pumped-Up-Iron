@@ -6,7 +6,7 @@ export const COLORS = {
     DARK_GRAY: '#202020',
     TEAL: '#cbeef3',
     
-    CYAN: '#0D6B93',
+    CYAN: '#1579b5',
     PINK: '#E113C5',
     PURPLE: '#550577',
 
@@ -37,7 +37,13 @@ export const styles = StyleSheet.create({
     fontFamily: 'Electolize-Regular'
   },
   container: {
-    flex: 1,
+    flex: 1, 
+    position: 'absolute', 
+    top: 0, 
+    bottom: 0, 
+    left: 0, 
+    right: 0, 
+    zIndex: 100,
     backgroundColor: COLORS.BACKGROUND,
     alignContent: 'center',
   },
@@ -103,6 +109,30 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500'
   },
+  buttonBig: {
+    padding: 15,
+    borderRadius: 25,
+    backgroundColor: COLORS.SECONDARY,
+    borderColor: COLORS.BORDER,
+    borderWidth: 2,
+    marginTop: 10,
+    alignSelf: 'center',
+    color: COLORS.PRIMARY,
+    fontSize: 20,
+    fontWeight: '500'
+  },
+  buttonBigDisabled: {
+    padding: 15,
+    borderRadius: 25,
+    backgroundColor: COLORS.DARK_GRAY,
+    borderColor: COLORS.BLACK,
+    borderWidth: 2,
+    marginTop: 10,
+    alignSelf: 'center',
+    color: COLORS.BLACK,
+    fontSize: 20,
+    fontWeight: '500'
+  },
   altButton: {
     padding: 10,
     borderRadius: 25,
@@ -133,7 +163,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   scrollableView: {
-    paddingBottom: 200,
+    paddingBottom: 75,
     rowGap: 20,
     flex: 0
   },
@@ -201,8 +231,8 @@ export const styles = StyleSheet.create({
     marginVertical: 5
   },
   ExercisePreview: {
-    width: '80%',
-    height: 60,
+    width: '75%',
+    height: 40,
     backgroundColor: '#20204b',
     padding: 8,
     paddingHorizontal: 20,
@@ -210,12 +240,11 @@ export const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'center'
   },
   exerciseNameText: {
     color: COLORS.TEAL,
     fontSize: 16,
-    //paddingLeft: 2,
     textAlign: 'center', 
     fontWeight: 'bold',
     

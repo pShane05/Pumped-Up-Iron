@@ -9,7 +9,6 @@ import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
-import { getPlanDayByProfile } from '../../hooks/usePlan'
 
 
 export default function App() {

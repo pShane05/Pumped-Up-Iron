@@ -62,12 +62,7 @@ export function TargetPreview(props: {target: {id: number, name: string}}) {
   return (
     <View style={ styles.ExercisePreview }>
 
-      <Text style={{ color: COLORS.TEAL, flexShrink: 1, fontFamily: FONTS.BODY }}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
-
-      <Text
-        style={{ fontSize: 12, fontWeight: 'bold', width: '40%', alignSelf: 'center', color: COLORS.TEAL, left: 15, fontFamily: FONTS.BODY}} > 
-          [3 x 6-8]
-      </Text>
+      <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontFamily: FONTS.BODY, fontSize: 16 }}>{ props.target?.name.charAt(0).toUpperCase() + props.target?.name.slice(1) }</Text>
 
     </View>
   )

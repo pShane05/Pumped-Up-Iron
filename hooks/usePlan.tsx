@@ -69,7 +69,6 @@ export function usePlanByProfile(profile: Profile | undefined) {
           .eq('id', profile.plan_id)
           .single()
 
-          console.log(data)
         if (error) 
           throw error
 

@@ -31,7 +31,6 @@ export default function Signup() {
     else if (!newUser)
       router.push('/')
     else {
-      console.log("made it")
       router.push('/makeProfile')
     }
     setLoading(false)

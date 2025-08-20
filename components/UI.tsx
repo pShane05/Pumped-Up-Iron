@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     XpDisplay: {
         height: '20%',
         width: '100%',
-        backgroundColor: COLORS.BACKGROUND_BLUE,
+        backgroundColor: COLORS.BACKGROUND,
         position: 'absolute',
         bottom: 0,
 
