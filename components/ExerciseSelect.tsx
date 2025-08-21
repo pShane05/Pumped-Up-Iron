@@ -59,7 +59,7 @@ export default function ExerciseModal(
                 
                 {/* Header */}
                 
-                <Text style={[ styles.headerText, { textAlign: 'center'} ]}> Select an Exercise For { '\n' + props.target.charAt(0).toUpperCase() + props.target.slice(1) }</Text>
+                <Text style={[ styles.headerText, { textAlign: 'center'} ]}> Select an Exercise For { '\n' + props.target?.charAt(0).toUpperCase() + props.target?.slice(1) }</Text>
 
 
                 {/* Exercise Cards Grid */}

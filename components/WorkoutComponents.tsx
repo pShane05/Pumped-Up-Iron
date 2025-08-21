@@ -24,7 +24,7 @@ export function ExerciseDone(props: {exercise: Exercise}) {
     }]}>
 
       <View style={{ alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
+        <Text style={[ styles.headerText, { color: COLORS.BORDER, fontSize: 24, }]}>
             { props.exercise.name }
         </Text>
         <AntDesign name="check" size={40} color={COLORS.BORDER} />
