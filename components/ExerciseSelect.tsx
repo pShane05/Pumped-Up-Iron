@@ -1,27 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Exercise } from "../lib/exercise";
 import { useExercisesByTarget } from "../hooks/useExercises";
-import { SafeAreaView, View, Text, Pressable, ScrollView } from "react-native";
+import { SafeAreaView, View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { COLORS, styles } from "../app/costants";
-import { Button } from "@rneui/themed";
+import { Set } from "../lib/sets";
+import LoadingScreen from "./LoadingScreen";
 
-export default function ExerciseModal(props: { target: string | undefined, showModal: boolean, onClose: () => void, onSelectExercise: (item: any) => void,  }) {
 
-    const exercises = useExercisesByTarget(props.target).exercises
+export default function ExerciseModal(
+    props: { 
+        target: string | undefined, 
+        showModal: boolean, 
+        onClose: () => void, 
+        onSelectExercise: (item: any) => void,  
+        completedSets: Set[] | null,
+        setCompletedSets: (item: any) => void
+
+    }) {
+
+    const [exerciseList, setExerciseList] = useState<Exercise[] | null>(null)
     const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
-    
-    if (!props.target) return
+    const { exercises, loading, error } = useExercisesByTarget(props.target)
+
+    useEffect(() => {
+        if (exercises) {
+            setExerciseList(exercises)
+        }
+    }, [exercises])
     
 
     const handleCardClick = (exercise: Exercise) => {
-        setSelectedExercise(exercise);
+        setSelectedExercise(exercise)
     }
 
     const handleConfirm = () => {
+        
         if (selectedExercise) {
-        props.onSelectExercise(selectedExercise);
+            props.onSelectExercise(selectedExercise)
         }
-        handleClose();
+        props.onClose()
     }
 
     const handleClose = () => {
@@ -29,7 +46,7 @@ export default function ExerciseModal(props: { target: string | undefined, showM
         props.onClose();
     }
 
-    if (!props.showModal) return null
+    if (!props.showModal || !exerciseList) return null
 
     return (
         <View 
@@ -42,13 +59,19 @@ export default function ExerciseModal(props: { target: string | undefined, showM
                 
                 {/* Header */}
                 
-                <Text style={ styles.headerText }> Select an Exercise </Text>
+                <Text style={[ styles.headerText, { textAlign: 'center'} ]}> Select an Exercise For { '\n' + props.target.charAt(0).toUpperCase() + props.target.slice(1) }</Text>
 
 
                 {/* Exercise Cards Grid */}
                 <ScrollView style={{flex: 1}}>
+                    { (loading || !props.target) && (
+                        <ActivityIndicator size={'large'} color={COLORS.PURPLE}/>
+                    )}
+
+                    { (!loading && props.target) && (
+
                     <View style={{ rowGap: 5 }}>
-                        {exercises.map((exercise) => (
+                        {exerciseList.map((exercise) => (
                         <Pressable
                             key={exercise.id}
                             onPress={() => handleCardClick(exercise)}
@@ -84,6 +107,8 @@ export default function ExerciseModal(props: { target: string | undefined, showM
                         </Pressable>
                         ))}
                     </View>
+
+                    )}
                 </ScrollView>
 
                 {/* Footer */}

@@ -1,34 +1,37 @@
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native"
 import { COLORS, FONTS, styles } from "../app/costants"
 import React, { useState } from "react"
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Exercise } from "../lib/exercise"
 import { Set } from "../lib/sets";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 
-export function ExerciseDone(props: {set: Set}) {
+export function ExerciseDone(props: {exercise: Exercise}) {
 
     return (
+    <View 
+        style={[
+        styles.cardView,  {
+        height: 120,
+        flexDirection: 'row',
+        padding: 20,
+        backgroundColor: COLORS.DARK_PURPLE,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }]}>
 
-        <View style={[ styles.cardView, { backgroundColor: COLORS.PURPLE, paddingVertical: 20} ]}>
-
-                
-            <View style={{ 
-                alignItems: 'center',  width: '100%', height: '100%', marginBottom: 10, justifyContent: 'space-around'
-            }}>
-
-                <Text style={[ styles.exerciseNameText, { width: '80%', fontFamily: FONTS.BODY} ]}> { "Choose " + props.set.exercise.name.charAt(0).toUpperCase() + props.set.exercise.name.slice(1) + " Exercise"} </Text>
-                <View style={[ styles.horizontalLine, {width: '20%', alignSelf: 'center'} ]} />
-
-                <Text style={[ styles.exerciseText, { fontFamily: FONTS.BODY} ]}> reps:  6-8</Text>
-            </View>  
-
-        </View>
-    )
+      <View style={{ alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
+            { props.exercise.name }
+        </Text>
+        <AntDesign name="check" size={40} color={COLORS.BORDER} />
+      </View>
+    </View>
+  )
 }
 
-export function CompletedExercises(props: { exercisesDone: Set[] | null }) {
+export function CompletedExercises(props: { exercisesDone: Exercise[] | null }) {
 
     if (!props.exercisesDone) return
 
@@ -38,7 +41,7 @@ export function CompletedExercises(props: { exercisesDone: Set[] | null }) {
             <FlatList style={{ width: '100%'}}
                 data={props.exercisesDone}
                 renderItem={({ item }) => (
-                    <ExerciseDone set={ item } />
+                    <ExerciseDone exercise={ item } />
             )}
         />
         </View>

@@ -9,6 +9,7 @@ export const COLORS = {
     CYAN: '#1579b5',
     PINK: '#E113C5',
     PURPLE: '#550577',
+    DARK_PURPLE: '#350537',
 
     PRIMARY: '#10002b',
     SECONDARY: '#80FFDB',
@@ -102,6 +103,18 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: COLORS.SECONDARY,
     borderColor: COLORS.BORDER,
+    borderWidth: 2,
+    marginTop: 10,
+    alignSelf: 'center',
+    color: COLORS.PRIMARY,
+    fontSize: 16,
+    fontWeight: '500'
+  },
+  buttonDisabled: {
+    padding: 12,
+    borderRadius: 25,
+    backgroundColor: COLORS.DARK_GRAY,
+    borderColor: COLORS.BLACK,
     borderWidth: 2,
     marginTop: 10,
     alignSelf: 'center',
@@ -245,7 +258,6 @@ export const styles = StyleSheet.create({
   exerciseNameText: {
     color: COLORS.TEAL,
     fontSize: 16,
-    textAlign: 'center', 
     fontWeight: 'bold',
     
   },

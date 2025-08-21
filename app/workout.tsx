@@ -2,36 +2,65 @@ import { Link, router } from "expo-router";
 import { COLORS, FONTS, styles } from "./costants";
 import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import React, { useEffect, useState } from "react";
 import { usePlanByProfile, usePlanDayByProfile } from "../hooks/usePlan"
 import { useProfile } from "../hooks/useProfile"
 import { Session } from '@supabase/supabase-js'
 import { supabase } from "../lib/supabase";
-import { updateProfile } from "../lib/profile";
+import { Profile, updateProfile } from "../lib/profile";
 import { Exercise } from "../lib/exercise";
 import ExerciseModal from "../components/ExerciseSelect";
 import { logWorkout } from "../lib/workout";
-import { CompletedExercises } from "../components/WorkoutComponents";
+import { CompletedExercises, ExerciseDone } from "../components/WorkoutComponents";
 import { Set } from "../lib/sets";
+import LoadingScreen from "../components/LoadingScreen";
+import { PlanDay } from "../lib/planDay";
 
 type Target = {
-  id: string,
+  id: number,
   name: string
 }
 
+type SelectionsByTarget = {
+  [targetName: string]: Exercise[]
+}
 
 export default function WorkoutScreen() {
 
-  const [showInfo, setShowInfo] = useState(false)
+  const [targets, setTargets] = useState<Target[] | null>(null)
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
+  const [selectedExercisesByTarget, setSelectedExercisesByTarget] = useState<SelectionsByTarget>({})
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const [workoutIsActive, setWorkoutIsActive] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [target, setTarget] = useState<string | undefined>()
   const [completedSets, setCompletedSets] = useState<Set[] | null>(null)
+  const [profile, setProfile] = useState<Profile>()
+  const [plan, setPlan] = useState<
+    {
+        id: number
+        name: string
+        description: string
+        days: number
+    } | null
+  >()
+  const [day, setDay] = useState<PlanDay | null>()
+
+  const { profile: profileData } = useProfile(session?.user?.id)
+  const { plan: planData } = usePlanByProfile(profile)
+  const { day: dayData, loading: dayLoading } = usePlanDayByProfile(profile)
+
   const isComplete = completedSets && completedSets?.length > 0
+
+  const allTargetsHaveSelection = 
+  targets ? targets.every(
+    target => selectedExercisesByTarget[target.name] && selectedExercisesByTarget[target.name].length > 0
+  ) : false
+
+
+  // Get User Session Data //
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -47,20 +76,46 @@ export default function WorkoutScreen() {
     }
   }, [])
 
+
+  // ROute to login if needed
   useEffect(() => {
     if (!loading && !session) {
       router.replace('../login')
     }
   }, [session])
 
-  const profile = useProfile(session?.user.id).profile    
-  const plan = usePlanByProfile(profile).plan
-  const day = usePlanDayByProfile(profile).day
+  // Update profile when session changes
+  useEffect(() => {
+    if (session && profileData) {
+      setProfile(profileData)
+    }
+  }, [session, profileData])
 
-  console.log(modalIsOpen)
-  
+  // Update plan when profile changes
+  useEffect(() => {
+    if (profile && planData) {
+      setPlan(planData)
+    }
+  }, [profile, planData])
+
+  // Update day when profile changes
+  useEffect(() => {
+    if (profile && dayData) {
+      setDay(dayData)
+    }
+  }, [profile, dayData])
+
+  // Update targets when day changes
+  useEffect(() => {
+    if (day?.target_muscles) {
+      setTargets(day.target_muscles)
+    }
+  }, [day])
+
+  if (loading || dayLoading) return <LoadingScreen />
 
 
+  // Workout COmplete Button
   async function handleCompleteButtonClick() {
 
     if (!plan || !profile || !day) return
@@ -76,6 +131,7 @@ export default function WorkoutScreen() {
       }
     })
 
+
     await updateProfile({
       session,
       setLoading,
@@ -89,12 +145,42 @@ export default function WorkoutScreen() {
 
   
   async function handleExerciseSelect(exercise: Exercise) {
-    setSelectedExercise(exercise)
-    console.log("Selected Exercise: ", selectedExercise)
+
+    if (!target) return
+
+    setSelectedExercisesByTarget(prev => {
+      const currentExercises = prev[target] || []
+
+      const exerciseExists = currentExercises.some(ex => ex.id === exercise.id)
+
+      if (exerciseExists) {
+        return {
+          ...prev,
+          [target]: currentExercises.filter(ex => ex.id !== exercise.id)
+        }
+      } else {
+        return {
+          ...prev,
+          [target]: [...currentExercises, exercise]
+        }
+      }
+
+    })
+    console.log("Selected Exercise: ", selectedExercisesByTarget[target])
   }
 
 
+  function removeExerciseFromTarget(targetName: string, exerciseId: string) {
+    setSelectedExercisesByTarget(prev => ({
+      ...prev,
+      [targetName]: (prev[targetName] || []).filter(ex => ex.id !== exerciseId)
+    }))
+  }
+    
+  // Active workout screen
   if (!workoutIsActive) {  
+
+    if (!day) return
 
     return (
     
@@ -106,16 +192,17 @@ export default function WorkoutScreen() {
 
         <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-        <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
+        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
           Rewards:
         </Text>
-        <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
+        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
           [insert rewards]
         </Text>
 
         <Pressable 
-          style={[ styles.button, { marginTop: 15}]}
+          style={[ allTargetsHaveSelection ? styles.button : styles.buttonDisabled, { marginTop: 15}]}
           onPress={() => { setWorkoutIsActive(true) }}
+          disabled={ !allTargetsHaveSelection }
         >
           <Text style={{ fontSize: 20, fontFamily: FONTS.BODY}}>
             Start Workout
@@ -125,19 +212,24 @@ export default function WorkoutScreen() {
 
         <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-        <ExerciseCards setTarget={setTarget} session={ session } OpenModal={ setModalIsOpen } sets={null}/>
+        <SelectExerciseCards selectedExercises={ selectedExercisesByTarget } targets={ targets } setTarget={ setTarget } session={ session } OpenModal={ setModalIsOpen } sets={null}/>
 
 
         <ExerciseModal 
           target={target}
           showModal= {modalIsOpen}
           onClose={() => setModalIsOpen(false)}
-          onSelectExercise={handleExerciseSelect}/>
+          onSelectExercise={handleExerciseSelect}
+          completedSets={ completedSets }
+          setCompletedSets={ setCompletedSets }
+          
+          />
 
       </SafeAreaView>
     )
   }
 
+  // Exercise Selection Screen
   else { 
 
     return (
@@ -150,17 +242,31 @@ export default function WorkoutScreen() {
 
         <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
-        <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
+        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
           Rewards:
         </Text>
-        <Text style={[ styles.exerciseNameText, { color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
+        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
           [insert rewards]
         </Text>
 
 
         <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-        <ExerciseCards setTarget={setTarget} session={ session } OpenModal={ setModalIsOpen } sets={ completedSets }/>
+        <FlatList 
+          style={{width: '100%'}}
+          data={ targets }
+          renderItem={ ({ item }) => (
+
+            <FlatList
+              style={{width: '100%'}}
+              data={ selectedExercisesByTarget[item.name] }
+              renderItem={ ({ item }) => (
+                <ExerciseDone exercise={ item }/>
+              )}
+            />
+
+          )}
+        />
 
         <Pressable 
           style={[ isComplete ? styles.buttonBig : styles.buttonBigDisabled, {position: 'absolute', bottom: 50,} ]}
@@ -178,7 +284,9 @@ export default function WorkoutScreen() {
           target={target}
           showModal= {modalIsOpen}
           onClose={() => setModalIsOpen(false)}
-          onSelectExercise={ handleExerciseSelect }/>
+          onSelectExercise={ handleExerciseSelect }
+          completedSets={ completedSets }
+          setCompletedSets={ setCompletedSets }/>
 
       </SafeAreaView>
 
@@ -187,35 +295,24 @@ export default function WorkoutScreen() {
 }
 
 
-function ExerciseCards(props: { setTarget: (id: any) => void, session: Session | null, OpenModal: (item: any) => void, sets: Set[] | null }) {
+function SelectExerciseCards(props: { selectedExercises: {[targetName: string]: Exercise[]}, targets: Target[] | null, setTarget: (id: any) => void, session: Session | null, OpenModal: (item: any) => void, sets: Set[] | null }) {
 
-  const { day, error, loading } = (usePlanDayByProfile(useProfile(props.session?.user.id).profile))
-  const targets = day?.target_muscles
-  const [completed, setCompleted] = useState<Exercise[] | null>(null)
-  
-  if (loading) return <ActivityIndicator size="large" color={COLORS.PINK}  />
-  
-  else {  
+  return (
 
-    return (
-
-      <FlatList
-        style={{ width: '100%'}}
-        data={targets}
-        renderItem={({ item }) => (
-          <CardGroup setTarget={props.setTarget} target={ item } OpenModal={ props.OpenModal} sets={ props.sets }/>
-        )}
-      />
-
-  )}
-}
+    <FlatList
+      style={{ width: '100%'}}
+      data={props.targets}
+      renderItem={({ item }) => (
+        <CardGroup selectedExercises={ props.selectedExercises } setTarget={props.setTarget} target={ item } OpenModal={ props.OpenModal} sets={ props.sets }/>
+      )}
+    />
+)}
 
 
-function CardGroup(props: { setTarget: (id: any) => void, target: {id: number, name: string}, OpenModal: (item: any) => void, sets: Set[] | null }) {
+
+function CardGroup(props: { selectedExercises: {[targetName: string]: Exercise[]}, setTarget: (id: any) => void, target: {id: number, name: string}, OpenModal: (item: any) => void, sets: Set[] | null }) {
 
     if (!props.target) return
-
-    const [isDone, setIsDone] = useState(false)
 
     return (
 
@@ -236,7 +333,16 @@ function CardGroup(props: { setTarget: (id: any) => void, target: {id: number, n
 
         </Text>
 
-        <CompletedExercises exercisesDone={ props.sets }/>
+
+        { props.selectedExercises[props.target.name] && (
+          <FlatList 
+            style={{ width: '100%'}}
+            data={props.selectedExercises[props.target.name]}
+            renderItem={({ item }) => (
+              <SelectedExerciseCard exercise={item}/>
+            )}
+          />
+        )}
 
         <SelectExerciseCard setTarget={props.setTarget} target={props.target} OpenModal={ props.OpenModal }/>
           
@@ -267,7 +373,7 @@ function SelectExerciseCard(props: { setTarget: (id: any) => void, target: {id: 
 
   return (
     <Pressable 
-        style={[ styles.cardView, { backgroundColor: COLORS.TRANSPURPLE, paddingVertical: 10, height: 100} ]}
+        style={[ styles.cardView, { backgroundColor: COLORS.TRANSPURPLE, paddingVertical: 10, height: 80} ]}
         onPress={() => {
           props.setTarget(props.target.name)
           props.OpenModal(true)
@@ -287,3 +393,53 @@ function SelectExerciseCard(props: { setTarget: (id: any) => void, target: {id: 
     </Pressable>
   )
 }
+
+function SelectedExerciseCard(props: {exercise: Exercise}) {
+
+  const exercise = props.exercise
+
+  return (
+    <View 
+    style={[
+      styles.cardView,  {
+      height: 120,
+      flexDirection: 'row',
+      padding: 20
+    }]}>
+
+      <View style={{ alignSelf: 'center' }}>
+        <FontAwesome5 name="dumbbell" size={50} color="black" />
+      </View>
+
+      <View style={{ width: '60%', paddingLeft: 20}}>
+        <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
+            { exercise.name }
+        </Text>
+
+        <View style={{}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular'}}>Category:</Text>
+              <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+                {exercise.muscle_group}
+              </Text>
+          </View>
+          
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Equipment:</Text>
+            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+              {exercise.equipment}
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Difficulty:</Text>
+            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+              {exercise.difficulty}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
