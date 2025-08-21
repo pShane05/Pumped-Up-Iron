@@ -4,6 +4,8 @@ import React, { useState } from "react"
 import { Exercise } from "../lib/exercise"
 import { Set } from "../lib/sets";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { Link } from "expo-router";
 
 
 
@@ -106,3 +108,60 @@ const InfoWindow = (props: { visible: boolean, onClose: () => void, title: strin
     </Modal>
   );
 };
+
+
+export function SelectedExerciseCard(props: {exercise: Exercise}) {
+
+  const exercise = props.exercise
+
+  return (
+    <View 
+    style={[
+      styles.cardView,  {
+      height: 120,
+      flexDirection: 'row',
+      padding: 20
+    }]}>
+
+      <View style={{ alignSelf: 'center' }}>
+        <FontAwesome5 name="dumbbell" size={50} color="black" />
+      </View>
+
+      <View style={{ width: '60%', paddingLeft: 20}}>
+        <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
+            { exercise.name }
+        </Text>
+
+        <View style={{}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular'}}>Category:</Text>
+              <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+                {exercise.muscle_group}
+              </Text>
+          </View>
+          
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Equipment:</Text>
+            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+              {exercise.equipment}
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Difficulty:</Text>
+            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
+              {exercise.difficulty}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+
+export function BackButton() {
+  return (
+    <Link href='/(tabs)' style={[ styles.logout, { position: 'absolute', top: 20, left: 0, fontFamily: FONTS.BODY} ]}> Back </Link>
+  )
+}

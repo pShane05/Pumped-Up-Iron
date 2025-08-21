@@ -1,15 +1,12 @@
-import { Exercise } from "./exercise"
-
 export type Set = {
-    id: string
-    workoutLogId: string
-    exercise: Exercise
+    exercise_name: string
     reps: number
-    weight: Weight
-    setNum: number
+    weight_lbs: number
+    set_number: number
 }
 
 export type Weight = {
     value: number
     isLbs: boolean
 }
+
