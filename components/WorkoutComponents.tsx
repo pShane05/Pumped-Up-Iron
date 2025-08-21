@@ -113,7 +113,6 @@ const InfoWindow = (props: { visible: boolean, onClose: () => void, title: strin
 export function SelectedExerciseCard(props: {exercise: Exercise}) {
 
   const exercise = props.exercise
-  console.log( imageMap[props.exercise.icon] )
 
   return (
     <View 
