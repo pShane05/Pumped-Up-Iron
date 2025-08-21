@@ -20,6 +20,33 @@ export const COLORS = {
     TRANSPURPLE: 'rgba(85, 5, 119, 0.25)'
 }
 
+export const imageMap: Record<string, any> = {
+  'quads_icon.png': require('../assets/icons/quads_icon.png'),
+  'calves_icon.png': require('../assets/icons/calves_icon.png'),
+  'hamstrings_icon.png': require('../assets/icons/hamstrings_icon.png'),
+  'ant_deltoids_icon.png': require('../assets/icons/ant_deltoids_icon.png'),
+  'post_deltoids_icon.png': require('../assets/icons/post_deltoids_icon.png'),
+  'traps_icon.png': require('../assets/icons/traps_icon.png'),
+  'abs_icon.png': require('../assets/icons/abs_icon.png'),
+  'upper_abs_icon.png': require('../assets/icons/upper_abs_icon.png'),
+  'lower_abs_icon.png': require('../assets/icons/lower_abs_icon.png'),
+  'obliques_icon.png': require('../assets/icons/obliques_icon.png'),
+  'hip_flexors_icon.png': require('../assets/icons/hip_flexors_icon.png'),
+  'chest_icon.png': require('../assets/icons/chest_icon.png'),
+  'rhomboids_icon.png': require('../assets/icons/rhomboids_icon.png'),
+  'lats_icon.png': require('../assets/icons/lats_icon.png'),
+  'lower_back_icon.png': require('../assets/icons/lower_back_icon.png'),
+  'triceps_icon.png': require('../assets/icons/triceps_icon.png'),
+  'forearms_icon.png': require('../assets/icons/forearms_icon.png'),
+  'biceps_icon.png': require('../assets/icons/biceps_icon.png'),
+}
+
+export function attribute() {
+
+  <a href="https://www.flaticon.com/free-icons/muscle" title="muscle icons">Muscle icons created by cube29 - Flaticon</a>
+
+}
+
 export const FONTS = {
     HEADER: 'Geo-Regular',
     BODY: 'Electrolize-Regular'

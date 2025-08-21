@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { COLORS, FONTS, styles } from "./costants";
+import { COLORS, FONTS, imageMap, styles } from "./costants";
 import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView, Alert } from 'react-native'
 import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -215,7 +215,7 @@ export default function WorkoutScreen() {
       <ActiveExerciseCard exercise={item} setCompletedSets={setCompletedSets}/>
   }
     
-  // Active workout screen
+  // Exercise selection screen
   if (!workoutIsActive) {  
 
     if (!day) return
@@ -268,7 +268,7 @@ export default function WorkoutScreen() {
   }
 
 
-  // Exercise Selection Screen
+  // Active workout screen
   else { 
 
     return (
@@ -285,14 +285,14 @@ export default function WorkoutScreen() {
           Rewards:
         </Text>
         <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
-          { selectedExercises?.length + '|' + completedSets?.length}
+          { selectedExercises?.length + ' | ' + completedSets?.length}
         </Text>
 
 
         <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
         <FlatList 
-          style={{width: '100%'}}
+          style={{width: '100%', marginBottom: 75}}
           data={ targets }
           renderItem={ ({ item }) => (
 
@@ -482,8 +482,8 @@ function ActiveExerciseCard(props: {exercise: Exercise, setCompletedSets: (item:
         flexDirection: 'row',
       }]}>
 
-        <View style={{ alignSelf: 'center' }}>
-          <FontAwesome5 name="dumbbell" size={50} color="black" />
+        <View style={{ alignSelf: 'center', width: 75, height: 75, }}>
+          <Image style={{ resizeMode: 'contain', width: '100%', height: '100%',}} source={ imageMap[props.exercise.icon] }/>
         </View>
 
         <View style={{ width: '60%', paddingLeft: 20, justifyContent: 'space-between'}}>

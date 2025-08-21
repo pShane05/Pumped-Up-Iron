@@ -63,7 +63,7 @@ export default function ExerciseModal(
 
 
                 {/* Exercise Cards Grid */}
-                <ScrollView style={{flex: 1}}>
+                <ScrollView style={{flex: 1, marginBottom: 100}}>
                     { (loading || !props.target) && (
                         <ActivityIndicator size={'large'} color={COLORS.PURPLE}/>
                     )}

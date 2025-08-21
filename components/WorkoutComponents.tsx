@@ -1,5 +1,5 @@
-import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native"
-import { COLORS, FONTS, styles } from "../app/costants"
+import { FlatList, Modal, Text, TouchableOpacity, View, Image } from "react-native"
+import { COLORS, FONTS, styles, imageMap } from "../app/costants"
 import React, { useState } from "react"
 import { Exercise } from "../lib/exercise"
 import { Set } from "../lib/sets";
@@ -113,6 +113,7 @@ const InfoWindow = (props: { visible: boolean, onClose: () => void, title: strin
 export function SelectedExerciseCard(props: {exercise: Exercise}) {
 
   const exercise = props.exercise
+  console.log( imageMap[props.exercise.icon] )
 
   return (
     <View 
@@ -123,8 +124,8 @@ export function SelectedExerciseCard(props: {exercise: Exercise}) {
       padding: 20
     }]}>
 
-      <View style={{ alignSelf: 'center' }}>
-        <FontAwesome5 name="dumbbell" size={50} color="black" />
+      <View style={{ alignSelf: 'center', width: 50, height: 50, }}>
+        <Image style={{ resizeMode: 'contain', width: '100%', height: '100%',}} source={ imageMap[props.exercise.icon] }/>
       </View>
 
       <View style={{ width: '60%', paddingLeft: 20}}>

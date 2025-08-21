@@ -61,7 +61,6 @@ export function useExercisesByTarget(target: string | undefined) {
           .from('exercises')
           .select('*')
           .eq('target', target)
-          .limit(2)
 
         if (error) 
           throw error

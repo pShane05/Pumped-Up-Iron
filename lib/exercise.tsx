@@ -6,5 +6,5 @@ export type Exercise = {
     equipment?: string
     muscle_group: string
     target: string
-    icon_url?: string
+    icon: string
 }
