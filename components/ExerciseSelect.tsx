@@ -4,7 +4,6 @@ import { useExercisesByTarget } from "../hooks/useExercises";
 import { SafeAreaView, View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { COLORS, styles } from "../app/costants";
 import { Set } from "../lib/sets";
-import LoadingScreen from "./LoadingScreen";
 
 
 export default function ExerciseModal(
