@@ -10,6 +10,7 @@ import { useProfile } from '../../hooks/useProfile'
 import { updateProfile } from '../../lib/profile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import LoadingScreen from '../../components/LoadingScreen'
+import { giveUserXp } from '../../lib/levels'
 
 
 export default function AvatarScreen() {
@@ -70,6 +71,34 @@ export default function AvatarScreen() {
       </Pressable>
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', columnGap: 20 }}>
+
+        <Pressable 
+          style={ styles.button }
+          onPress={ () => {
+            giveUserXp(100, session, profile, setLoading) 
+            window.location.reload()
+          }}
+        >
+          <Text>
+            +100 xp
+          </Text>
+        </Pressable>
+
+        <Pressable 
+          style={ styles.button }
+          onPress={ () => {
+            giveUserXp(500, session, profile, setLoading) 
+            window.location.reload()
+          }}
+        >
+          <Text>
+            +500 xp
+          </Text>
+        </Pressable>
+
+      </View>
 
       
 
