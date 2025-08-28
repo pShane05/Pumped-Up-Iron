@@ -18,6 +18,8 @@ import LoadingScreen from "../components/LoadingScreen";
 import { PlanDay } from "../lib/planDay";
 import { addSetToExercise } from "../lib/workoutFunctions";
 import SetLogModal from "../components/SetLog";
+import VictoryScreen from "../components/VictoryScreen";
+import { giveUserXp } from "../lib/levels";
 
 type Target = {
   id: number,
@@ -47,6 +49,7 @@ export default function WorkoutScreen() {
   const [workoutIsActive, setWorkoutIsActive] = useState(false)
   const [selectModalIsOpen, setSelectModalIsOpen] = useState(false)
   const [logModalIsOpen, setLogModalIsOpen] = useState(false)
+  const [showVictory, setShowVictory] = useState(false)
 
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
@@ -64,6 +67,11 @@ export default function WorkoutScreen() {
   const { profile: profileData } = useProfile(session?.user?.id)
   const { plan: planData } = usePlanByProfile(profile)
   const { day: dayData, loading: dayLoading } = usePlanDayByProfile(profile)
+
+  const rewards = {
+    xp: profile?.level && targets ? profile.level * targets.length : -1,
+    gold: profile?.level ? Math.floor(profile.level * 0.25) + 4 : -1
+  }
 
   const allTargetsHaveSelection = 
   targets ? targets.every(
@@ -133,12 +141,11 @@ export default function WorkoutScreen() {
 
 
   // Workout COmplete Button
-  async function handleCompleteButtonClick( sets: Set[] ) {
+  async function handleCompleteButtonClick( ) {
 
     if (!plan || !profile || !day || !completedSets) return
 
     const nextDay = (profile?.plan_day % plan?.days) + 1;
-    console.log("completedSets:", completedSets)
           
     await logWorkout({
       session, 
@@ -156,11 +163,15 @@ export default function WorkoutScreen() {
       session,
       setLoading,
       updates: {
-        plan_day: nextDay
+        plan_day: nextDay,
+        gold_count: profile.gold_count + rewards.gold
       }
     })
 
-    router.replace('/')
+    await giveUserXp(rewards.xp, session, profile, setLoading)
+
+
+    setShowVictory(true)    
   }
 
   
@@ -264,7 +275,11 @@ export default function WorkoutScreen() {
           Rewards:
         </Text>
         <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
-          [insert rewards]
+          { rewards.xp ? rewards.xp : "[xp]" } xp
+        </Text>
+
+        <Text style={{ textAlign: 'center', color: '#fffe00' }}>
+          { rewards.gold ? rewards.gold : "[gold]" } gold
         </Text>
 
         <Pressable 
@@ -318,7 +333,11 @@ export default function WorkoutScreen() {
           Rewards:
         </Text>
         <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
-          { selectedExercises?.length + ' | ' + completedSets?.length}
+          { rewards.xp ? rewards.xp : "[xp]" } xp
+        </Text>
+
+        <Text style={{ textAlign: 'center', color: '#fffe00' }}>
+          { rewards.gold ? rewards.gold : "[gold]" } gold
         </Text>
 
 
@@ -344,7 +363,7 @@ export default function WorkoutScreen() {
         <Pressable 
           style={[ exercisesAllComplete ? styles.buttonBig : styles.buttonBigDisabled, {position: 'absolute', bottom: 50,} ]}
           disabled={!exercisesAllComplete}
-          onPress={ async () => { await handleCompleteButtonClick(completedSets) }}
+          onPress={ async () => { await handleCompleteButtonClick() }}
         >
           
           <Text style={{ fontFamily: 'Electrolize-Regular'}}>
@@ -368,6 +387,14 @@ export default function WorkoutScreen() {
             1
 
           }
+        />
+
+        <VictoryScreen
+          rewards={ rewards }
+          title={ day?.name + " Training" }
+          profile={ profile }
+          showVictory={ showVictory }
+          onClose={ setShowVictory }
         />
 
       </SafeAreaView>
