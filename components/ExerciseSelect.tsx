@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Exercise } from "../lib/exercise";
 import { useExercisesByTarget } from "../hooks/useExercises";
 import { SafeAreaView, View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
@@ -11,14 +11,13 @@ export default function ExerciseModal(
         target: string | undefined, 
         showModal: boolean, 
         onClose: () => void, 
-        onSelectExercise: (item: any) => void,  
-        completedSets: Set[] | null,
-        setCompletedSets: (item: any) => void
+        selectedExercises: Exercise[] | null,
+        setSelectedExercises: Dispatch<SetStateAction<Exercise[] | null>>,
+        onSelectExercise: (item: any) => void,
 
     }) {
 
     const [exerciseList, setExerciseList] = useState<Exercise[] | null>(null)
-    const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
     const { exercises, loading, error } = useExercisesByTarget(props.target)
 
     useEffect(() => {
@@ -28,21 +27,29 @@ export default function ExerciseModal(
     }, [exercises])
     
 
-    const handleCardClick = (exercise: Exercise) => {
-        setSelectedExercise(exercise)
-    }
+    /*const handleCardClick = (exercise: Exercise) => {
+
+        props.(prev => {
+            const currentExercises = prev || []
+
+            const exerciseExists = currentExercises.some(ex => ex.id === exercise.id)
+
+            if(!currentExercises) {
+                return [exercise]
+            }
+            else if (exerciseExists) {
+                return currentExercises.filter(ex => ex.id !== exercise.id)
+                
+            } else {
+                return [...currentExercises, exercise]
+                
+            }
+        })
+    }*/
 
     const handleConfirm = () => {
         
-        if (selectedExercise) {
-            props.onSelectExercise(selectedExercise)
-        }
         props.onClose()
-    }
-
-    const handleClose = () => {
-        setSelectedExercise(null);
-        props.onClose();
     }
 
     if (!props.showModal || !exerciseList) return null
@@ -79,11 +86,18 @@ export default function ExerciseModal(
                         {exerciseList.map((exercise) => (
                         <Pressable
                             key={exercise.id}
-                            onPress={() => handleCardClick(exercise)}
+                            onPress={() => props.onSelectExercise(exercise)}
                             style={[ 
                                 styles.cardView, 
                                 { flex: 1, justifyContent: 'space-around', alignContent: 'space-between', 
-                                width: '100%', flexDirection: 'column', paddingHorizontal: 10, } 
+                                width: '100%', flexDirection: 'column', paddingHorizontal: 10, 
+                                backgroundColor: 
+                                props.selectedExercises?.some(ex => ex.id === exercise.id) ?
+                                    COLORS.DARK_GRAY
+                                :
+                                    COLORS.PURPLE
+                                },
+                                
                             ]}
                         >
                             <Text style={{ fontWeight: 'bold', color: COLORS.BORDER, fontFamily: 'Electrolize-Regular', fontSize: 14}}>
@@ -120,17 +134,17 @@ export default function ExerciseModal(
 
                 <View style={{flex: 1, width: '75%', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontWeight: 'semibold', fontSize: 20}}>
-                        {selectedExercise ? `Selected: ${selectedExercise.name}` : 'No exercise selected'}
+                        {props.selectedExercises ? 
+                            props.selectedExercises.length > 1 ? 
+                                `Selected: ${props.selectedExercises.length} exercises`
+                            :   `Selected: ${props.selectedExercises.at(0)?.name}` 
+                            
+                        : 'No exercise selected'}
                     </Text>
                     <View style={{ width: '100%', flexDirection: 'row', columnGap: 25, justifyContent: 'center', marginBottom: 20}}>
                         <Pressable
-                            onPress={handleClose}
-                            style={ styles.altButton }>
-                                <Text> Cancel </Text>
-                        </Pressable>
-                        <Pressable
                             onPress={handleConfirm}
-                            disabled={!selectedExercise}
+                            disabled={!props.selectedExercises}
                             style={ styles.button}
                         >
                                 <Text> Confirm</Text>

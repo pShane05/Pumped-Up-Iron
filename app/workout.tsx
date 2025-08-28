@@ -166,7 +166,9 @@ export default function WorkoutScreen() {
   
   async function handleExerciseSelect(exercise: Exercise) {
 
+    console.log("hits function")
     if (!target) return
+    console.log("target")
 
     setSelectedExercisesByTarget(prev => {
       const currentExercises = prev[target] || []
@@ -290,9 +292,9 @@ export default function WorkoutScreen() {
           target={target}
           showModal= {selectModalIsOpen}
           onClose={() => setSelectModalIsOpen(false)}
+          selectedExercises={selectedExercises}
+          setSelectedExercises={ setSelectedExercises }
           onSelectExercise={handleExerciseSelect}
-          completedSets={ completedSets }
-          setCompletedSets={ setCompletedSets }
           
           />
 
