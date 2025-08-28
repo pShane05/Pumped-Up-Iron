@@ -16,6 +16,8 @@ import { BackButton, CompletedExercises, ExerciseDone, SelectedExerciseCard } fr
 import { Set, Weight } from "../lib/sets";
 import LoadingScreen from "../components/LoadingScreen";
 import { PlanDay } from "../lib/planDay";
+import { addSetToExercise } from "../lib/workoutFunctions";
+import SetLogModal from "../components/SetLog";
 
 type Target = {
   id: number,
@@ -32,16 +34,22 @@ type CompleteSetsByExercise = {
 
 export default function WorkoutScreen() {
 
+  const [target, setTarget] = useState<string | undefined>()
+  const [completedSets, setCompletedSets] = useState<Set[]>([])
   const [targets, setTargets] = useState<Target[] | null>(null)
+
+  const [exerciseToLog, setExerciseToLog] = useState<Exercise | null>(null)
   const [selectedExercises, setSelectedExercises] = useState<Exercise[] | null>(null)
   const [selectedExercisesByTarget, setSelectedExercisesByTarget] = useState<SelectionsByTarget>({})
   const [completedSetsByExercise, setCompletedSetsByExercise] = useState<CompleteSetsByExercise>({})
+  const minSets = 3
+
+  const [workoutIsActive, setWorkoutIsActive] = useState(false)
+  const [selectModalIsOpen, setSelectModalIsOpen] = useState(false)
+  const [logModalIsOpen, setLogModalIsOpen] = useState(false)
+
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
-  const [workoutIsActive, setWorkoutIsActive] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [target, setTarget] = useState<string | undefined>()
-  const [completedSets, setCompletedSets] = useState<Set[]>([])
   const [profile, setProfile] = useState<Profile>()
   const [plan, setPlan] = useState<
     {
@@ -57,16 +65,17 @@ export default function WorkoutScreen() {
   const { plan: planData } = usePlanByProfile(profile)
   const { day: dayData, loading: dayLoading } = usePlanDayByProfile(profile)
 
-  const isComplete = completedSets && completedSets?.length > 0
-
   const allTargetsHaveSelection = 
   targets ? targets.every(
     target => selectedExercisesByTarget[target.name] && selectedExercisesByTarget[target.name].length > 0
   ) : false
 
-  const exercisesAllComplete = completedSets ? completedSets.every(
-    set => {}
+  const exercisesAllComplete = selectedExercises ? selectedExercises.every(
+    exercise => {
+      return completedSetsByExercise[exercise.name] ? completedSetsByExercise[exercise.name].length >= minSets : false
+    }
   ) : false
+
 
   // Get User Session Data //
 
@@ -129,6 +138,7 @@ export default function WorkoutScreen() {
     if (!plan || !profile || !day || !completedSets) return
 
     const nextDay = (profile?.plan_day % plan?.days) + 1;
+    console.log("completedSets:", completedSets)
           
     await logWorkout({
       session, 
@@ -197,14 +207,33 @@ export default function WorkoutScreen() {
   }
 
 
-  function removeExerciseFromTarget(targetName: string, exerciseId: string) {
-    setSelectedExercisesByTarget(prev => ({
-      ...prev,
-      [targetName]: (prev[targetName] || []).filter(ex => ex.id !== exerciseId)
-    }))
+  function addSetToExercise(set: Set, exerciseName: string | undefined) {
+    
+    if (!exerciseName) return
+
+    // add to exercise array
+    setCompletedSetsByExercise(prev => {
+      const currentSets = prev[exerciseName] || []
+
+      return {
+        ...prev,
+        [exerciseName]: [...currentSets, set]
+      }
+
+    })
+
+    // add to complete array
+    setCompletedSets(prev => {
+      const currentSets = prev || []
+
+      return [...currentSets, set]
+
+    })
+
   }
 
-  const conditionalRenderExerciseCard = ({ item }: {item: Exercise}) => {
+  
+  /*const conditionalRenderExerciseCard = ({ item }: {item: Exercise}) => {
 
     const isCompleted = completedSets?.some(completedExercise => 
       completedExercise.exercise_name === item.name)
@@ -212,8 +241,9 @@ export default function WorkoutScreen() {
     return isCompleted ?
       <ExerciseDone exercise={item}/>
     :  
-      <ActiveExerciseCard exercise={item} setCompletedSets={setCompletedSets}/>
-  }
+      <ActiveExerciseCard exercise={item} completedSets={completedSetsByExercise} setCompletedSets={setCompletedSetsByExercise} setShowModal={setLogModalIsOpen} setExercise={setExerciseToLog} />
+  }*/
+  
     
   // Exercise selection screen
   if (!workoutIsActive) {  
@@ -239,7 +269,10 @@ export default function WorkoutScreen() {
 
         <Pressable 
           style={[ allTargetsHaveSelection ? styles.button : styles.buttonDisabled, { marginTop: 15}]}
-          onPress={() => { setWorkoutIsActive(true) }}
+          onPress={() => { 
+            setWorkoutIsActive(true)
+            
+          }}
           disabled={ !allTargetsHaveSelection }
         >
           <Text style={{ fontSize: 20, fontFamily: FONTS.BODY}}>
@@ -250,13 +283,13 @@ export default function WorkoutScreen() {
 
         <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
 
-        <SelectExerciseCards selectedExercises={ selectedExercisesByTarget } targets={ targets } setTarget={ setTarget } session={ session } OpenModal={ setModalIsOpen } sets={null}/>
+        <SelectExerciseCards selectedExercises={ selectedExercisesByTarget } targets={ targets } setTarget={ setTarget } session={ session } OpenModal={ setSelectModalIsOpen } sets={null}/>
 
 
         <ExerciseModal 
           target={target}
-          showModal= {modalIsOpen}
-          onClose={() => setModalIsOpen(false)}
+          showModal= {selectModalIsOpen}
+          onClose={() => setSelectModalIsOpen(false)}
           onSelectExercise={handleExerciseSelect}
           completedSets={ completedSets }
           setCompletedSets={ setCompletedSets }
@@ -299,16 +332,18 @@ export default function WorkoutScreen() {
             <FlatList
               style={{width: '100%'}}
               data={ selectedExercisesByTarget[item.name] }
-              renderItem={ conditionalRenderExerciseCard }
-              keyExtractor={ (item) => item.name }
+              renderItem={ ({ item}) => (
+                <ActiveExerciseCard exercise={item} completedSets={completedSetsByExercise} setCompletedSets={setCompletedSetsByExercise} 
+                setShowModal={setLogModalIsOpen} setExercise={setExerciseToLog} />
+              )}
             />
 
           )}
         />
 
         <Pressable 
-          style={[ isComplete ? styles.buttonBig : styles.buttonBigDisabled, {position: 'absolute', bottom: 50,} ]}
-          disabled={!isComplete}
+          style={[ exercisesAllComplete ? styles.buttonBig : styles.buttonBigDisabled, {position: 'absolute', bottom: 50,} ]}
+          disabled={!exercisesAllComplete}
           onPress={ async () => { await handleCompleteButtonClick(completedSets) }}
         >
           
@@ -318,13 +353,22 @@ export default function WorkoutScreen() {
 
         </Pressable>
  
-        <ExerciseModal 
-          target={target}
-          showModal= {modalIsOpen}
-          onClose={() => setModalIsOpen(false)}
-          onSelectExercise={ handleExerciseSelect }
-          completedSets={ completedSets }
-          setCompletedSets={ setCompletedSets }/>
+        <SetLogModal 
+          exercise={ exerciseToLog }
+          showModal={logModalIsOpen}
+          onClose={() => setLogModalIsOpen(false) }
+          updateSets={ addSetToExercise }
+          setNum={ exerciseToLog ? 
+
+            completedSetsByExercise[exerciseToLog.name] ?
+
+              completedSetsByExercise[exerciseToLog.name].length + 1 : 1
+
+          : 
+            1
+
+          }
+        />
 
       </SafeAreaView>
 
@@ -414,59 +458,15 @@ function SelectExerciseCard(props: { setTarget: (id: any) => void, target: {id: 
   )
 }
 
-function UpcomingExerciseCard(props: { exercise: Exercise}) {
+
+function ActiveExerciseCard(props: {exercise: Exercise, completedSets: CompleteSetsByExercise, setCompletedSets: (item: any) => void, setShowModal: (item: any) => void, setExercise: (item:any) => void }) {
 
   const exercise = props.exercise
-
-  return (
-    <View 
-    style={[
-      styles.cardView,  {
-      height: 120,
-      flexDirection: 'row',
-      padding: 10,
-      
-    }]}>
-
-      <View style={{ alignSelf: 'center' }}>
-        <FontAwesome5 name="dumbbell" size={50} color="black" />
-      </View>
-
-      <View style={{ width: '60%', paddingLeft: 20, justifyContent: 'space-between'}}>
-        <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
-            { exercise.name }
-        </Text>
-
-        <View style={{}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
-            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular'}}>Category:</Text>
-              <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
-                {exercise.muscle_group}
-              </Text>
-          </View>
-          
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
-            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Equipment:</Text>
-            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
-              {exercise.equipment}
-            </Text>
-          </View>
-
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
-            <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Difficulty:</Text>
-            <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
-              {exercise.difficulty}
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  )
-}
-
-function ActiveExerciseCard(props: {exercise: Exercise, setCompletedSets: (item: any) => void}) {
-
-  const exercise = props.exercise
+  const completedSets = props.completedSets[exercise.name]
+  if (!exercise) return
+  
+  const setsDone = (!completedSets) ? 0 : completedSets.length
+  
 
   return (
     <View style={[
@@ -488,71 +488,59 @@ function ActiveExerciseCard(props: {exercise: Exercise, setCompletedSets: (item:
 
         <View style={{ width: '60%', paddingLeft: 20, justifyContent: 'space-between'}}>
           <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
-              { exercise.name }
+            { exercise.name + ' - ' + setsDone }
           </Text>
 
           <View style={{}}>
+
             <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+
               <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular'}}>Category:</Text>
                 <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
                   {exercise.muscle_group}
                 </Text>
+
             </View>
             
             <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+
               <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Equipment:</Text>
               <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
                 {exercise.equipment}
               </Text>
+
             </View>
 
             <View style={{flexDirection: 'row', justifyContent: 'space-between', columnGap: 15}}>
+
               <Text style={{ fontWeight: 'bold', color: COLORS.PINK, fontFamily: 'Electrolize-Regular' }}>Difficulty:</Text>
               <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular' }}>
                 {exercise.difficulty}
               </Text>
+
             </View>
           </View>
 
-          
-        </View>
-
-        
+        </View>        
         
       </View>
 
       <Pressable 
         style={[ styles.altButton, { marginTop: 15} ]}
-        onPress={() => handleCheckPress(exercise, props.setCompletedSets)}
+        onPress={() => {
+          props.setExercise(exercise)
+          props.setShowModal(true)
+        }}
         
-      >
-          <Text style={{ color: COLORS.BORDER, textAlign: 'center'}}>
-            Check
-          </Text>
+    >
+
+        <Text style={{ color: COLORS.BORDER, textAlign: 'center'}}>
+          Check
+        </Text>
+
       </Pressable>
 
     </View>
     
   )
-}
-
-async function handleCheckPress(exercise: Exercise, setCompletedSets: Dispatch<SetStateAction<Set[]>>) {
-  setCompletedSets(prev => {
-      const currentSets = prev || []
-
-      const setExists = currentSets.some(set => set.exercise_name === exercise.name)
-
-      const newSet = {
-        exercise_name: exercise.name,
-        reps: 10,
-        weight_lbs: 200,
-        set_number: 1
-      }
-
-      if(!currentSets) return [newSet]
-      
-      else if (setExists) return currentSets.filter(set => set.exercise_name !== newSet.exercise_name) 
-        
-      else return [...currentSets, newSet]
-    })
 }

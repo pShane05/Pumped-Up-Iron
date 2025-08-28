@@ -116,12 +116,12 @@ export function SelectedExerciseCard(props: {exercise: Exercise}) {
 
   return (
     <View 
-    style={[
-      styles.cardView,  {
-      height: 120,
-      flexDirection: 'row',
-      padding: 20
-    }]}>
+      style={[
+        styles.cardView,  {
+        height: 120,
+        flexDirection: 'row',
+        padding: 20
+      }]}>
 
       <View style={{ alignSelf: 'center', width: 50, height: 50, }}>
         <Image style={{ resizeMode: 'contain', width: '100%', height: '100%',}} source={ imageMap[props.exercise.icon] }/>

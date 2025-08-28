@@ -331,4 +331,17 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginHorizontal: 15
   },
+  modalView: {
+    backgroundColor: COLORS.DARK_PURPLE,
+    borderRadius: 10,
+    borderColor: COLORS.BORDER,
+    borderWidth: 2,
+    alignSelf: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    justifyContent: 'center',
+    alignContent: 'center',
+    width: '80%'
+  
+  }
 })

@@ -48,20 +48,26 @@ export default function ExerciseModal(
     if (!props.showModal || !exerciseList) return null
 
     return (
+        
         <View 
             style={[ 
                 styles.container, 
-                { flex: 1, paddingVertical: 50, backgroundColor: 'rgba(75, 75, 75, 0.25)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%'}]}>
+                { flex: 1, paddingVertical: 50, backgroundColor: 'rgba(75, 75, 75, 0.25)', position: 'absolute', 
+                top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%'}]}>
        
             <View 
-                style={{ flex: 1, rowGap: 40, height: '100%', borderRadius: 20, alignSelf: 'center', alignItems: 'center', backgroundColor: COLORS.BACKGROUND, padding: 20, margin: 20}}>
+                style={{ flex: 1, rowGap: 40, height: '100%', borderRadius: 20, alignSelf: 'center', alignItems: 'center', 
+                backgroundColor: COLORS.BACKGROUND, padding: 20, margin: 20}}>
                 
                 {/* Header */}
                 
-                <Text style={[ styles.headerText, { textAlign: 'center'} ]}> Select an Exercise For { '\n' + props.target?.charAt(0).toUpperCase() + props.target?.slice(1) }</Text>
+                <Text style={[ styles.headerText, { textAlign: 'center'} ]}> 
+                    Select an Exercise For { '\n' + props.target?.charAt(0).toUpperCase() + props.target?.slice(1) }
+                </Text>
 
 
                 {/* Exercise Cards Grid */}
+
                 <ScrollView style={{flex: 1, marginBottom: 100}}>
                     { (loading || !props.target) && (
                         <ActivityIndicator size={'large'} color={COLORS.PURPLE}/>
@@ -111,6 +117,7 @@ export default function ExerciseModal(
                 </ScrollView>
 
                 {/* Footer */}
+
                 <View style={{flex: 1, width: '75%', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontWeight: 'semibold', fontSize: 20}}>
                         {selectedExercise ? `Selected: ${selectedExercise.name}` : 'No exercise selected'}

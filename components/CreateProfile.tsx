@@ -45,7 +45,6 @@ export default function CreateProfileCard(props: {session: Session | null}) {
     const wheelHeight = height * 0.12;
     const wheelWidth = width * 0.20;
 
-
     function capitalizeFirst(str: string) {
         return str.charAt(0).toUpperCase() + str.slice(1)
     }
