@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import { COLORS, FONTS, imageMap, styles } from "./costants";
-import {  View, Text, Pressable, Dimensions, FlatList, ActivityIndicator, Image, Modal, TouchableOpacity, SafeAreaView, Alert } from 'react-native'
+import {  View, Text, Pressable, FlatList, Image, SafeAreaView } from 'react-native'
 import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -12,14 +12,14 @@ import { Profile, updateProfile } from "../lib/profile";
 import { Exercise } from "../lib/exercise";
 import ExerciseModal from "../components/ExerciseSelect";
 import { logWorkout } from "../lib/workout";
-import { BackButton, CompletedExercises, ExerciseDone, SelectedExerciseCard } from "../components/WorkoutComponents";
-import { Set, Weight } from "../lib/sets";
+import { BackButton, SelectedExerciseCard } from "../components/WorkoutComponents";
+import { Set, } from "../lib/sets";
 import LoadingScreen from "../components/LoadingScreen";
 import { PlanDay } from "../lib/planDay";
-import { addSetToExercise } from "../lib/workoutFunctions";
 import SetLogModal from "../components/SetLog";
 import VictoryScreen from "../components/VictoryScreen";
 import { giveUserXp } from "../lib/levels";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Target = {
   id: number,
@@ -84,6 +84,32 @@ export default function WorkoutScreen() {
     }
   ) : false
 
+  const saveState = async (isActive: string) => {
+    try {
+      await AsyncStorage.setItem("workoutActive", isActive)
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const loadState = async () => {
+    try {
+      const isActive = await AsyncStorage.getItem("workoutActive")
+
+      if (isActive !== null) {
+        if (isActive === "true")
+        setWorkoutIsActive(true)
+      }
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  // Load screen state
+
+  useEffect(() => {
+    loadState()
+  }, [])
 
   // Get User Session Data //
 
@@ -170,7 +196,8 @@ export default function WorkoutScreen() {
 
     await giveUserXp(rewards.xp, session, profile, setLoading)
 
-
+    setWorkoutIsActive(false)
+    saveState("false")
     setShowVictory(true)    
   }
 
@@ -288,7 +315,7 @@ export default function WorkoutScreen() {
           style={[ allTargetsHaveSelection ? styles.button : styles.buttonDisabled, { marginTop: 15}]}
           onPress={() => { 
             setWorkoutIsActive(true)
-            
+            saveState("true")
           }}
           disabled={ !allTargetsHaveSelection }
         >
