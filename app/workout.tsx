@@ -10,7 +10,7 @@ import { Profile, updateProfile } from "../lib/profile";
 import { Exercise } from "../lib/exercise";
 import ExerciseModal from "../components/ExerciseSelect";
 import { logWorkout } from "../lib/workout";
-import { BackButton, SelectedExerciseCard } from "../components/WorkoutComponents";
+import { BackButton, ConfirmCancelModal, SelectedExerciseCard } from "../components/WorkoutComponents";
 import { Set, } from "../lib/sets";
 import LoadingScreen from "../components/LoadingScreen";
 import { PlanDay } from "../lib/planDay";
@@ -46,6 +46,7 @@ export default function WorkoutScreen() {
   const [workoutIsActive, setWorkoutIsActive] = useState(false)
   const [selectModalIsOpen, setSelectModalIsOpen] = useState(false)
   const [logModalIsOpen, setLogModalIsOpen] = useState(false)
+  const [cancelModalIsOpen, setCancelModalIsOpen] = useState(false)
   const [showVictory, setShowVictory] = useState(false)
 
   const [session, setSession] = useState<Session | null>(null)
@@ -425,16 +426,14 @@ export default function WorkoutScreen() {
 
 
         <Pressable 
-            style={[ styles.altButton, { backgroundColor: "#800000"} ]}
+            style={[ styles.altButton, { backgroundColor: "#800000", position: 'absolute', top: 40, margin: 20, right: 0, padding: 8, paddingHorizontal: 12} ]}
             onPress={ () => {
-              saveActiveState("false")
-              removeExercises()
-              router.replace('/')
+              setCancelModalIsOpen(true)
             }}
           > 
 
-            <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontSize: 12 }}> 
-              Cancel Workout  
+            <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontSize: 12,  }}> 
+              X
             </Text>
 
           </Pressable>
@@ -483,6 +482,19 @@ export default function WorkoutScreen() {
             1
 
           }
+        />
+
+        <ConfirmCancelModal 
+          showModal={cancelModalIsOpen} 
+          onClose={() => {
+            setCancelModalIsOpen(false)
+          }}
+          onConfirm={() => {
+            saveActiveState("false")
+            removeExercises()
+            setCancelModalIsOpen(false)
+            router.replace('/')
+          }}          
         />
 
         <VictoryScreen
