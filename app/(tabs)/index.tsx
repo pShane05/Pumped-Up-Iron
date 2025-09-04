@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView, ActivityIndicator } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
-import DailyQuestCard from '../../components/DailyQuests'
+import DailyPreviewCard from '../../components/DailiesPreview'
 import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
@@ -78,7 +78,7 @@ export default function App() {
       <ScrollView contentContainerStyle={ styles.scrollableView }>
         <View style={{ height: 180}} />
 
-        <DailyQuestCard />
+        <DailyPreviewCard />
 
         <WorkoutCard session={session}/>
 

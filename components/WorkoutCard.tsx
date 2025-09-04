@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
 import { usePlanDayByProfile } from '../hooks/usePlan'
 import { useProfile } from '../hooks/useProfile'
@@ -27,9 +27,14 @@ import { PlanDay } from '../lib/planDay'
         <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY }}> Edit Workout </Text>
       </Pressable>
 
-      <Link href="/workout" style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25, fontFamily: FONTS.BODY} ]}>
-        View Workout 
-      </Link>
+      <Pressable 
+        onPress={() => router.push('../workout')}
+        style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25,} ]}
+      >
+        <Text style={{ fontFamily: FONTS.BODY}}>
+          View Workout 
+        </Text>
+      </Pressable>
 
       <ExercisePreview day={day}/>
 

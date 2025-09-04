@@ -345,7 +345,9 @@ export default function WorkoutScreen() {
               
         <BackButton />
 
-        <Text style={[ styles.headerText, { fontSize: 40, alignSelf: 'center', marginTop: 60}]}> {day?.name} </Text>
+        <Text style={[ styles.headerText, { fontSize: 40, alignSelf: 'center', marginTop: 60}]}> 
+          {day?.name} 
+        </Text>
 
         <View style={[ styles.horizontalLine, { marginTop: 40}]} />
 
@@ -415,7 +417,7 @@ export default function WorkoutScreen() {
           { rewards.xp ? rewards.xp : "[xp]" } xp
         </Text>
 
-        <Text style={{ textAlign: 'center', color: '#fffe00' }}>
+        <Text style={{ textAlign: 'center', color: '#fffe00', fontFamily: 'Electrolize-Regular' }}>
           { rewards.gold ? rewards.gold : "[gold]" } gold
         </Text>
 

@@ -5,7 +5,8 @@ export const COLORS = {
     BLACK: '#000000',
     DARK_GRAY: '#202020',
     TEAL: '#cbeef3',
-    
+    RED: '#fe0000',
+    GREEN: '#0dab27ff',
     CYAN: '#1579b5',
     PINK: '#E113C5',
     PURPLE: '#550577',
@@ -200,7 +201,7 @@ export const styles = StyleSheet.create({
     height: 1,
     backgroundColor: COLORS.BORDER, 
     marginVertical: 10, 
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   scrollableView: {
     paddingBottom: 75,
