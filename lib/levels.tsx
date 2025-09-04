@@ -2,6 +2,15 @@ import { Session } from "@supabase/supabase-js";
 import { Profile, updateProfile } from "./profile";
 
 
+type NotificationHandler = (level: number) => void
+
+let globalNotificaitonHandler: NotificationHandler | null = null
+
+export const setNotificationHandler = (handler: NotificationHandler): void => {
+    globalNotificaitonHandler = handler
+}
+
+
 function requireXp(level: number) {
 
     return (
@@ -26,11 +35,12 @@ export async function giveUserXp(xpGain: number, session: Session | null, profil
 
     // loop when leveling up
     while (userXp >= xpToNextLvl) {
-        console.log("Enter loop!")
         ++currLevel
         userXp -= xpToNextLvl
         xpToNextLvl = requireXp(currLevel)
         console.log(currLevel)
+        if (globalNotificaitonHandler)
+            globalNotificaitonHandler(currLevel)
     }
 
     await updateProfile({
