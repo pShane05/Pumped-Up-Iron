@@ -84,17 +84,34 @@ export default function WorkoutScreen() {
     }
   ) : false
 
-  const saveState = async (isActive: string) => {
+
+  // Async storage functions
+
+  const saveActiveState = async (isActive: string) => {
     try {
-      await AsyncStorage.setItem("workoutActive", isActive)
+      await AsyncStorage.setItem("workout-is-active", isActive)
     } catch (e) {
       alert(e)
     }
   }
 
-  const loadState = async () => {
+  const saveExerciseState = async (exercises: Exercise[] | null, exercisesByTarget: SelectionsByTarget) => {
     try {
-      const isActive = await AsyncStorage.getItem("workoutActive")
+      let jsonValue = JSON.stringify(exercises)
+      await AsyncStorage.setItem("selected-exercises", jsonValue)
+
+      jsonValue = JSON.stringify(exercisesByTarget)
+      await AsyncStorage.setItem("selected-exercises-by-target", jsonValue)
+      console.log(exercisesByTarget)
+
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const loadActiveState = async () => {
+    try {
+      const isActive = await AsyncStorage.getItem("workout-is-active")
 
       if (isActive !== null) {
         if (isActive === "true")
@@ -105,10 +122,35 @@ export default function WorkoutScreen() {
     }
   }
 
+  const loadExerciseState = async () => {
+    try {
+      const exercises = await AsyncStorage.getItem("selected-exercises")
+      const exercisesByTarget = await AsyncStorage.getItem("selected-exercises")
+
+      if (exercises !== null) setSelectedExercises(JSON.parse(exercises))
+
+      if (exercisesByTarget !== null) setSelectedExercisesByTarget(JSON.parse(exercisesByTarget))
+
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  const removeExercises = async () => {
+
+    const keys = ['selected-exercises', 'selected-exercises-by-target']
+    try {
+      await AsyncStorage.multiRemove(keys)
+    } catch(e) {
+      alert(e)
+    }
+  }
+
   // Load screen state
 
   useEffect(() => {
-    loadState()
+    loadActiveState()
+    loadExerciseState()
   }, [])
 
   // Get User Session Data //
@@ -163,6 +205,14 @@ export default function WorkoutScreen() {
     }
   }, [day])
 
+  // Update exercise state
+  useEffect(() => {
+    if (selectedExercises) {
+      saveExerciseState(selectedExercises, selectedExercisesByTarget)
+    }
+  }, [selectedExercises])
+
+
   if (loading || dayLoading) return <LoadingScreen />
 
 
@@ -197,16 +247,15 @@ export default function WorkoutScreen() {
     await giveUserXp(rewards.xp, session, profile, setLoading)
 
     setWorkoutIsActive(false)
-    saveState("false")
+    saveActiveState("false")
+    removeExercises()
     setShowVictory(true)    
   }
 
   
   async function handleExerciseSelect(exercise: Exercise) {
 
-    console.log("hits function")
     if (!target) return
-    console.log("target")
 
     setSelectedExercisesByTarget(prev => {
       const currentExercises = prev[target] || []
@@ -315,7 +364,8 @@ export default function WorkoutScreen() {
           style={[ allTargetsHaveSelection ? styles.button : styles.buttonDisabled, { marginTop: 15}]}
           onPress={() => { 
             setWorkoutIsActive(true)
-            saveState("true")
+            saveActiveState("true")
+            saveExerciseState(selectedExercises, selectedExercisesByTarget)
           }}
           disabled={ !allTargetsHaveSelection }
         >
@@ -361,7 +411,7 @@ export default function WorkoutScreen() {
         <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
           Rewards:
         </Text>
-        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
+        <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 5, fontFamily: FONTS.BODY }]}>
           { rewards.xp ? rewards.xp : "[xp]" } xp
         </Text>
 
@@ -370,10 +420,26 @@ export default function WorkoutScreen() {
         </Text>
 
 
-        <View style={[ styles.horizontalLine, { width: '70%', marginTop: 30 }]}/>
+        <View style={[ styles.horizontalLine, { width: '70%', marginTop: 25 }]}/>
+
+
+        <Pressable 
+            style={[ styles.altButton, { backgroundColor: "#800000"} ]}
+            onPress={ () => {
+              saveActiveState("false")
+              removeExercises()
+              router.replace('/')
+            }}
+          > 
+
+            <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontSize: 12 }}> 
+              Cancel Workout  
+            </Text>
+
+          </Pressable>
 
         <FlatList 
-          style={{width: '100%', marginBottom: 75}}
+          style={{width: '100%', marginBottom: 75, marginTop: 15}}
           data={ targets }
           renderItem={ ({ item }) => (
 

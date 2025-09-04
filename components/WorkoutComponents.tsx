@@ -165,3 +165,4 @@ export function BackButton() {
     <Link href='/(tabs)' style={[ styles.logout, { position: 'absolute', top: 20, left: 0, fontFamily: FONTS.BODY} ]}> Back </Link>
   )
 }
+
