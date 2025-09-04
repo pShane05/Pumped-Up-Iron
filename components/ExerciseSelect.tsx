@@ -4,6 +4,7 @@ import { useExercisesByTarget } from "../hooks/useExercises";
 import { SafeAreaView, View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { COLORS, styles } from "../app/costants";
 import { Set } from "../lib/sets";
+import { SelectionsByTarget } from "../app/workout";
 
 
 export default function ExerciseModal(
@@ -11,13 +12,14 @@ export default function ExerciseModal(
         target: string | undefined, 
         showModal: boolean, 
         onClose: () => void, 
-        selectedExercises: Exercise[] | null,
-        setSelectedExercises: Dispatch<SetStateAction<Exercise[] | null>>,
+        selectedExercises: SelectionsByTarget | null,
+        setSelectedExercises: Dispatch<SetStateAction<SelectionsByTarget>>,
         onSelectExercise: (item: any) => void,
 
     }) {
 
     const [exerciseList, setExerciseList] = useState<Exercise[] | null>(null)
+    const selectedForTarget = props.target ? props.selectedExercises?.[props.target] : undefined;
     const { exercises, loading, error } = useExercisesByTarget(props.target)
 
     useEffect(() => {
@@ -92,11 +94,11 @@ export default function ExerciseModal(
                                 { flex: 1, justifyContent: 'space-around', alignContent: 'space-between', 
                                 width: '100%', flexDirection: 'column', paddingHorizontal: 10, 
                                 backgroundColor: 
-                                props.selectedExercises?.some(ex => ex.id === exercise.id) ?
+                                selectedForTarget?.some((ex: Exercise) => ex.id === exercise.id) ?
                                     COLORS.DARK_GRAY
                                 :
                                     COLORS.PURPLE
-                                },
+                                }
                                 
                             ]}
                         >
@@ -134,11 +136,12 @@ export default function ExerciseModal(
 
                 <View style={{flex: 1, width: '75%', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontWeight: 'semibold', fontSize: 20}}>
-                        {props.selectedExercises ? 
-                            props.selectedExercises.length > 1 ? 
-                                `Selected: ${props.selectedExercises.length} exercises`
-                            :   `Selected: ${props.selectedExercises.at(0)?.name}` 
-                            
+                        {props.selectedExercises && props.target ? 
+                            props.selectedExercises[props.target] ? 
+                                props.selectedExercises[props.target].length > 1 ? 
+                                    `Selected: ${props.selectedExercises[props.target].length} exercises`
+                                :   `Selected: ${props.selectedExercises[props.target].at(0)?.name}` 
+                            : 'No exercise selected'
                         : 'No exercise selected'}
                     </Text>
                     <View style={{ width: '100%', flexDirection: 'row', columnGap: 25, justifyContent: 'center', marginBottom: 20}}>
