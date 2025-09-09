@@ -88,8 +88,8 @@ export default function AvatarScreen() {
 
         <Pressable 
           style={ styles.button }
-          onPress={ () => {
-            giveUserXp(500, session, profile, setLoading) 
+          onPress={ async () => {
+            await giveUserXp(500, session, profile, setLoading) 
             window.location.reload()
           }}
         >
