@@ -10,6 +10,7 @@ export const COLORS = {
     PINK: '#E113C5',
     PURPLE: '#550577',
     DARK_PURPLE: '#350537',
+    RED: '#ff0000',
 
     PRIMARY: '#10002b',
     SECONDARY: '#80FFDB',
