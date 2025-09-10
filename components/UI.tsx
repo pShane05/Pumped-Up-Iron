@@ -44,7 +44,7 @@ export function XpDisplay(props: { userId: string | undefined }) {
            
 
             <Text style={{ color: COLORS.CYAN, fontSize: 18, marginLeft: '10%', marginTop: 10, fontFamily: FONTS.BODY}}>
-                Xp: { profile?.xp + ' / ' + profile?.xp_to_next_lvl}
+                Xp: { profile ? (profile?.xp + ' / ' + profile?.xp_to_next_lvl) : '-' }
             </Text>
         
         </View>

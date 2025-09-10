@@ -35,6 +35,8 @@ export default function App() {
   
   useEffect(() => {
     
+    if (loading) return
+    
     if (profile === undefined || loading) {
       return // session still loading
     }

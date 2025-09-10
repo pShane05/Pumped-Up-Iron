@@ -1,5 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { Profile, updateProfile } from "./profile";
+import { supabase } from "./supabase";
 
 
 type NotificationHandler = (level: number) => void
@@ -20,37 +21,50 @@ function requireXp(level: number) {
 }
 
 
-export async function giveUserXp(xpGain: number, session: Session | null, profile: Profile, setLoading: (item: any) => void ) {
+export async function giveUserXp(xpGain: number, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
 
-    if (!session || !profile) return
+    if (!session) return
 
-    var currLevel = profile.level
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
+
+    if (error || !data) {
+        console.error('Failed to get current profile: ', error)
+        return
+    }
+
+    console.log(data)
+
+    var currLevel = data.level
     var xpToNextLvl = requireXp(currLevel)
-    var userXp = profile?.xp + xpGain
+    var totalXp = data?.xp + xpGain
 
     console.log("gain", xpGain)
-    console.log("current", profile.xp)
-    console.log("total", userXp)
+    console.log("current", data.xp)
+    console.log("total", totalXp)
 
 
     // loop when leveling up
-    while (userXp >= xpToNextLvl) {
+    while (totalXp >= xpToNextLvl) {
         ++currLevel
-        userXp -= xpToNextLvl
+        totalXp -= xpToNextLvl
         xpToNextLvl = requireXp(currLevel)
         console.log(currLevel)
         if (globalNotificaitonHandler)
             globalNotificaitonHandler(currLevel)
     }
 
-    await updateProfile({
+    setProfile(await updateProfile({
         session,
         setLoading,
         updates: {
             level: currLevel,
-            xp: userXp,
+            xp: totalXp,
             xp_to_next_lvl: xpToNextLvl
         }
-    })
+    }))
 
 }
