@@ -7,7 +7,7 @@ import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
 import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
-import { updateProfile } from '../../lib/profile'
+import { Profile, updateProfile } from '../../lib/profile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import LoadingScreen from '../../components/LoadingScreen'
 import { giveUserXp } from '../../lib/levels'
@@ -16,9 +16,20 @@ import { giveUserXp } from '../../lib/levels'
 export default function AvatarScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<Profile | null>(null)
 
   const router = useRouter()
-  const profile = useProfile(session?.user.id).profile
+
+  // Only call useProfile when we have a session
+  const profileData = useProfile(session?.user.id)
+
+  // Update profile state when profileData changes
+  useEffect(() => {
+    if (profileData?.profile) {
+      setProfile(profileData.profile)
+    }
+  }, [profileData])
+  
   const gold = profile?.gold_count
   const userId = profile?.id
   const startDate = profile?.date_started; // "2000-05-17T00:00:00.000Z"
@@ -33,7 +44,7 @@ export default function AvatarScreen() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
-      
+
       setLoading(false)
     })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -49,10 +60,12 @@ export default function AvatarScreen() {
     if (!loading && !session) {
       router.replace('../login')
     }
+    setProfile
   }, [session])
 
 
   if (loading || !isDataReady) {
+
     return (
       <LoadingScreen />
     )
@@ -76,9 +89,8 @@ export default function AvatarScreen() {
 
         <Pressable 
           style={ styles.button }
-          onPress={ () => {
-            giveUserXp(100, session, profile, setLoading) 
-            window.location.reload()
+          onPress={ async () => {
+            await giveUserXp(100, session, setLoading, setProfile) 
           }}
         >
           <Text>
@@ -88,9 +100,8 @@ export default function AvatarScreen() {
 
         <Pressable 
           style={ styles.button }
-          onPress={ () => {
-            giveUserXp(500, session, profile, setLoading) 
-            window.location.reload()
+          onPress={ async () => {
+            await giveUserXp(500, session, setLoading, setProfile) 
           }}
         >
           <Text>

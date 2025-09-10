@@ -1,4 +1,4 @@
-import { FlatList, Modal, Text, TouchableOpacity, View, Image } from "react-native"
+import { FlatList, Modal, Text, TouchableOpacity, View, Image, SafeAreaView, Pressable } from "react-native"
 import { COLORS, FONTS, styles, imageMap } from "../app/costants"
 import React, { useState } from "react"
 import { Exercise } from "../lib/exercise"
@@ -6,6 +6,7 @@ import { Set } from "../lib/sets";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link } from "expo-router";
+import { fonts } from "@rneui/themed/dist/config";
 
 
 
@@ -166,3 +167,60 @@ export function BackButton() {
   )
 }
 
+
+export function ConfirmCancelModal( 
+  props: {
+
+    showModal: boolean,
+    onClose: () => void,
+    onConfirm: () => void
+
+  }) {
+
+    if (!props.showModal) return
+
+  return (
+    <SafeAreaView 
+      style={[ styles.container, 
+        { flex: 1, paddingVertical: 50, backgroundColor: 'rgba(20, 20, 20, 0.5)', position: 'absolute', 
+          top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%', justifyContent: 'center'
+      }]}
+    >
+
+      <View 
+        style={[ styles.cardView, { backgroundColor: COLORS.DARK_GRAY, alignSelf: 'center', 
+          flexDirection: 'column', padding: 20, rowGap: 25, height: 'auto' } ]}>
+        <Text style={[ styles.headerText, { textAlign: 'center'}]}>
+          Do You Want to Cancel the Workout?
+        </Text>
+
+        <Text style={{ color: COLORS.BORDER, fontFamily: 'Electrolize-Regular', marginHorizontal: 20}}>
+          This will remove your progress and cannot be undone.
+        </Text>
+
+        <Pressable 
+          style={ styles.button}
+          onPress={
+            props.onClose
+          }
+        >
+          <Text style={{ fontFamily: FONTS.BODY}}>
+            Go Back
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={
+
+            props.onConfirm
+          }
+        >
+          <Text style={{ fontFamily: FONTS.BODY, alignSelf: 'center', marginBottom: 10, color: COLORS.RED}}>
+            Yes, Cancel
+          </Text>
+        </Pressable>
+      </View>
+
+    </SafeAreaView>
+  )
+}

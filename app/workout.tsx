@@ -1,8 +1,6 @@
 import { Link, router } from "expo-router";
 import { COLORS, FONTS, imageMap, styles } from "./costants";
 import {  View, Text, Pressable, FlatList, Image, SafeAreaView } from 'react-native'
-import { useExercisesByGroup, useExercisesByTarget } from "../hooks/useExercises";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { usePlanByProfile, usePlanDayByProfile } from "../hooks/usePlan"
 import { useProfile } from "../hooks/useProfile"
@@ -12,7 +10,7 @@ import { Profile, updateProfile } from "../lib/profile";
 import { Exercise } from "../lib/exercise";
 import ExerciseModal from "../components/ExerciseSelect";
 import { logWorkout } from "../lib/workout";
-import { BackButton, SelectedExerciseCard } from "../components/WorkoutComponents";
+import { BackButton, ConfirmCancelModal, SelectedExerciseCard } from "../components/WorkoutComponents";
 import { Set, } from "../lib/sets";
 import LoadingScreen from "../components/LoadingScreen";
 import { PlanDay } from "../lib/planDay";
@@ -26,7 +24,7 @@ type Target = {
   name: string
 }
 
-type SelectionsByTarget = {
+export type SelectionsByTarget = {
   [targetName: string]: Exercise[]
 }
 
@@ -41,7 +39,6 @@ export default function WorkoutScreen() {
   const [targets, setTargets] = useState<Target[] | null>(null)
 
   const [exerciseToLog, setExerciseToLog] = useState<Exercise | null>(null)
-  const [selectedExercises, setSelectedExercises] = useState<Exercise[] | null>(null)
   const [selectedExercisesByTarget, setSelectedExercisesByTarget] = useState<SelectionsByTarget>({})
   const [completedSetsByExercise, setCompletedSetsByExercise] = useState<CompleteSetsByExercise>({})
   const minSets = 3
@@ -49,6 +46,7 @@ export default function WorkoutScreen() {
   const [workoutIsActive, setWorkoutIsActive] = useState(false)
   const [selectModalIsOpen, setSelectModalIsOpen] = useState(false)
   const [logModalIsOpen, setLogModalIsOpen] = useState(false)
+  const [cancelModalIsOpen, setCancelModalIsOpen] = useState(false)
   const [showVictory, setShowVictory] = useState(false)
 
   const [session, setSession] = useState<Session | null>(null)
@@ -78,9 +76,15 @@ export default function WorkoutScreen() {
     target => selectedExercisesByTarget[target.name] && selectedExercisesByTarget[target.name].length > 0
   ) : false
 
-  const exercisesAllComplete = selectedExercises ? selectedExercises.every(
-    exercise => {
-      return completedSetsByExercise[exercise.name] ? completedSetsByExercise[exercise.name].length >= minSets : false
+  const exercisesAllComplete = selectedExercisesByTarget && targets ? targets.every(
+    target => {
+      selectedExercisesByTarget[target.name] ? selectedExercisesByTarget[target.name].every(
+        exercise => {
+          return completedSetsByExercise[exercise.name] ? completedSetsByExercise[exercise.name].length >= minSets : false
+        }
+        
+      ) :
+      false
     }
   ) : false
 
@@ -95,20 +99,31 @@ export default function WorkoutScreen() {
     }
   }
 
-  const saveExerciseState = async (exercises: Exercise[] | null, exercisesByTarget: SelectionsByTarget) => {
+  const saveExerciseState = async ( exercisesByTarget: SelectionsByTarget) => {
     try {
-      let jsonValue = JSON.stringify(exercises)
-      await AsyncStorage.setItem("selected-exercises", jsonValue)
-
-      jsonValue = JSON.stringify(exercisesByTarget)
+    
+      let jsonValue = JSON.stringify(exercisesByTarget)
       await AsyncStorage.setItem("selected-exercises-by-target", jsonValue)
-      console.log(exercisesByTarget)
 
     } catch (e) {
       alert(e)
     }
   }
 
+  const saveSetState = async ( setsByExercise: CompleteSetsByExercise) => {
+    try {
+
+      let jsonValue = JSON.stringify(setsByExercise)
+      await AsyncStorage.setItem("completed-sets-by-exercise", jsonValue)
+
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+
+  // Load state functions
+  
   const loadActiveState = async () => {
     try {
       const isActive = await AsyncStorage.getItem("workout-is-active")
@@ -124,10 +139,8 @@ export default function WorkoutScreen() {
 
   const loadExerciseState = async () => {
     try {
-      const exercises = await AsyncStorage.getItem("selected-exercises")
-      const exercisesByTarget = await AsyncStorage.getItem("selected-exercises")
 
-      if (exercises !== null) setSelectedExercises(JSON.parse(exercises))
+      const exercisesByTarget = await AsyncStorage.getItem("selected-exercises-by-target")
 
       if (exercisesByTarget !== null) setSelectedExercisesByTarget(JSON.parse(exercisesByTarget))
 
@@ -136,9 +149,20 @@ export default function WorkoutScreen() {
     }
   }
 
+  const loadSetState = async () => {
+    try {
+
+      const setsByExercise = await AsyncStorage.getItem("completed-sets-by-exercise")
+
+      if (setsByExercise !== null) setCompletedSetsByExercise(JSON.parse(setsByExercise))
+    } catch (e) {
+      alert(e)
+    }
+  }
+
   const removeExercises = async () => {
 
-    const keys = ['selected-exercises', 'selected-exercises-by-target']
+    const keys = ['selected-exercises-by-target', 'completed-sets-by-exercise']
     try {
       await AsyncStorage.multiRemove(keys)
     } catch(e) {
@@ -151,6 +175,7 @@ export default function WorkoutScreen() {
   useEffect(() => {
     loadActiveState()
     loadExerciseState()
+    loadSetState()
   }, [])
 
   // Get User Session Data //
@@ -207,10 +232,16 @@ export default function WorkoutScreen() {
 
   // Update exercise state
   useEffect(() => {
-    if (selectedExercises) {
-      saveExerciseState(selectedExercises, selectedExercisesByTarget)
+    if (selectedExercisesByTarget) {
+      saveExerciseState(selectedExercisesByTarget)
     }
-  }, [selectedExercises])
+  }, [selectedExercisesByTarget])
+
+  useEffect(() => {
+    if (completedSetsByExercise) {
+      saveSetState(completedSetsByExercise)
+    }
+  }, [completedSetsByExercise])
 
 
   if (loading || dayLoading) return <LoadingScreen />
@@ -276,23 +307,6 @@ export default function WorkoutScreen() {
 
     })
 
-    setSelectedExercises(prev => {
-      const currentExercises = prev || []
-
-      const exerciseExists = currentExercises.some(ex => ex.id === exercise.id)
-
-      if(!currentExercises) {
-        return [exercise]
-      }
-      else if (exerciseExists) {
-        return currentExercises.filter(ex => ex.id !== exercise.id)
-        
-      } else {
-        return [...currentExercises, exercise]
-        
-      }
-    })
-
   }
 
 
@@ -320,18 +334,6 @@ export default function WorkoutScreen() {
     })
 
   }
-
-  
-  /*const conditionalRenderExerciseCard = ({ item }: {item: Exercise}) => {
-
-    const isCompleted = completedSets?.some(completedExercise => 
-      completedExercise.exercise_name === item.name)
-
-    return isCompleted ?
-      <ExerciseDone exercise={item}/>
-    :  
-      <ActiveExerciseCard exercise={item} completedSets={completedSetsByExercise} setCompletedSets={setCompletedSetsByExercise} setShowModal={setLogModalIsOpen} setExercise={setExerciseToLog} />
-  }*/
   
     
   // Exercise selection screen
@@ -367,7 +369,7 @@ export default function WorkoutScreen() {
           onPress={() => { 
             setWorkoutIsActive(true)
             saveActiveState("true")
-            saveExerciseState(selectedExercises, selectedExercisesByTarget)
+            saveExerciseState(selectedExercisesByTarget)
           }}
           disabled={ !allTargetsHaveSelection }
         >
@@ -386,8 +388,8 @@ export default function WorkoutScreen() {
           target={target}
           showModal= {selectModalIsOpen}
           onClose={() => setSelectModalIsOpen(false)}
-          selectedExercises={selectedExercises}
-          setSelectedExercises={ setSelectedExercises }
+          selectedExercises={selectedExercisesByTarget}
+          setSelectedExercises={ setSelectedExercisesByTarget }
           onSelectExercise={handleExerciseSelect}
           
           />
@@ -426,16 +428,14 @@ export default function WorkoutScreen() {
 
 
         <Pressable 
-            style={[ styles.altButton, { backgroundColor: "#800000"} ]}
+            style={[ styles.altButton, { backgroundColor: "#800000", position: 'absolute', top: 40, margin: 20, right: 0, padding: 8, paddingHorizontal: 12} ]}
             onPress={ () => {
-              saveActiveState("false")
-              removeExercises()
-              router.replace('/')
+              setCancelModalIsOpen(true)
             }}
           > 
 
-            <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontSize: 12 }}> 
-              Cancel Workout  
+            <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontSize: 12,  }}> 
+              X
             </Text>
 
           </Pressable>
@@ -484,6 +484,19 @@ export default function WorkoutScreen() {
             1
 
           }
+        />
+
+        <ConfirmCancelModal 
+          showModal={cancelModalIsOpen} 
+          onClose={() => {
+            setCancelModalIsOpen(false)
+          }}
+          onConfirm={() => {
+            saveActiveState("false")
+            removeExercises()
+            setCancelModalIsOpen(false)
+            router.replace('/')
+          }}          
         />
 
         <VictoryScreen

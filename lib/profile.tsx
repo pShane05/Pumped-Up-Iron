@@ -31,8 +31,7 @@ export async function updateProfile({
 }) {
 
     try {
-        setLoading(true)
-
+        
         if (!session?.user) throw new Error("No user on the session!")
 
         const updateData = {
@@ -42,10 +41,21 @@ export async function updateProfile({
             updated_at: new Date()
         }
 
+        setLoading(true)
+
         console.log("Updates going to DB:", updateData)
-        const { error }= await supabase.from("profiles").upsert(updateData, { onConflict: "id" })
+
+        const { data, error } = await supabase.
+            from("profiles")
+            .upsert(updateData, { onConflict: "id" })
+            .select()
+
+        console.log("Database operation completed")
 
         if (error) throw error
+
+        return data?.[0]
+        
     } catch (error) {
         if (error instanceof Error) {
             Alert.alert(error.message)
@@ -53,4 +63,5 @@ export async function updateProfile({
     } finally {
         setLoading(false)
     }
+
 }
