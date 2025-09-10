@@ -12,7 +12,7 @@ export function useExercisesByGroup(muscle_group: string | undefined) {
   useEffect(() => {
     if (!muscle_group) return
 
-    const fetchProfile = async () => {
+    const fetchExercise = async () => {
       setLoading(true)
       try {
         const { data, error } = await supabase
@@ -39,7 +39,7 @@ export function useExercisesByGroup(muscle_group: string | undefined) {
       }
     }
 
-    fetchProfile()
+    fetchExercise()
   }, [muscle_group])
 
   return { exercises, loading, error }

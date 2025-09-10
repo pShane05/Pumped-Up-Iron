@@ -4,14 +4,13 @@ import { Dimensions, StyleSheet } from "react-native"
 export const COLORS = {
     BLACK: '#000000',
     DARK_GRAY: '#202020',
-    TEAL: '#cbeef3',
+    TEAL: '#249F9F',
     RED: '#fe0000',
     GREEN: '#0dab27ff',
     CYAN: '#1579b5',
     PINK: '#E113C5',
     PURPLE: '#550577',
     DARK_PURPLE: '#350537',
-    RED: '#ff0000',
 
     PRIMARY: '#10002b',
     SECONDARY: '#80FFDB',
@@ -58,7 +57,7 @@ export const FONTS = {
 export const styles = StyleSheet.create({
 
   headerText: {
-    color: COLORS.TEAL, 
+    color: COLORS.BORDER, 
     fontSize: 32, 
     fontWeight: 'bold',
     fontFamily: 'Geo-Regular'
@@ -285,7 +284,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   exerciseNameText: {
-    color: COLORS.TEAL,
+    color: COLORS.BORDER,
     fontSize: 16,
     fontWeight: 'bold',
     
@@ -329,7 +328,7 @@ export const styles = StyleSheet.create({
   content: {
     fontSize: 16,
     lineHeight: 24,
-    color: COLORS.TEAL,
+    color: COLORS.BORDER,
     alignSelf: 'flex-start',
     marginHorizontal: 15
   },

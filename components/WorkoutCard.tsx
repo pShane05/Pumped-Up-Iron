@@ -24,12 +24,12 @@ import { PlanDay } from '../lib/planDay'
       <View style={ styles.horizontalLine }/>
 
       <Pressable style={ styles.altButton }>
-        <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY }}> Edit Workout </Text>
+        <Text style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY }}> Edit Workout </Text>
       </Pressable>
 
       <Pressable 
         onPress={() => router.push('../workout')}
-        style={[ styles.button, {backgroundColor: COLORS.TEAL, borderColor: COLORS.CYAN, marginBottom: 25,} ]}
+        style={[ styles.button, { borderColor: COLORS.CYAN, marginBottom: 25,} ]}
       >
         <Text style={{ fontFamily: FONTS.BODY}}>
           View Workout 

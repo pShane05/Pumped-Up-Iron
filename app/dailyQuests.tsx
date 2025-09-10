@@ -69,8 +69,7 @@ export default function DailyQuestScreen() {
 
                 <DailyQuestCard quest={quests[0]}/>
 
-                <View style={[ styles.horizontalLine, { marginVertical: 35, width: '50%' }]} />
-
+                <View style={[ styles.horizontalLine, { marginVertical: 35, width: '30%', backgroundColor: COLORS.TEAL }]} />
                 <DailyQuestCard quest={quests[1]} />
 
             </View>
