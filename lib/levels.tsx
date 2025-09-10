@@ -1,6 +1,7 @@
 import { Session } from "@supabase/supabase-js";
 import { Profile, updateProfile } from "./profile";
 import { supabase } from "./supabase";
+import { useProfile } from "../hooks/useProfile";
 
 
 type NotificationHandler = (level: number) => void
@@ -25,25 +26,18 @@ export async function giveUserXp(xpGain: number, session: Session | null, setLoa
 
     if (!session) return
 
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
+    const { profile, loading, error } = useProfile(session.user.id)
 
-    if (error || !data) {
-        console.error('Failed to get current profile: ', error)
-        return
-    }
+    if (!profile) return
+    if (error) console.error("Error loading profile: ", error)
+    while (loading) {}
 
-    console.log(data)
-
-    var currLevel = data.level
+    var currLevel = profile.level
     var xpToNextLvl = requireXp(currLevel)
-    var totalXp = data?.xp + xpGain
+    var totalXp = profile?.xp + xpGain
 
     console.log("gain", xpGain)
-    console.log("current", data.xp)
+    console.log("current", profile.xp)
     console.log("total", totalXp)
 
 
