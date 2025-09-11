@@ -1,4 +1,4 @@
-import { Pressable, SafeAreaView, View, Text, TextInput } from "react-native"
+import { Pressable, SafeAreaView, View, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native"
 import { COLORS, FONTS, styles } from "../app/costants"
 import { useState } from "react"
 import { DailyQuest } from "../lib/dailyQuest"
@@ -25,6 +25,7 @@ export default function QuestCheckModal(
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <SafeAreaView
             style={[ 
                 styles.container, 
@@ -75,5 +76,6 @@ export default function QuestCheckModal(
             
 
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }

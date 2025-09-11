@@ -15,7 +15,7 @@ export default function SetLogModal(
     }
 ) {
 
-    if (!props.showModal || !props.exercise) return
+    if (!props.showModal || !props.exercise) return null
     
     //const [logWeight, setLogWeight] = useState<number>(50)
     //const [logReps, setLogReps] = useState<number>(8)
