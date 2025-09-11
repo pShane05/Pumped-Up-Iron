@@ -449,7 +449,7 @@ export default function WorkoutScreen() {
               style={{width: '100%'}}
               data={ selectedExercisesByTarget[item.name] }
               renderItem={ ({ item}) => (
-                <ActiveExerciseCard exercise={item} completedSets={completedSetsByExercise} setCompletedSets={setCompletedSetsByExercise} 
+                <ActiveExerciseCard exercise={item} completedSets={completedSetsByExercise} setCompletedSets={setCompletedSetsByExercise} minSets={minSets}
                 setShowModal={setLogModalIsOpen} setExercise={setExerciseToLog} />
               )}
             />
@@ -596,27 +596,46 @@ function SelectExerciseCard(props: { setTarget: (id: any) => void, target: {id: 
 }
 
 
-function ActiveExerciseCard(props: {exercise: Exercise, completedSets: CompleteSetsByExercise, setCompletedSets: (item: any) => void, setShowModal: (item: any) => void, setExercise: (item:any) => void }) {
+function ActiveExerciseCard(props: {exercise: Exercise, completedSets: CompleteSetsByExercise, setCompletedSets: (item: any) => void, setShowModal: (item: any) => void, setExercise: (item:any) => void, minSets: number }) {
 
   const exercise = props.exercise
   const completedSets = props.completedSets[exercise.name]
   if (!exercise) return
+
+  // disable button if there are too many sets
+  const buttonDisabled = 
+    props.completedSets[exercise.name] && 
+    (props.completedSets[exercise.name].length) >= props.minSets + 1
   
   const setsDone = (!completedSets) ? 0 : completedSets.length
   
+  function CheckBox(props: {checked: boolean}) {
+    return (
+      <View
+        style={{ 
+          height: 12, 
+          width: 12, 
+          margin: 2,
+          marginTop: 10,
+          borderWidth: 1, 
+          borderColor: COLORS.PINK,
+          backgroundColor: props.checked ? COLORS.CYAN : COLORS.DARK_PURPLE,
+        }}
+      />
+  )}
 
   return (
     <View style={[
       styles.cardView, {
-        height: 160,
+        height: 180,
         padding: 10,
         flexDirection: 'column'
       }
     ]}>
       <View 
-      style={[{
-        height: 80,
-        flexDirection: 'row',
+        style={[{
+          height: 80,
+          flexDirection: 'row',
       }]}>
 
         <View style={{ alignSelf: 'center', width: 75, height: 75, }}>
@@ -625,7 +644,7 @@ function ActiveExerciseCard(props: {exercise: Exercise, completedSets: CompleteS
 
         <View style={{ width: '60%', paddingLeft: 20, justifyContent: 'space-between'}}>
           <Text style={[ styles.exerciseNameText, { color: COLORS.BORDER }]}>
-            { exercise.name + ' - ' + setsDone }
+            { exercise.name }
           </Text>
 
           <View style={{}}>
@@ -662,16 +681,28 @@ function ActiveExerciseCard(props: {exercise: Exercise, completedSets: CompleteS
         
       </View>
 
+      <View style={{ flexDirection: 'row', justifyContent: 'center'}}>
+        {Array.from({ length: props.minSets + 1}, (_, index) => (
+          <CheckBox 
+            checked={
+              props.completedSets[exercise.name] &&
+              (props.completedSets[exercise.name].length) > index
+            } 
+            key={index} />
+        ))}
+      </View>
+
       <Pressable 
-        style={[ styles.altButton, { marginTop: 15} ]}
+        style={[ buttonDisabled ? styles. buttonDisabled : styles.altButton, { marginTop: 5 } ]}
+        disabled={ buttonDisabled }
         onPress={() => {
           props.setExercise(exercise)
           props.setShowModal(true)
         }}
         
-    >
+      >
 
-        <Text style={{ color: COLORS.BORDER, textAlign: 'center'}}>
+        <Text style={{ color: buttonDisabled ? COLORS.BLACK : COLORS.BORDER, textAlign: 'center'}}>
           Check
         </Text>
 

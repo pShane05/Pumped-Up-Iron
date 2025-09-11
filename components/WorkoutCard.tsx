@@ -124,6 +124,7 @@ export function ActiveWorkoutPreview(props: {day: PlanDay | null, selectedExerci
         <FlatList 
           style={{ width: '100%'}}
           scrollEnabled={false}
+          key={currTarget.id}
           data={props.selectedExercises[currTarget.name]} 
           renderItem={ ({ item}) => (
             <ExercisePreview exercise={item}/>

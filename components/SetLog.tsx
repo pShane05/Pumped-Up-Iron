@@ -1,8 +1,8 @@
-import { View, Text, SafeAreaView, Pressable } from "react-native";
+import { View, Text, SafeAreaView, Pressable, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { COLORS, styles } from "../app/costants";
 import { Exercise } from "../lib/exercise";
 import WheelPickerExpo from "react-native-wheel-picker-expo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Set } from "../lib/sets";
 
 export default function SetLogModal(
@@ -16,34 +16,52 @@ export default function SetLogModal(
 ) {
 
     if (!props.showModal || !props.exercise) return
-
-    const weightsVals = [...Array(500).keys()].map(i => (i).toString())
-    const repsVals = [...Array(100).keys()].map(i => (i).toString())
-    const timesVals = [...Array(600).keys()].map(i => (i).toString())
     
-    const [logWeight, setLogWeight] = useState<number>(50)
-    const [logReps, setLogReps] = useState<number>(8)
-    const [logRest, setLogRest] = useState<number>(120)
+    //const [logWeight, setLogWeight] = useState<number>(50)
+    //const [logReps, setLogReps] = useState<number>(8)
+    //const [logRest, setLogRest] = useState<number>(120)
 
+    const [stringWeight, setStringWeight] = useState<string>('')
+    const [stringReps, setStringReps] = useState<string>('')
+    const [stringRest, setStringRest] = useState<string>('')
 
+    useEffect(() => {
+        if (props.showModal && props.exercise) {
+            setStringWeight('')
+            setStringReps('')
+            setStringRest('')
+        }
+    }, [props.showModal, props.exercise])
 
     function handleConfirm() {
 
+        if (!stringReps || !stringWeight || !stringRest) {
+            console.log("Set info missing")
+            return
+        }
+
         const newSet = {
             exercise_name: props.exercise?.name,
-            reps: logReps,
-            weight_lbs: logWeight,
+            reps: Number(stringReps),
+            weight_lbs: Number(stringWeight),
             set_number: props.setNum,
-            rest_seconds: logRest,
+            rest_seconds: Number(stringRest),
             
         }
 
+        console.log(newSet)
         props.updateSets(newSet, props.exercise?.name)
+
+        setStringWeight('')
+        setStringReps('')
+        setStringRest('')
+
         props.onClose()
 
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <SafeAreaView
             style={[ 
                 styles.container, 
@@ -74,20 +92,18 @@ export default function SetLogModal(
 
                         <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Reps: </Text>
 
-                        <View style={[styles.scrollWheel, { height: 50, marginTop: 5}]}>
+                        
+                    
+                        <TextInput
+                            style={[styles.numberInput]}
+                            onChangeText={setStringReps}
+                            value={stringReps}
+                            placeholder={stringReps}
+                            placeholderTextColor={COLORS.CYAN}
+                            keyboardType="numeric"
 
-                            <WheelPickerExpo 
-                                height={ 115 }
-                                width={ 60 }
-                                initialSelectedIndex={8}
-                                haptics={ true}
-                                backgroundColor={ COLORS.BACKGROUND}    
-                                items={repsVals.map(n => ({ label: n, value: n }))}
+                        />
 
-                                onChange={({ index }) => setLogReps(index)}
-                            />
-
-                        </View>
                     </View>
 
                     {
@@ -97,18 +113,15 @@ export default function SetLogModal(
 
                         <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Weight: </Text>
 
-                        <View style={[styles.scrollWheel, { height: 50, marginTop: 5}]}>
-                            <WheelPickerExpo 
-                                height={ 115 }
-                                width={ 60 }
-                                initialSelectedIndex={50}
-                                haptics={ true}
-                                backgroundColor={ COLORS.BACKGROUND}    
-                                items={weightsVals.map(n => ({ label: n, value: n }))}
+                        <TextInput
+                            style={[styles.numberInput]}
+                            onChangeText={setStringWeight}
+                            value={stringWeight}
+                            placeholder={stringWeight}
+                            placeholderTextColor={COLORS.CYAN}
+                            keyboardType="numeric"
 
-                                onChange={({ index }) => setLogWeight(index)}
-                            />
-                        </View>
+                        />
                     </View>
 
                     {
@@ -118,18 +131,15 @@ export default function SetLogModal(
 
                         <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Rest time: </Text>
 
-                        <View style={[styles.scrollWheel, { height: 50, marginTop: 5}]}>
-                            <WheelPickerExpo 
-                                height={ 115 }
-                                width={ 60 }
-                                initialSelectedIndex={120}
-                                haptics={ true}
-                                backgroundColor={ COLORS.BACKGROUND}    
-                                items={timesVals.map(n => ({ label: n, value: n }))}
+                        <TextInput
+                            style={[styles.numberInput]}
+                            onChangeText={setStringRest}
+                            value={stringRest}
+                            placeholder={stringRest}
+                            placeholderTextColor={COLORS.CYAN}
+                            keyboardType="numeric"
 
-                                onChange={({ index }) => setLogRest(index)}
-                            />
-                        </View>
+                        />
                     </View>
                 
                 </View>
@@ -162,5 +172,6 @@ export default function SetLogModal(
             </View>
 
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }
