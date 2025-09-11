@@ -26,18 +26,23 @@ export async function giveUserXp(xpGain: number, session: Session | null, setLoa
 
     if (!session) return
 
-    const { profile, loading, error } = useProfile(session.user.id)
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
 
-    if (!profile) return
-    if (error) console.error("Error loading profile: ", error)
-    while (loading) {}
+    if (error || !data) {
+        console.error('Failed to get current profile: ', error)
+        return
+    }
 
-    var currLevel = profile.level
+    var currLevel = data.level
     var xpToNextLvl = requireXp(currLevel)
-    var totalXp = profile?.xp + xpGain
+    var totalXp = data?.xp + xpGain
 
     console.log("gain", xpGain)
-    console.log("current", profile.xp)
+    console.log("current", data.xp)
     console.log("total", totalXp)
 
 
