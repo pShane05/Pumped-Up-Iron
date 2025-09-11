@@ -47,7 +47,7 @@ export default function SetLogModal(
         <SafeAreaView
             style={[ 
                 styles.container, 
-                { flex: 1, paddingVertical: 50, zIndex: 2, backgroundColor: 'rgba(75, 75, 75, 0.25)', position: 'absolute', 
+                { flex: 1, paddingVertical: 50, zIndex: 2, backgroundColor: 'rgba(25, 25, 25, 0.5)', position: 'absolute', 
                 top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%', justifyContent: 'center', alignItems: 'center'}]}>
             
             <View style={[ styles.modalView ]} >

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Text, Pressable, Alert, StyleSheet, View } from 'react-native'
+import { Text, Pressable, Alert, StyleSheet, View, FlatList } from 'react-native'
 import { router, useRouter } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
+import { DailyQuest } from '../lib/dailyQuest'
 
-  export default function DailyPreviewCard() {
+  export default function DailyPreviewCard(props: { quests: DailyQuest[] | null}) {
 
   return (
     
@@ -18,19 +19,41 @@ import { COLORS, FONTS, styles } from '../app/costants'
       
       <View style={ styles.horizontalLine }/>
 
-      <DailyQuest/>
-      <DailyQuest/>
-      <DailyQuest/>
+      <FlatList 
+        style={{ width: '100%'}}
+        scrollEnabled={false}
+        data={ props.quests }
+        renderItem={({ item }) => (
+
+          <QuestPreview quest={item}/>                  
+        )}
+      />
+      
 
       <Text style={{ color: 'red', marginTop: 20, fontFamily: FONTS.BODY }}> * Required </Text>
     </Pressable>
   )
 }
 
-export function DailyQuest() {
+export function QuestPreview(props: {quest: DailyQuest}) {
+
+  const isCompleted = (props.quest.completed / props.quest.goal) >= 1
+
   return (
-    <View style={ styles.singleQuest }>
-      <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}> Do 50 Pushups </Text>
+    <View style={[ styles.singleQuest, { backgroundColor: isCompleted ? COLORS.GREEN_MUTED : '#20204b'} ]}>
+
+      <Text 
+        style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY}}
+      > 
+        {props.quest.name} 
+      </Text>
+
+      <Text
+        style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY}}
+      >
+        [{props.quest.completed} / {props.quest.goal}]
+
+      </Text>
     </View>
   )
 }

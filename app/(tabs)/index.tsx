@@ -9,11 +9,19 @@ import WorkoutCard from '../../components/WorkoutCard'
 import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
+import { Profile } from '../../lib/profile'
+import { useProfileQuests } from '../../hooks/useDailies'
 
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<Profile | null>()
+
+  const { profile: profileData } = useProfile(session?.user?.id)
+  
+  const { dailyQuests } = useProfileQuests(profile?.id)
+  
   const router = useRouter()
   
 
@@ -30,8 +38,6 @@ export default function App() {
       listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
     }
   }, [])
-
-  const profile = useProfile(session?.user.id).profile
   
   useEffect(() => {
     
@@ -52,6 +58,12 @@ export default function App() {
         router.replace('/setBirthday')
     }
   }, [session, profile, loading])
+
+  // update profile when session updates
+    useEffect(() => {
+        if (session)
+            setProfile(profileData)
+    }, [session, profileData])
    
 
   if (loading) {
@@ -80,7 +92,7 @@ export default function App() {
       <ScrollView contentContainerStyle={ styles.scrollableView }>
         <View style={{ height: 180}} />
 
-        <DailyPreviewCard />
+        <DailyPreviewCard quests={dailyQuests}/>
 
         <WorkoutCard session={session}/>
 

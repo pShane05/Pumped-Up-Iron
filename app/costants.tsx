@@ -7,6 +7,7 @@ export const COLORS = {
     TEAL: '#249F9F',
     RED: '#fe0000',
     GREEN: '#0dab27ff',
+    GREEN_MUTED: '#rgba(15, 141, 36, 0.5)',
     CYAN: '#1579b5',
     PINK: '#E113C5',
     PURPLE: '#550577',
@@ -236,6 +237,17 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     height: 50
   },
+  numberInput: {
+    width: 75, 
+    height: 50,
+    textAlign: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: COLORS.BACKGROUND,
+    borderRadius: 20,
+    borderColor: COLORS.BORDER,
+    borderWidth: 1,
+    color: COLORS.BORDER
+  },
   input: {
     width: '85%',
     margin: 3,
@@ -266,10 +278,13 @@ export const styles = StyleSheet.create({
   },
   singleQuest: {
     width: '80%',
-    backgroundColor: '#20204b',
     padding: 10,
     borderRadius: 25,
-    marginVertical: 5
+    marginVertical: 5,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20
   },
   ExercisePreview: {
     width: '75%',

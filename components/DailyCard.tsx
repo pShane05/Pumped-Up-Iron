@@ -1,29 +1,52 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { COLORS, FONTS, styles } from "../app/costants";
 import { StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import * as Progress from 'react-native-progress';
+import { DailyQuest } from "../lib/dailyQuest";
+import Entypo from '@expo/vector-icons/Entypo';
 
-type Quest = {
-    name: string,
-    xp: number,
-    goal: number,
-    completion: number
-}
 
 
 export default function DailyQuestCard(props: {
-    quest: Quest
+    quest: DailyQuest
+    setQuest: (item:any) => void
+    openModal: (item: any) => void
 }) {
     
     const quest = props.quest    
 
     if (!quest) return
-    const completion = quest.completion / quest.goal
+    const completion = quest.completed / quest.goal
+
+
+    function AddButton() {
+        return (
+            <Pressable 
+                style={ questStyles.addButton}
+                onPress={ () => {
+                    props.setQuest(props.quest)
+                    props.openModal(true)
+                }}
+            >
+                <Entypo name="plus" size={24} color="black" />
+            </Pressable>
+        )
+    }
+
+    function CheckBox() {
+        return (
+            <View
+                style={ questStyles.checkBox}
+            >
+                <Entypo name="check" size={24} color="black" />
+            </View>
+        )
+    }
 
     return (
         <View 
-            style={questStyles.questView}
+            style={[ questStyles.questView, { backgroundColor: completion >= 1 ? COLORS.GREEN_MUTED : COLORS.BACKGROUND } ]}
         >
 
             <View 
@@ -35,11 +58,18 @@ export default function DailyQuestCard(props: {
                     
                 </Text>
 
-                <Text style={[ styles.headerText, {fontSize: 20,} ]}>
-                    [{quest.completion} / {quest.goal}]
-                </Text>
+                <View style={{flexDirection: 'row', columnGap: 10, alignItems: 'center'}}>
+                    <Text style={[ styles.headerText, {fontSize: 20,} ]}>
+                        [{quest.completed} / {quest.goal}]
+                    </Text>
+                    {completion < 1 ? <AddButton /> : <CheckBox />}
+                </View>
 
             </View>
+
+            <Text style={{ fontFamily: FONTS.BODY, fontSize: 16, marginTop: 15, color: COLORS.CYAN}}>
+                Rewards:  <Text style={{fontSize: 14}}>{quest.xp} xp </Text>
+            </Text>
 
             <View style={{ marginTop: 10, flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between'}}>
                 <View style={ questStyles.completeBar }>
@@ -54,36 +84,45 @@ export default function DailyQuestCard(props: {
                 <Text 
                     style={{ color: completion < 1 ? COLORS.RED : COLORS.GREEN, } }
                 > 
-                    {completion * 100}% 
+                    {completion > 1 ? 100 : completion * 100}% 
                 </Text>
             </View>
 
-            <Text style={{ fontFamily: FONTS.BODY, fontSize: 16, marginTop: 15, color: COLORS.CYAN}}>
-                Rewards:  <Text style={{fontSize: 14}}>{quest.xp} xp </Text>
-            </Text>
+            
         </View>
     )
 }
+
+
 
 const questStyles = StyleSheet.create({
     questView: {
         width: '90%',
         backgroundColor: COLORS.BACKGROUND,
         alignSelf: 'center',
-        //borderColor: COLORS.BORDER,
-        //borderWidth: 1,
-        paddingTop: 10,
+        paddingVertical: 20,
         paddingHorizontal: 10,
-        borderRadius: 20
+        borderRadius: 20,
     },
-    box: {
-        height: 30,
-        width: 30,
+    addButton: {
+        height: 30, 
+        width: 30, 
+        backgroundColor: COLORS.SECONDARY, 
         borderColor: COLORS.BORDER,
         borderWidth: 1,
         borderRadius: 5,
-        alignSelf: 'center',
-        marginLeft: 25
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    checkBox: {
+        height: 30, 
+        width: 30, 
+        backgroundColor: COLORS.GREEN_MUTED, 
+        borderColor: COLORS.BLACK,
+        borderWidth: 1,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     completeBar: {
         width: '85%',
