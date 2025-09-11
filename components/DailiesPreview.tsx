@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList } from 'react-native'
 import { router, useRouter } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
@@ -31,6 +31,11 @@ import { DailyQuest } from '../lib/dailyQuest'
       
 
       <Text style={{ color: 'red', marginTop: 20, fontFamily: FONTS.BODY }}> * Required </Text>
+
+      <Text>
+        {} Remaining
+      </Text>
+
     </Pressable>
   )
 }
@@ -57,4 +62,3 @@ export function QuestPreview(props: {quest: DailyQuest}) {
     </View>
   )
 }
-
