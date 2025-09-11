@@ -3,6 +3,8 @@ import { useDailyQuest, useProfileQuests } from "../hooks/useDailies"
 import { supabase } from "./supabase"
 import { randomRarity } from "./randomValues"
 import { useState } from "react"
+import { Session } from "@supabase/supabase-js"
+import { Alert } from "react-native"
 
 export type DailyQuest = {
     id: string,
@@ -29,7 +31,7 @@ export async function rerollDailyQuests(profile: Profile) {
         const difficulty = "beginner"
 
         const quest = useDailyQuest(difficulty, rarity).dailyQuest
-        const data
+        //const data
     }
         // random rarity
 
@@ -58,3 +60,43 @@ async function deleteActiveQuests(profile: Profile) {
 
     return error
 }
+
+export async function updateActiveDailies({
+    session,
+    setLoading,
+    updates,
+}:  {
+        session: Session | null,
+        setLoading: (loading: boolean) => void,
+        updates: Partial<DailyQuest>
+    }) {
+
+        try {
+            setLoading(true)
+    
+            if (!session?.user) throw new Error("No user on the session!")
+
+            const updateData = {
+                    ...updates,
+                    user_id: session.user.id,
+                    completed_at: new Date(),
+                    updated_at: new Date()
+                }
+
+            const { error } = await supabase
+                .from('active_dailies')
+                .update(updateData)
+                .eq('id', updates.id)
+                
+            if (error) throw error
+
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                Alert.alert(error.message)
+            }
+        } finally {
+            setLoading(false)
+        }
+        
+    }

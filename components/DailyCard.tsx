@@ -46,7 +46,7 @@ export default function DailyQuestCard(props: {
 
     return (
         <View 
-            style={[ questStyles.questView, { backgroundColor: completion >= 1 ? COLORS.GREEN_MUTED : COLORS.BACKGROUND } ]}
+            style={[ questStyles.questView ]}
         >
 
             <View 

@@ -12,13 +12,6 @@ import { useProfileQuests } from "../hooks/useDailies";
 import { Profile } from "../lib/profile";
 import QuestCheckModal from "../components/QuestCheck";
 
-type Quest = {
-    name: string,
-    xp: number,
-    goal: number,
-    completion: number
-}
-
 const quests = [
     {
         name: "Shoot Free Throws",
@@ -139,10 +132,12 @@ export default function DailyQuestScreen() {
                 )}
             />
 
-            <QuestCheckModal quest={questToUpdate} showModal={checkModalIsOpen} onClose={() => setCheckModalIsOpen(false)} 
-                addToQuest={ () => {
-
-                }}
+            <QuestCheckModal 
+                session={session} 
+                quest={questToUpdate} 
+                showModal={checkModalIsOpen} 
+                onClose={ () => setCheckModalIsOpen(false) } 
+                setLoading={setLoading}
             />
 
         </SafeAreaView>

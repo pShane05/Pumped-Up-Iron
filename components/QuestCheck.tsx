@@ -1,25 +1,39 @@
 import { Pressable, SafeAreaView, View, Text, TextInput } from "react-native"
 import { COLORS, FONTS, styles } from "../app/costants"
 import { useState } from "react"
-import { DailyQuest } from "../lib/dailyQuest"
+import { DailyQuest, updateActiveDailies } from "../lib/dailyQuest"
+import { supabase } from "../lib/supabase"
+import { Session } from "@supabase/supabase-js"
 
 export default function QuestCheckModal(
     props: {
+        session: Session | null,
         quest: DailyQuest | null
-        addToQuest: (item: any) => void
         showModal: boolean,
         onClose: () => void
-        
+        setLoading: (item:any) => void
     }
 ) {
 
     if (!props.showModal || !props.quest) return
 
     const [addValue, setAddValue] = useState('')
+    const session = props.session
+    const setLoading = props.setLoading
 
-    function handleConfirm() {
+    async function handleConfirm() {
 
-        props.addToQuest(addValue)
+        if (!props.quest?.completed) return
+        
+        const totalCompleted = props.quest?.completed + Number(addValue)
+
+        await updateActiveDailies({
+            session,
+            setLoading,
+            updates: {
+                completed: totalCompleted
+            }
+        })
         props.onClose()
 
     }
