@@ -1,6 +1,5 @@
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, TextInput } from "react-native";
 import { COLORS, styles } from "../app/costants";
-import { Input } from "@rneui/themed";
 import { useEffect, useState } from "react";
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useWindowDimensions } from "react-native";
@@ -105,7 +104,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
             
                 <View style={[styles.input, styles.mt25, { marginHorizontal: 20 }]}>
-                    <Input
+                    <TextInput
                         onChangeText={(text) => setUsername(text)}        // Username input
                         value={username}
                         placeholder="Username"
@@ -116,7 +115,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                 <View style={[styles.row, { width: '100%', justifyContent: 'space-between'}]} >   
 
                     <View style={[styles.smallInput, styles.mt25, { marginLeft: 20 }]}>
-                        <Input
+                        <TextInput
                             onChangeText={(text) => setFirstname(text)}                     // Name input
                             value={firstname}
                             placeholder="First Name"
@@ -125,7 +124,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
                     </View>
 
                     <View style={[styles.smallInput, styles.mt25, {marginRight: 20}]}>
-                        <Input
+                        <TextInput
                             onChangeText={(text) => setLastname(text)}
                             value={lastname}
                             placeholder="Last Name"
