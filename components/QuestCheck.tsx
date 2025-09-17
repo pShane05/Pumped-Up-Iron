@@ -1,7 +1,7 @@
 import { Pressable, SafeAreaView, View, Text, TextInput } from "react-native"
 import { COLORS, FONTS, styles } from "../app/costants"
 import { useState } from "react"
-import { DailyQuest, updateActiveDailies } from "../lib/dailyQuest"
+import { DailyQuest, QuestMap, updateActiveDailies } from "../lib/dailyQuest"
 import { supabase } from "../lib/supabase"
 import { Session } from "@supabase/supabase-js"
 
@@ -9,9 +9,11 @@ export default function QuestCheckModal(
     props: {
         session: Session | null,
         quest: DailyQuest | null
+        setQuestMap: (item:any) => void
         showModal: boolean,
         onClose: () => void
         setLoading: (item:any) => void
+        onComplete: (item: any) => void
     }
 ) {
 
@@ -22,18 +24,34 @@ export default function QuestCheckModal(
     const setLoading = props.setLoading
 
     async function handleConfirm() {
+  
+        if (!props.quest?.completed && props.quest?.completed !== 0) return
 
-        if (!props.quest?.completed) return
-        
         const totalCompleted = props.quest?.completed + Number(addValue)
 
-        await updateActiveDailies({
+        const { data } = await updateActiveDailies({
             session,
             setLoading,
             updates: {
+                id: props.quest.id,
                 completed: totalCompleted
             }
+        }) || { data: []}
+
+        console.log("Updated Quest: ", data)
+        
+        props.setQuestMap((prev: QuestMap | null) => {
+
+            if (!props.quest?.id) return
+    
+            return {
+                ...prev,
+                [props.quest?.id]: data[0]
+            }
         })
+
+        if(data[0].completed >= data[0].goal) props.onComplete(data[0])
+
         props.onClose()
 
     }

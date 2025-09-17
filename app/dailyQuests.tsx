@@ -1,9 +1,9 @@
-import { FlatList, SafeAreaView, Text, View } from "react-native";
+import { FlatList, SafeAreaView, Text, View, ActivityIndicatorBase, Alert } from "react-native";
 import { BackButton } from "../components/WorkoutComponents";
 import { COLORS, FONTS, styles } from "./costants";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import DailyQuestCard from "../components/DailyCard";
-import { DailyQuest } from "../lib/dailyQuest";
+import { DailyQuest, QuestMap } from "../lib/dailyQuest";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
@@ -11,20 +11,8 @@ import { useProfile } from "../hooks/useProfile";
 import { useProfileQuests } from "../hooks/useDailies";
 import { Profile } from "../lib/profile";
 import QuestCheckModal from "../components/QuestCheck";
-
-const quests = [
-    {
-        name: "Shoot Free Throws",
-        xp: 10,
-        goal: 20,
-        completion: 15
-    },
-    {
-        name: "Pushups",
-        xp: 25,
-        goal: 50,
-        completion: 15
-    }]
+import QuestCompleteModal from "../components/QuestCompleteModal";
+import { giveUserXp } from "../lib/levels";
 
 
 export default function DailyQuestScreen() {
@@ -32,20 +20,37 @@ export default function DailyQuestScreen() {
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState(true)
     const [profile, setProfile] = useState<Profile | null>()
+    const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
 
     const { profile: profileData } = useProfile(session?.user?.id)
 
-    const { dailyQuests } = useProfileQuests(profile?.id)
+    const { dailyQuests: profileDailyQuests} = useProfileQuests(profile?.id)
 
     const [checkModalIsOpen, setCheckModalIsOpen] = useState(false)
+    const [completeModalIsOpen, setCompleteModalIsOpen] = useState(true)
     const [questToUpdate, setQuestToUpdate] = useState<DailyQuest | null>(null)
+    const [questToDisplay, setQuestToDisplay] = useState<DailyQuest | null>(null)
 
     const rewards = {
         xp: 10,
         gold: 10
     }
 
+    function onQuestComplete(quest: DailyQuest | null) {
 
+        if (!profile) return
+
+        if (!quest  ) {
+            Alert.alert("Error displaying completed quest.")
+            return
+        }
+
+        const xpGain = quest.xp
+        giveUserXp(xpGain, profile, session, setLoading, setProfile)
+
+        setQuestToDisplay(quest)
+        setCompleteModalIsOpen(true)
+    }
 
     // Get User Session Data //
     
@@ -78,15 +83,21 @@ export default function DailyQuestScreen() {
             setProfile(profileData)
     }, [session, profileData])
 
+    useEffect(() => {
+        if (profileDailyQuests)
+            setDailyQuests(profileDailyQuests)
+    }, [profileDailyQuests])
+
 
     // Log dailyQuests when they change
     useEffect(() => {
         if (!dailyQuests) return
            
-        const completed = CheckQuestsCompleted(dailyQuests)
-        //if (completed) 
+        const completed = CheckAllQuestsCompleted(dailyQuests)
+        //if (completed)  
             // grant rewards and show feedback
     }, [dailyQuests])
+
 
     return (
         <SafeAreaView style={[ styles.container,]}>
@@ -120,9 +131,10 @@ export default function DailyQuestScreen() {
             {
                 // Quest cards
             }
+            
             <FlatList 
                 style={{ width: '100%', marginTop: 20}}
-                data={dailyQuests}
+                data={dailyQuests ? Object.values(dailyQuests) : []}
                 renderItem={({ item }) => (
                     <>
                         <DailyQuestCard quest={item} setQuest={setQuestToUpdate} openModal={setCheckModalIsOpen}/>
@@ -134,19 +146,28 @@ export default function DailyQuestScreen() {
 
             <QuestCheckModal 
                 session={session} 
+                setQuestMap={setDailyQuests}
                 quest={questToUpdate} 
                 showModal={checkModalIsOpen} 
                 onClose={ () => setCheckModalIsOpen(false) } 
                 setLoading={setLoading}
+                onComplete={ onQuestComplete }
+            />
+
+            <QuestCompleteModal
+                quest={ questToDisplay ? questToDisplay : null }
+                showModal={completeModalIsOpen}
+                onClose={ () => setCompleteModalIsOpen(false)}
             />
 
         </SafeAreaView>
     )
 }
 
-function CheckQuestsCompleted(quests: DailyQuest[]) {
+function CheckAllQuestsCompleted(quests: QuestMap) {
 
     var isPassing = true;
+    /*
 
     for (let questIndex = 0; questIndex < quests.length; questIndex++) {
         if (quests[questIndex].completed / quests[questIndex].goal < 1) {
@@ -154,6 +175,8 @@ function CheckQuestsCompleted(quests: DailyQuest[]) {
             break
         }
     }
-
+    */
     return isPassing
 }
+
+

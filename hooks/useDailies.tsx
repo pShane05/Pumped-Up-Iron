@@ -1,7 +1,7 @@
 import { Alert } from "react-native"
 import { supabase } from "../lib/supabase"
 import { useEffect, useState } from "react"
-import { DailyQuest } from "../lib/dailyQuest"
+import { DailyQuest, QuestMap } from "../lib/dailyQuest"
 
 export function useDailyQuest(difficulty: string, rarity: string) {
 
@@ -45,7 +45,8 @@ export function useDailyQuest(difficulty: string, rarity: string) {
 
 export function useProfileQuests(userId: string | undefined) {
 
-    const [dailyQuests, setDailyQuests] = useState<DailyQuest[] | null>(null)
+    const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
+    //const [unmappedQuests, setUnmappedQuests] = useState<DailyQuest[] | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | null>(null)
 
@@ -59,11 +60,19 @@ export function useProfileQuests(userId: string | undefined) {
                 const { data, error } = await supabase
                     .from('active_dailies')
                     .select('*')
-                    //.eq('user_id', userId)
+                    .eq('user_id', userId)
+                    .order("id", {ascending: true})
                     .limit(10)
                 if (error) throw error
 
-                setDailyQuests(data)
+                if (!data || data.length === 0) return null
+
+                var tempQuestMap: QuestMap = {}
+                data.forEach(quest => {
+                    tempQuestMap[quest.id] = quest
+                })
+
+                setDailyQuests(tempQuestMap)
             } 
             catch (error) {
                 if (error instanceof Error)

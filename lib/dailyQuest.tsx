@@ -7,7 +7,7 @@ import { Session } from "@supabase/supabase-js"
 import { Alert } from "react-native"
 
 export type DailyQuest = {
-    id: string,
+    id: number,
     userId: string,
     name: string,
     goal: number,
@@ -18,9 +18,14 @@ export type DailyQuest = {
     xp: number
 }
 
+export type QuestMap = {
+    [id: number]: DailyQuest
+}
+
 export async function rerollDailyQuests(profile: Profile) {
 
-    const pastQuests = useProfileQuests(profile.id).dailyQuests
+    /*
+    const pastQuests = useProfileQuests(profile.id).questMap
     const [quests, setQuests] = useState<DailyQuest[] | null>(null)
 
     logCompletedQuests(pastQuests)
@@ -38,6 +43,7 @@ export async function rerollDailyQuests(profile: Profile) {
         // difficulty
 
         //useDailyQuest()
+        */
 }
 
 function logCompletedQuests(quests: DailyQuest[] | null) {
@@ -73,22 +79,24 @@ export async function updateActiveDailies({
 
         try {
             setLoading(true)
+            console.log("enter update")
     
             if (!session?.user) throw new Error("No user on the session!")
 
             const updateData = {
-                    ...updates,
-                    user_id: session.user.id,
-                    completed_at: new Date(),
-                    updated_at: new Date()
+                    ...updates
                 }
 
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('active_dailies')
                 .update(updateData)
                 .eq('id', updates.id)
+                .select()
                 
             if (error) throw error
+
+            console.log("Data: ", data)
+            return { data, error }
 
         }
         catch (error) {

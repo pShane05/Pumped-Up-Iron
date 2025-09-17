@@ -35,11 +35,15 @@ export default function AvatarScreen() {
   const startDate = profile?.date_started; // "2000-05-17T00:00:00.000Z"
   const isDataReady = session && profile && gold && startDate !== undefined
 
-  const formattedDate = new Date(startDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formattedDate = 
+    startDate ?
+      new Date(startDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    :
+    "---- -- --"
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -90,7 +94,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(100, session, setLoading, setProfile) 
+            await giveUserXp(100, profile, session, setLoading, setProfile) 
           }}
         >
           <Text>
@@ -101,7 +105,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(500, session, setLoading, setProfile) 
+            await giveUserXp(500, profile, session, setLoading, setProfile) 
           }}
         >
           <Text>

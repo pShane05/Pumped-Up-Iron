@@ -22,15 +22,11 @@ function requireXp(level: number) {
 }
 
 
-export async function giveUserXp(xpGain: number, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
+export async function giveUserXp(xpGain: number, profile: Profile | null, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
 
-    if (!session) return
-
-    const { profile, loading, error } = useProfile(session.user.id)
+    if (!session || !profile) return
 
     if (!profile) return
-    if (error) console.error("Error loading profile: ", error)
-    while (loading) {}
 
     var currLevel = profile.level
     var xpToNextLvl = requireXp(currLevel)

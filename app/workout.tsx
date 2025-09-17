@@ -275,7 +275,7 @@ export default function WorkoutScreen() {
       }
     })
 
-    await giveUserXp(rewards.xp, session, setLoading, setProfile)
+    await giveUserXp(rewards.xp, profile, session, setLoading, setProfile)
 
     setWorkoutIsActive(false)
     saveActiveState("false")
