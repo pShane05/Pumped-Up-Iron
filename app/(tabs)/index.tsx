@@ -11,6 +11,8 @@ import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
 import { Profile } from '../../lib/profile'
 import { useProfileQuests } from '../../hooks/useDailies'
+import { createClient } from '@supabase/supabase-js'
+
 
 
 export default function App() {

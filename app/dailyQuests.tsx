@@ -4,7 +4,7 @@ import { COLORS, FONTS, styles } from "./costants";
 import { use, useEffect, useState } from "react";
 import DailyQuestCard from "../components/DailyCard";
 import { DailyQuest, QuestMap } from "../lib/dailyQuest";
-import { supabase } from "../lib/supabase";
+import { getDailyQuests, supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
 import { useProfile } from "../hooks/useProfile";
@@ -19,7 +19,11 @@ export default function DailyQuestScreen() {
 
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    
     const [profile, setProfile] = useState<Profile | null>()
+
+    const [questArray, setQuestArray] = useState<DailyQuest[] | null>(null)
     const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
 
     const { profile: profileData } = useProfile(session?.user?.id)
@@ -56,6 +60,38 @@ export default function DailyQuestScreen() {
         setQuestToDisplay(quest)
         setCompleteModalIsOpen(true)
     }
+
+    const loadDailyQuests = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const questData = await getDailyQuests();
+      setQuestArray(questData.quests || []);
+
+      questArray?.forEach(quest => {
+
+        setDailyQuests(prev => {
+            return {
+                ...prev,
+                [quest.id]: quest
+            }
+        })
+      })
+
+      console.log("Daily Quests: ", dailyQuests)
+      
+      if (questData.is_new) {
+        console.log('🎉 New daily quests generated!');
+        // Maybe show a notification or animation
+      }
+      
+    } catch (err) {
+      throw(err)
+    } finally {
+      setLoading(false);
+    }
+  };
 
     // Get User Session Data //
     
@@ -94,14 +130,12 @@ export default function DailyQuestScreen() {
     }, [profileDailyQuests])
 
 
-    // Log dailyQuests when they change
+    // Load daily quests from supabase
     useEffect(() => {
-        if (!dailyQuests) return
-           
-       // const completed = CheckAllQuestsCompleted(dailyQuests)
-        //if (completed)  
-            // grant rewards and show feedback
-    }, [dailyQuests])
+        
+        loadDailyQuests()           
+        console.log(dailyQuests)
+    }, [])
 
 
     return (

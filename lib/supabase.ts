@@ -30,3 +30,40 @@ AppState.addEventListener('change', (state) => {
     supabase.auth.stopAutoRefresh()
   }
 })
+
+
+
+export async function getDailyQuests() {
+  try {
+    // Get user's timezone automatically
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Get current session to include auth token
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      throw new Error('User not authenticated');
+    }
+
+    // Call your Edge Function
+    const { data, error } = await supabase.functions.invoke('daily-quests', {
+      body: { 
+        timezone: userTimezone 
+      },
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    });
+
+    if (error) {
+      console.error('Error calling daily-quests function:', error);
+      throw error;
+    }
+
+    return data; // Returns { quests: [...], generated_date: "2024-XX-XX", is_new: boolean }
+    
+  } catch (error) {
+    console.error('Failed to get daily quests:', error);
+    throw error;
+  }
+}

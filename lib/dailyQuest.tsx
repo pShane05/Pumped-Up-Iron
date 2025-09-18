@@ -1,5 +1,5 @@
 import { Profile } from "./profile"
-import { useDailyQuest, useProfileQuests } from "../hooks/useDailies"
+import { useDailyQuests, useProfileQuests } from "../hooks/useDailies"
 import { supabase } from "./supabase"
 import { randomRarity } from "./randomValues"
 import { useState } from "react"
@@ -25,7 +25,6 @@ export type QuestMap = {
 
 export async function rerollDailyQuests(session: Session | null, setLoading: (item:any) => void, profile: Profile) {
 
-    const [quests, setQuests] = useState<DailyQuest[] | null>(null)
 
     const pastQuestsMap = useProfileQuests(profile.id).dailyQuests
     if (pastQuestsMap) {
@@ -39,33 +38,7 @@ export async function rerollDailyQuests(session: Session | null, setLoading: (it
         })
             
         deleteActiveQuests(profile)
-    }
-
-    
-
-    for (let index = 0; index < 4; ++index) {
-        const rarity = randomRarity(false)
-        const difficulty = "beginner"
-
-        const quest = useDailyQuest(difficulty, rarity).dailyQuest
-        if (!quest) continue
-
-        setQuests(prev => {
-            const currentQuests = prev || []
-
-            return [...currentQuests, quest]
-
-        })
-        
-    }
-
-    await updateActiveDailies({
-        session,
-        setLoading,
-        updates: {
-            
-        }
-    })
+    }        
 
 }
 
