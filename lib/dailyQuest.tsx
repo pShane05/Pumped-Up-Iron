@@ -115,7 +115,7 @@ export async function updateActiveDailies({
                 .upsert(updateData, {onConflict: 'id'})
                 .eq('id', updates.id)
                 .select()
-                
+            console.log(data, error)
             if (error) throw error
 
             console.log("Data: ", data)

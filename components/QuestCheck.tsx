@@ -54,7 +54,7 @@ export default function QuestCheckModal(
                 completed_at: (totalCompleted >= props.quest.goal) ? new Date() : undefined
             }
         }) || { data: []}
-
+        console.log(data)
         
         props.setQuestMap((prev: QuestMap | null) => {
 

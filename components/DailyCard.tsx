@@ -84,7 +84,7 @@ export default function DailyQuestCard(props: {
                 <Text 
                     style={{ color: completion < 1 ? COLORS.RED : COLORS.GREEN, } }
                 > 
-                    {completion > 1 ? 100 : completion * 100}% 
+                    {Math.floor(completion > 1 ? 100 : completion * 100)}% 
                 </Text>
             </View>
 
