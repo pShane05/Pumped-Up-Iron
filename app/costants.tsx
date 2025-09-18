@@ -42,6 +42,10 @@ export const imageMap: Record<string, any> = {
   'triceps_icon.png': require('../assets/icons/triceps_icon.png'),
   'forearms_icon.png': require('../assets/icons/forearms_icon.png'),
   'biceps_icon.png': require('../assets/icons/biceps_icon.png'),
+  'shield_icon.png': require('../assets/icons/shield_icon.png'),
+  'armor_icon.png': require('../assets/icons/armor_icon.png'),
+  'sword_icon.png': require('../assets/icons/sword_icon.png'),
+  'shades_icon.png': require('../assets/icons/shades_icon.png'),
 }
 
 export function attribute() {
@@ -219,8 +223,11 @@ export const styles = StyleSheet.create({
   ItemSelector: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     borderRadius: 25,
-    height: (Dimensions.get('window').width) * 0.25,
-    width: (Dimensions.get('window').width) * 0.25,      
+    height: 110,
+    width: 110,  
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5
   },
   authContainer: {
     flex: 1,
