@@ -3,6 +3,7 @@ import { Text, Pressable, Alert, StyleSheet, View, FlatList } from 'react-native
 import { router, useRouter } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
 import { DailyQuest, QuestMap } from '../lib/dailyQuest'
+import DailyCountdown from './Countdowns'
 
   export default function DailyPreviewCard(props: { quests: QuestMap | null}) {
 
@@ -31,6 +32,12 @@ import { DailyQuest, QuestMap } from '../lib/dailyQuest'
       
 
       <Text style={{ color: 'red', marginTop: 20, fontFamily: FONTS.BODY }}> * Required </Text>
+
+      <View style={{ flexDirection: 'row', marginTop: 20}}>
+        <Text style={{ color: COLORS.CYAN}}> Time Left: </Text>
+        <DailyCountdown />
+      </View>
+      
     </Pressable>
   )
 }
