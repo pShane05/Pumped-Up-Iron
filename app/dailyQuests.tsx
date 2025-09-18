@@ -123,10 +123,14 @@ export default function DailyQuestScreen() {
                     Total Rewards:
                 </Text>
 
-                <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY }]}>
+                <Text style={[ styles.exerciseNameText, { 
+                        textAlign: 'center', color: isAllDailiesComplete ? COLORS.GREEN : COLORS.CYAN, marginVertical: 10, fontFamily: FONTS.BODY 
+                    }]}>
                     { rewards.xp ? rewards.xp : "[xp]" } xp
                 </Text>
-                <Text style={{ textAlign: 'center', color: '#fffe00', fontFamily: FONTS.BODY }}>
+                <Text style={{ 
+                        textAlign: 'center', color: isAllDailiesComplete ? COLORS.GREEN : '#fffe00', fontFamily: FONTS.BODY 
+                    }}>
                     { rewards.gold ? rewards.gold : "[gold]" } gold
                 </Text>
                 
