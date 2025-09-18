@@ -23,35 +23,84 @@ export type QuestMap = {
     [id: number]: DailyQuest
 }
 
-export async function rerollDailyQuests(profile: Profile) {
+export async function rerollDailyQuests(session: Session | null, setLoading: (item:any) => void, profile: Profile) {
 
-    /*
-    const pastQuests = useProfileQuests(profile.id).questMap
     const [quests, setQuests] = useState<DailyQuest[] | null>(null)
 
-    logCompletedQuests(pastQuests)
-    deleteActiveQuests(profile)
+    const pastQuestsMap = useProfileQuests(profile.id).dailyQuests
+    if (pastQuestsMap) {
+        const pastQuestsArray = Object.values(pastQuestsMap)
+        
+
+        await logPastDailies({
+            session,
+            setLoading,
+            quests: pastQuestsArray
+        })
+            
+        deleteActiveQuests(profile)
+    }
+
+    
 
     for (let index = 0; index < 4; ++index) {
         const rarity = randomRarity(false)
         const difficulty = "beginner"
 
         const quest = useDailyQuest(difficulty, rarity).dailyQuest
-        //const data
+        if (!quest) continue
+
+        setQuests(prev => {
+            const currentQuests = prev || []
+
+            return [...currentQuests, quest]
+
+        })
+        
     }
-        // random rarity
 
-        // difficulty
-
-        //useDailyQuest()
-        */
-}
-
-function logCompletedQuests(quests: DailyQuest[] | null) {
-
-    if (!quests) return
+    await updateActiveDailies({
+        session,
+        setLoading,
+        updates: {
+            
+        }
+    })
 
 }
+
+export async function logPastDailies({
+    session,
+    setLoading,
+    quests,
+}:  {
+        session: Session | null,
+        setLoading: (loading: boolean) => void,
+        quests: DailyQuest[]
+    }) {
+    
+        try {
+            setLoading(true)
+    
+            if (!session?.user) throw new Error("No user on the session!")
+    
+            const { data, error } = await supabase
+                .from("past_dailies")
+                .insert(quests)
+            console.log ( error )
+    
+            if (error) throw error
+        
+        }
+
+        catch (error) {
+            if (error instanceof Error) {
+                Alert.alert(error.message)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
 
 async function deleteActiveQuests(profile: Profile) {
 
@@ -90,7 +139,7 @@ export async function updateActiveDailies({
 
             const { data, error } = await supabase
                 .from('active_dailies')
-                .update(updateData)
+                .upsert(updateData, {onConflict: 'id'})
                 .eq('id', updates.id)
                 .select()
                 
