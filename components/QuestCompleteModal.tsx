@@ -6,11 +6,16 @@ export default function QuestCompleteModal(
     props: {
         quest: DailyQuest | null,
         showModal: boolean,
-        onClose: () => void
-        
+        onClose: () => void,
+        allComplete: boolean
+        rewards: {
+            xp: number,
+            gold: number
+        }
     }) {
 
     if (!props.showModal || !props.quest) return
+    console.log("Complete in modal: ", props.allComplete)
 
     return (
         <View
@@ -31,11 +36,28 @@ export default function QuestCompleteModal(
                     <Text style={{ color: COLORS.CYAN}}>
                         {props.quest.xp} Xp 
                     </Text>
-                    !{'\n\n'} Nice Job!
+                    !
+                </Text>
+                { props.allComplete &&
+                    <Text style={{ fontSize: 16, textAlign: 'center', fontFamily: FONTS.BODY, color: COLORS.BORDER}}>
+                        {'\n\n'}Completing all daily quests has earned you
+                        <Text style={{ color: COLORS.CYAN}}>
+                            {' '}{props.rewards.xp} Xp 
+                        </Text>
+                        {' '}and
+                        <Text style={{ color: COLORS.GOLD}}>
+                            {'\n' + props.rewards.gold} Gold 
+                        </Text>
+                    </Text>
+                }
+                <Text style={{ fontSize: 16, textAlign: 'center', fontFamily: FONTS.BODY, color: COLORS.BORDER}}>
+                    {'\n\n'} Nice Job!
                 </Text>
 
                 <Pressable
-                    onPress={props.onClose}
+                    onPress={
+                        props.onClose
+                    }
                     style={[ styles.button, { marginTop: 20 } ]}
                 >
                     <Text style={{ fontFamily: FONTS.BODY, fontSize: 16,}}>

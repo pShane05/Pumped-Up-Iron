@@ -9,7 +9,7 @@ import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
 import { useProfile } from "../hooks/useProfile";
 import { useProfileQuests } from "../hooks/useDailies";
-import { Profile } from "../lib/profile";
+import { giveUserGold, Profile } from "../lib/profile";
 import QuestCheckModal from "../components/QuestCheck";
 import QuestCompleteModal from "../components/QuestCompleteModal";
 import { giveUserXp } from "../lib/levels";
@@ -26,28 +26,33 @@ export default function DailyQuestScreen() {
 
     const { dailyQuests: profileDailyQuests} = useProfileQuests(profile?.id)
 
+    const [isAllDailiesComplete, setIsAllDailiesComplete] = useState(false)
     const [checkModalIsOpen, setCheckModalIsOpen] = useState(false)
     const [completeModalIsOpen, setCompleteModalIsOpen] = useState(true)
     const [questToUpdate, setQuestToUpdate] = useState<DailyQuest | null>(null)
     const [questToDisplay, setQuestToDisplay] = useState<DailyQuest | null>(null)
 
     const rewards = {
-        xp: 10,
-        gold: 10
+        xp: (profile?.level) ? Math.floor(profile.level / 10) * 8 : -1,
+        gold: (profile?.level) ? Math.floor((profile.level) * .25) + 10 : -1
     }
 
-    function onQuestComplete(quest: DailyQuest | null) {
+    function onQuestComplete(quest: DailyQuest | null, allQuestsComplete: boolean) {
 
-        if (!profile) return
+        if (!profile || !dailyQuests) return
+        if (allQuestsComplete) setIsAllDailiesComplete(allQuestsComplete)
 
         if (!quest  ) {
             Alert.alert("Error displaying completed quest.")
             return
         }
 
-        const xpGain = quest.xp
+        const xpGain = allQuestsComplete ? quest.xp + rewards.xp: quest.xp
         giveUserXp(xpGain, profile, session, setLoading, setProfile)
 
+        if (allQuestsComplete) 
+            giveUserGold(rewards.gold, profile, session, setLoading, setProfile)
+        
         setQuestToDisplay(quest)
         setCompleteModalIsOpen(true)
     }
@@ -93,7 +98,7 @@ export default function DailyQuestScreen() {
     useEffect(() => {
         if (!dailyQuests) return
            
-        const completed = CheckAllQuestsCompleted(dailyQuests)
+       // const completed = CheckAllQuestsCompleted(dailyQuests)
         //if (completed)  
             // grant rewards and show feedback
     }, [dailyQuests])
@@ -152,31 +157,24 @@ export default function DailyQuestScreen() {
                 onClose={ () => setCheckModalIsOpen(false) } 
                 setLoading={setLoading}
                 onComplete={ onQuestComplete }
+                questMap={dailyQuests}
             />
 
             <QuestCompleteModal
                 quest={ questToDisplay ? questToDisplay : null }
                 showModal={completeModalIsOpen}
-                onClose={ () => setCompleteModalIsOpen(false)}
+                onClose={ () => {
+                    setCompleteModalIsOpen(false)
+                    if (isAllDailiesComplete) router.replace('/')
+                }}
+                allComplete={ isAllDailiesComplete }
+                rewards={rewards}
             />
 
         </SafeAreaView>
     )
 }
 
-function CheckAllQuestsCompleted(quests: QuestMap) {
 
-    var isPassing = true;
-    /*
-
-    for (let questIndex = 0; questIndex < quests.length; questIndex++) {
-        if (quests[questIndex].completed / quests[questIndex].goal < 1) {
-            isPassing = false
-            break
-        }
-    }
-    */
-    return isPassing
-}
 
 

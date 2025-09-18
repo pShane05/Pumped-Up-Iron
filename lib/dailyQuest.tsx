@@ -13,6 +13,7 @@ export type DailyQuest = {
     goal: number,
     completed: number,
     is_completed: boolean,
+    completed_at: Date,
     difficulty: string,
     rarity: string,
     xp: number

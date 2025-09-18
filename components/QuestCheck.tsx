@@ -13,7 +13,8 @@ export default function QuestCheckModal(
         showModal: boolean,
         onClose: () => void
         setLoading: (item:any) => void
-        onComplete: (item: any) => void
+        onComplete: (item: any, item2:any) => void
+        questMap: QuestMap | null
     }
 ) {
 
@@ -22,6 +23,20 @@ export default function QuestCheckModal(
     const [addValue, setAddValue] = useState('')
     const session = props.session
     const setLoading = props.setLoading
+
+    const onQuestComplete = async (quest: DailyQuest) => {
+        if (!props.questMap) return
+
+        const updatedQuestMap = {
+            ...props.questMap,
+            [quest.id]: quest
+        }
+        console.log("Updated map: ", updatedQuestMap)
+
+        const areAllQuestsDone = await CheckAllQuestsCompleted(updatedQuestMap)
+        console.log(areAllQuestsDone)
+        props.onComplete(quest, areAllQuestsDone)
+    }
 
     async function handleConfirm() {
   
@@ -34,11 +49,12 @@ export default function QuestCheckModal(
             setLoading,
             updates: {
                 id: props.quest.id,
-                completed: totalCompleted
+                completed: totalCompleted,
+                is_completed: (totalCompleted >= props.quest.goal),
+                completed_at: (totalCompleted >= props.quest.goal) ? new Date() : undefined
             }
         }) || { data: []}
 
-        console.log("Updated Quest: ", data)
         
         props.setQuestMap((prev: QuestMap | null) => {
 
@@ -50,7 +66,7 @@ export default function QuestCheckModal(
             }
         })
 
-        if(data[0].completed >= data[0].goal) props.onComplete(data[0])
+        if(data[0].completed >= data[0].goal) onQuestComplete(data[0])
 
         props.onClose()
 
@@ -108,4 +124,17 @@ export default function QuestCheckModal(
 
         </SafeAreaView>
     )
+}
+
+async function CheckAllQuestsCompleted(quests: QuestMap) {
+
+    var isPassing = true;
+    
+    Object.values(quests).forEach(quest => {
+        console.log(quest)
+        if (quest.completed < quest.goal)
+            isPassing = false
+    })
+    console.log("passing check: ", isPassing)
+    return isPassing
 }
