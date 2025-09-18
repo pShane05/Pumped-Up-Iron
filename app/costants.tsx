@@ -12,6 +12,7 @@ export const COLORS = {
     PINK: '#E113C5',
     PURPLE: '#550577',
     DARK_PURPLE: '#350537',
+    GOLD: "#fffe00",
 
     PRIMARY: '#10002b',
     SECONDARY: '#80FFDB',

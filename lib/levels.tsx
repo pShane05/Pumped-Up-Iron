@@ -22,7 +22,7 @@ function requireXp(level: number) {
 }
 
 
-export async function giveUserXp(xpGain: number, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
+export async function giveUserXp(xpGain: number, profile: Profile | null, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
 
     if (!session) return
 

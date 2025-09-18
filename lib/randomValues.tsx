@@ -20,3 +20,15 @@ export function randomRarity(isMagicPossible: boolean) {
 
     return rarity
 }
+
+export function commonUncommon() {
+    const roll = Math.random()
+    var rarity
+
+    if (roll > 0.4)
+        rarity = "Common"
+    else
+        rarity = "Uncommon"
+
+    return rarity
+}

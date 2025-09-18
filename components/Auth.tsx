@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import { Text, Pressable, Alert, StyleSheet, View } from 'react-native'
+import { Text, Pressable, Alert, StyleSheet, View, TextInput } from 'react-native'
 import { supabase } from '../lib/supabase'
-import { Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 import { navigate } from 'expo-router/build/global-state/routing'
 import { useRouter } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
-import { color } from '@rneui/themed/dist/config'
 
 
 
@@ -76,37 +74,37 @@ export default function Signup() {
       <View style={ styles.horizontalLine } />
 
       <View style={[styles.input, styles.mt25]}>
-        <Input
+        <TextInput
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
           autoCapitalize={'none'}
-          disabled={!notSession}
-          inputStyle={{ color: COLORS.BORDER }}
+          //disabled={!notSession}
+          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
       <View style={styles.input}>
-        <Input
+        <TextInput
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
           placeholder="Password"
           autoCapitalize={'none'}
-          disabled={!notSession}
-          inputStyle={{ color: COLORS.BORDER }}
+          //disabled={!notSession}
+          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
       <View style={styles.input}>
-        <Input
+        <TextInput
           onChangeText={(text) => setConfirmPassword(text)}
           value={confirmPassword}
           secureTextEntry={true}
           placeholder="Confirm Password"
           autoCapitalize={'none'}
-          disabled={!notSession}
-          inputStyle={{ color: COLORS.BORDER }}
+          //disabled={!notSession}
+          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
@@ -149,26 +147,26 @@ export function Login() {
       <View style={ styles.horizontalLine } />
 
       <View style={[styles.input, styles.mt25, { marginHorizontal: 20}]}>
-        <Input
+        <TextInput
           style={ styles.subText }
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
           autoCapitalize={'none'}
-          disabled={!notSession}
-          inputStyle={{ color: COLORS.BORDER }}
+          //disabled={!notSession}
+          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
       <View style={styles.input}>
-        <Input
+        <TextInput
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
           placeholder="Password"
           autoCapitalize={'none'}
-          disabled={!notSession}
-          inputStyle={{ color: COLORS.BORDER }}
+          //disabled={!notSession}
+          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 

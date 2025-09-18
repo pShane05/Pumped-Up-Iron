@@ -65,3 +65,25 @@ export async function updateProfile({
     }
 
 }
+
+export async function giveUserGold(goldGain: number, profile: Profile | null, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
+
+    if (!session || !profile) return
+    console.log("profile and session valid")
+
+    var totalGold = profile?.gold_count + goldGain
+
+    console.log("gain", goldGain)
+    console.log("current", profile.gold_count)
+    console.log("total", totalGold)
+
+
+    setProfile(await updateProfile({
+        session,
+        setLoading,
+        updates: {
+            gold_count: totalGold,
+        }
+    }))
+
+}

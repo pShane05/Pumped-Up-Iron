@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Text, Pressable, Alert, StyleSheet, View, FlatList } from 'react-native'
 import { router, useRouter } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
-import { DailyQuest } from '../lib/dailyQuest'
+import { DailyQuest, QuestMap } from '../lib/dailyQuest'
 
-  export default function DailyPreviewCard(props: { quests: DailyQuest[] | null}) {
+  export default function DailyPreviewCard(props: { quests: QuestMap | null}) {
 
   return (
     
@@ -22,7 +22,7 @@ import { DailyQuest } from '../lib/dailyQuest'
       <FlatList 
         style={{ width: '100%'}}
         scrollEnabled={false}
-        data={ props.quests }
+        data={ props.quests ? Object.values(props.quests) : []}
         renderItem={({ item }) => (
 
           <QuestPreview quest={item}/>                  
