@@ -45,7 +45,7 @@ export function QuestPreview(props: {quest: DailyQuest}) {
       <Text 
         style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY}}
       > 
-        {props.quest.name}  ({props.quest.units})
+        {props.quest.name} {props.quest.goal} {props.quest.units}
       </Text>
 
       <Text

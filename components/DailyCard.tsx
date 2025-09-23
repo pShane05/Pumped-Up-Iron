@@ -53,8 +53,8 @@ export default function DailyQuestCard(props: {
                 style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}
             >
 
-                <Text style={[ styles.headerText, {fontSize: 28, width: '50%'} ]}>
-                    { quest.name}  
+                <Text style={[ styles.headerText, {fontSize: 24, width: '60%', fontFamily: FONTS.BODY} ]}>
+                    { quest.name} { quest.goal} {quest.units}
                     
                 </Text>
 
