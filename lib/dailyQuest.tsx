@@ -16,7 +16,8 @@ export type DailyQuest = {
     completed_at: Date,
     difficulty: string,
     rarity: string,
-    xp: number
+    xp: number,
+    units: string
 }
 
 export type QuestMap = {

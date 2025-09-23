@@ -53,14 +53,14 @@ export default function DailyQuestCard(props: {
                 style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}
             >
 
-                <Text style={[ styles.headerText, {fontSize: 28, width: '50%'} ]}>
-                    { quest.name}
+                <Text style={[ styles.headerText, {fontSize: 24, width: '60%', fontFamily: FONTS.BODY} ]}>
+                    { quest.name} { quest.goal} {quest.units}
                     
                 </Text>
 
                 <View style={{flexDirection: 'row', columnGap: 10, alignItems: 'center'}}>
                     <Text style={[ styles.headerText, {fontSize: 20,} ]}>
-                        [{quest.completed} / {quest.goal}]
+                        [{quest.completed} / {quest.goal} ]
                     </Text>
                     {completion < 1 ? <AddButton /> : <CheckBox />}
                 </View>
