@@ -1,5 +1,5 @@
 import 'react-native-url-polyfill/auto'
-import { useState, useEffect, } from 'react'
+import React, { useState, useEffect, } from 'react'
 import { supabase } from '../../lib/supabase'
 import { ScrollView, Image, Pressable, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView, FlatList } from 'react-native'
 import { Session } from '@supabase/supabase-js'
@@ -13,21 +13,27 @@ import DailyCountdown from '../../components/Countdowns'
 import { Item } from '../../lib/Item'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { commonUncommon } from '../../lib/randomValues'
-import { useItemsByRarity } from '../../hooks/useItem'
-
+import { useItemsByRarity, useItemsByUser } from '../../hooks/useItem'
+import PurchaseModal from '../../components/PurchaseItemModal'
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
+import Entypo from '@expo/vector-icons/Entypo'
 
 export default function ShopScreen() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const today = new Date().toDateString()
 
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+
   const router = useRouter()
 
-  const dailies = useItemsByRarity("common", 6).items
-  const weeklies = useItemsByRarity("common", 12).items
+  const dailyRoll = useItemsByRarity("common", 6).items
+  const weeklyRoll = useItemsByRarity("common", 12).items
 
   const [dailyItems, setDailyItems] = useState<Item[]>()
   const [weeklyItems, setWeeklyItems] = useState<Item[]>()
+
 
   console.log(dailyItems)
 
@@ -36,6 +42,31 @@ export default function ShopScreen() {
 
   const isDataReady = session && profile && gold !== undefined
   const shopImage = require('../../assets/images/ai_shop.png')
+
+  const hookUserItems = useItemsByUser(profile)
+  const [userItems, setUserItems] = useState<Item[] | null>(null)
+
+  const handleItemPress = (item: Item) => {
+    setSelectedItem(item)
+    setModalVisible(true)
+  }
+
+  const handleCloseModal = () => {
+    setModalVisible(false)
+    setSelectedItem(null)
+  }
+
+  const handlePurchase = async (item: Item) => {
+    // Add your purchase logic here
+    if (gold && gold >= item.price) {
+      // Update gold count in database/state
+      // Remove item from shop if it's a one-time purchase
+      Alert.alert(`You purchased ${item.name} for ${item.price} gold!`)
+      setModalVisible(false)
+    } else {
+      Alert.alert('Insufficient Gold', 'You do not have enough gold for this purchase.')
+    }
+  }
 
 
   // Async storage functions
@@ -55,7 +86,7 @@ export default function ShopScreen() {
     try {
       
       let jsonValue = JSON.stringify(_weeklyItems)
-      await AsyncStorage.setItem("daily-shop-items", jsonValue)
+      await AsyncStorage.setItem("weekly-shop-items", jsonValue)
   
     } catch (e) {
       alert(e)
@@ -70,7 +101,7 @@ export default function ShopScreen() {
   
       const dailyShopItems = await AsyncStorage.getItem("daily-shop-items")
   
-      //if (dailyShopItems !== null) setDailyItems(JSON.parse(dailyShopItems))
+      if (dailyShopItems !== null) setDailyItems(JSON.parse(dailyShopItems))
   
     } catch (e) {
       alert(e)
@@ -81,6 +112,8 @@ export default function ShopScreen() {
     try {
   
       const weeklyShopItems = await AsyncStorage.getItem("weekly-shop-items")
+    
+      console.log(weeklyShopItems ? JSON.parse(weeklyShopItems) : null )
   
       if (weeklyShopItems !== null) setWeeklyItems(JSON.parse(weeklyShopItems))
     } catch (e) {
@@ -113,6 +146,15 @@ export default function ShopScreen() {
     loadWeeklyItemState()
   }, [])
 
+  useEffect(() => {
+    setDailyItems(dailyRoll)
+    setWeeklyItems(weeklyRoll)
+
+    saveDailyItemState(dailyRoll)
+    saveWeeklyItemState(weeklyRoll)
+    console.log("both saves: ", !(!dailyRoll || !weeklyRoll))
+  })
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -133,14 +175,6 @@ export default function ShopScreen() {
       router.replace('../login')
     }
   }, [session])
-
-  useEffect(() => {
-    setDailyItems(dailies)
-  }, [dailies])
-
-  useEffect(() => {
-    setWeeklyItems(weeklies)
-  }, [weeklies])
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
@@ -207,7 +241,7 @@ export default function ShopScreen() {
           scrollEnabled={false}
           data={dailyItems}
           renderItem={({item}) => (
-            <ItemSelector item={item}/>
+            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={userItems}/>
           )}
           
         />
@@ -227,7 +261,7 @@ export default function ShopScreen() {
           scrollEnabled={false}
           data={weeklyItems}
           renderItem={({item}) => (
-            <ItemSelector item={item}/>
+            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={userItems}/>
           )}
           
         />
@@ -240,6 +274,14 @@ export default function ShopScreen() {
 
       </ScrollView>
       
+      <PurchaseModal
+          session={session}
+          item={selectedItem}
+          showModal={modalVisible}
+          onClose={handleCloseModal}
+          onPurchase={handlePurchase}
+          profile={profile}
+      />
 
     </SafeAreaView>
   )
@@ -254,17 +296,53 @@ export function CatSelector() {
   )
 }
 
-export function ItemSelector(props: { item: Item }) {
+export function ItemSelector(props: { item: Item, onPress: () => void, userItems: Item[] | null }) {
+
+  if (!props.item) return
+
+  let isOwned = false
+
+  props.userItems?.forEach(item => {
+    if (item.id == props.item.id)
+    isOwned = true
+  })
+
   return (
-    <View style={ styles.ItemSelector }>
+    <Pressable 
+      style={ styles.ItemSelector }
+      onPress={props.onPress}
+    >
 
         <View style={{ alignSelf: 'center', width: 50, height: 50, }}>
           <Image style={{ resizeMode: 'contain', width: '100%', height: '100%',}} source={ imageMap[props.item.icon_url] }/>
         </View>
         
-        <Text style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 12, textAlign: 'center'}}>
+        <Text style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 10, textAlign: 'center', }}>
           {props.item.name}
         </Text>
-    </View>
+        
+        { isOwned ?
+          (
+
+            <View
+              style={{ 
+                height: 24, width: 24, backgroundColor: COLORS.GREEN_MUTED, borderColor: COLORS.BLACK, borderWidth: 1,
+                borderRadius: 5, alignItems: 'center', justifyContent: 'center'
+              }}
+            >
+              <Entypo name="check" size={24} color="black" />
+            </View>
+
+          ) : (
+          <View style={{ flexDirection: 'row', position: 'absolute', bottom: 5, alignItems: 'center', columnGap: 2,}}>
+            <Text 
+              style={{ color: COLORS.GOLD, fontFamily: FONTS.HEADER, fontSize: 16, textAlign: 'center', }}
+            >
+              {props.item.price}
+            </Text>
+            <FontAwesome6 name="coins" size={12} color="#fffe00" />
+          </View>
+          )}
+    </Pressable>
   )
 }
