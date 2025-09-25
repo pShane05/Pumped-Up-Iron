@@ -51,7 +51,12 @@ export default function AvatarScreen() {
       <Text style= {{ marginTop: 20, alignSelf: 'center', fontSize: 40, color: '#cbeef3', fontFamily: FONTS.HEADER}}> Avatar </Text>
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 
-      <Pressable style={[ styles.button, { marginTop: 30 } ]}>
+      <Pressable 
+        style={[ styles.button, { marginTop: 30 } ]}
+        onPress={ () => {
+          router.push('../wardrobe')
+        }}
+      >
         <Text style={{ color: COLORS.BLACK, fontSize: 20, fontFamily: FONTS.BODY }}> Wardrobe </Text>
       </Pressable>
 
