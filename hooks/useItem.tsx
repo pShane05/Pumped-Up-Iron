@@ -17,12 +17,13 @@ export function useItemsByRarity(rarity: string | undefined, amount: number) {
           .from('items')
           .select('*')
           .eq('rarity', rarity)
-          .limit(amount)
 
         if (error) 
           throw error
 
-        setItems(data)
+        const shuffled = data.sort(() => Math.random() - .5)
+        setItems(shuffled.slice(0, amount))
+
 
       } catch (error) {
 
