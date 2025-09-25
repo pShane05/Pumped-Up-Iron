@@ -7,7 +7,7 @@ import { DailyQuest, QuestMap } from "../lib/dailyQuest";
 import { getDailyQuests, supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
-import { useProfile } from "../hooks/useProfile";
+import { useProfile, useProfileData } from "../hooks/useProfile";
 import { useProfileQuests } from "../hooks/useDailies";
 import { giveUserGold, Profile } from "../lib/profile";
 import QuestCheckModal from "../components/QuestCheck";
@@ -17,18 +17,12 @@ import { giveUserXp } from "../lib/levels";
 
 export default function DailyQuestScreen() {
 
-    const [session, setSession] = useState<Session | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { session, setSession, loading, setLoading, profile, dailyQuests, setDailyQuests, updateProfile} = useProfileData()
     const [error, setError] = useState(null)
     
-    const [profile, setProfile] = useState<Profile | null>()
 
     const [questArray, setQuestArray] = useState<DailyQuest[] | null>(null)
-    const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
 
-    const { profile: profileData } = useProfile(session?.user?.id)
-
-    const { dailyQuests: profileDailyQuests} = useProfileQuests(profile?.id)
 
     const [isAllDailiesComplete, setIsAllDailiesComplete] = useState(false)
     const [checkModalIsOpen, setCheckModalIsOpen] = useState(false)
@@ -52,10 +46,10 @@ export default function DailyQuestScreen() {
         }
 
         const xpGain = allQuestsComplete ? quest.xp + rewards.xp: quest.xp
-        giveUserXp(xpGain, profile, session, setLoading, setProfile)
+        giveUserXp(xpGain, profile, profile.id, updateProfile)
 
         if (allQuestsComplete) 
-            giveUserGold(rewards.gold, profile, session, setLoading, setProfile)
+            giveUserGold(rewards.gold, profile, profile.id, updateProfile)
         
         setQuestToDisplay(quest)
         setCompleteModalIsOpen(true)
@@ -92,42 +86,6 @@ export default function DailyQuestScreen() {
       setLoading(false);
     }
   };
-
-    // Get User Session Data //
-    
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          setSession(session)
-          setLoading(false)
-        })
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-          setSession(session)
-        })
-    
-        return () => {
-          listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-        }
-    }, [])
-    
-    
-    // ROute to login if needed
-    useEffect(() => {
-        if (!loading && !session) {
-            console.log(loading, session)
-            router.replace('../login')
-        }
-    }, [session])
-
-    // update profile when session updates
-    useEffect(() => {
-        if (session)
-            setProfile(profileData)
-    }, [session, profileData])
-
-    useEffect(() => {
-        if (profileDailyQuests)
-            setDailyQuests(profileDailyQuests)
-    }, [profileDailyQuests])
 
 
     // Load daily quests from supabase

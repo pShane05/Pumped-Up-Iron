@@ -46,7 +46,6 @@ export function useDailyQuests(difficulty: string, rarity: string) {
 export function useProfileQuests(userId: string | undefined) {
 
     const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
-    //const [unmappedQuests, setUnmappedQuests] = useState<DailyQuest[] | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | null>(null)
 
@@ -65,7 +64,10 @@ export function useProfileQuests(userId: string | undefined) {
                     .limit(10)
                 if (error) throw error
 
-                if (!data || data.length === 0) return null
+                if (!data || data.length === 0) {
+                    setDailyQuests({})
+                    return
+                }
 
                 var tempQuestMap: QuestMap = {}
                 data.forEach(quest => {

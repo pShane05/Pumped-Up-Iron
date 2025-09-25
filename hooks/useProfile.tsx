@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
-import { Alert } from 'react-native'
 import { Profile } from '../lib/profile'
 import { ProfileContext, useProfileContext } from '../contexts/profileContext'
 
@@ -50,7 +49,9 @@ export function useProfile(userId: string | undefined) {
   }, [userId])
 
 
-  fetchProfile()
+  useEffect(() => {
+    fetchProfile()
+  }, [fetchProfile])
 
 
   const refetch = useCallback(async () => {
@@ -63,21 +64,21 @@ export function useProfile(userId: string | undefined) {
 
     profile, 
     loading, 
-    error, 
+    error,
     fetchProfile,
     refetch
   }
 }
 
 export const useProfileData = () => {
-  const { profile, session, setSession, updateProfile, refreshProfile, dailyQuests, signOut, loading, setLoading } = useProfileContext()
+  const { profile, session, setSession, updateProfile, refreshProfile, dailyQuests, setDailyQuests, signOut, loading, setLoading } = useProfileContext()
 
   return {
     profile,
     updateProfile,
     refreshProfile,
     dailyQuests,
-
+    setDailyQuests,
     session,
     setSession,
     signOut,

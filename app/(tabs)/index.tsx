@@ -10,7 +10,7 @@ import LoadingScreen from '../../components/LoadingScreen'
 
 export default function App() {
 
-  const { loading, session, dailyQuests, signOut} = useProfileData()
+  const { loading, session, signOut} = useProfileData()
   
   
   const router = useRouter()
@@ -54,7 +54,7 @@ export default function App() {
       <ScrollView contentContainerStyle={ styles.scrollableView }>
         <View style={{ height: 180}} />
 
-        <DailyPreviewCard quests={dailyQuests}/>
+        <DailyPreviewCard />
 
         <WorkoutCard session={session}/>
 

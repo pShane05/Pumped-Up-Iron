@@ -13,7 +13,7 @@ import { giveUserXp } from '../../lib/levels'
 
 export default function AvatarScreen() {
 
-  const { session, setSession, loading, setLoading, profile, updateProfile } = useProfileData()
+  const { session, loading, profile, updateProfile } = useProfileData()
 
   
   const gold = profile?.gold_count
@@ -62,7 +62,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(100, profile, session, setLoading, updateProfile) 
+            await giveUserXp(100, profile, profile.id, updateProfile) 
           }}
         >
           <Text>
@@ -73,7 +73,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(100, profile, session, setLoading, updateProfile) 
+            await giveUserXp(100, profile, profile.id, updateProfile) 
           }}
         >
           <Text>

@@ -1,5 +1,5 @@
 import { Session } from "@supabase/supabase-js";
-import { Profile, updateProfile } from "./profile";
+import { Profile } from "./profile";
 import { supabase } from "./supabase";
 import { useProfile } from "../hooks/useProfile";
 
@@ -22,27 +22,17 @@ function requireXp(level: number) {
 }
 
 
-export async function giveUserXp(xpGain: number, profile: Profile | null, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
+export async function giveUserXp(xpGain: number, profile: Profile | null, userId: string, updateProfile: (item:any) => void ) {
 
-    if (!session) return
+    if (!profile) return
 
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
 
-    if (error || !data) {
-        console.error('Failed to get current profile: ', error)
-        return
-    }
-
-    var currLevel = data.level
+    var currLevel = profile.level
     var xpToNextLvl = requireXp(currLevel)
-    var totalXp = data?.xp + xpGain
+    var totalXp = profile?.xp + xpGain
 
     console.log("gain", xpGain)
-    console.log("current", data.xp)
+    console.log("current", profile.xp)
     console.log("total", totalXp)
 
 
@@ -56,14 +46,32 @@ export async function giveUserXp(xpGain: number, profile: Profile | null, sessio
             globalNotificaitonHandler(currLevel)
     }
 
-    setProfile(await updateProfile({
-        session,
-        setLoading,
+    try {
+        const { data, error } = await supabase
+        .from('profiles')
+        .update({ 
+            level: currLevel,
+            xp: totalXp,
+            xp_to_next_lvl: xpToNextLvl
+        })
+        .eq('id', userId)
+        .select('gold_count')
+        .single()
+
+        if (error) throw error
+
+        updateProfile({ gold_count: data.gold_count})
+    } catch (error) {
+        console.error('Error giving xp: ', error)
+        throw error
+    }
+
+    await updateProfile({
         updates: {
             level: currLevel,
             xp: totalXp,
             xp_to_next_lvl: xpToNextLvl
         }
-    }))
+    })
 
 }

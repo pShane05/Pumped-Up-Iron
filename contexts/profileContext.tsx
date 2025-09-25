@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
 import { Profile } from "../lib/profile"
 import { Session } from "@supabase/supabase-js"
 import { DailyQuest, QuestMap } from "../lib/dailyQuest"
@@ -21,6 +21,7 @@ type ProfileContextType = {
     signOut: () => void,
 
     dailyQuests: QuestMap | null
+    setDailyQuests: React.Dispatch<React.SetStateAction<QuestMap | null>>
 
     workoutIsActive: boolean
     setWorkoutIsActive: (isActive: boolean) => void
@@ -38,8 +39,12 @@ export function ProfileProvider( {children}: any) {
     const [loading, setLoading] = useState(true)
     
     const [workoutIsActive, setWorkoutIsActive] = useState(false)
+
+    const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
+    const { dailyQuests: hookQuests } = useProfileQuests(profile?.id)
     
-    const { dailyQuests } = useProfileQuests(profile?.id)
+
+    
 
 
     useEffect(() => {
@@ -89,8 +94,14 @@ export function ProfileProvider( {children}: any) {
     }, [session, profile, loading])
 
     
+    useEffect(() => {
+        console.log("Hook quests updated")
+        setDailyQuests(hookQuests)
+    }, [hookQuests])
 
-
+    useEffect(() => {
+        console.log("Provider dailyQuests updated")
+    }, [dailyQuests])
 
     // return functions
 
@@ -153,7 +164,7 @@ export function ProfileProvider( {children}: any) {
   }
 
     
-    const value: ProfileContextType = {
+    const value = useMemo(() => ({
         profile,
         setProfile,
 
@@ -167,10 +178,13 @@ export function ProfileProvider( {children}: any) {
         signOut,
 
         dailyQuests,
+        setDailyQuests,
 
         workoutIsActive,
         setWorkoutIsActive,
-    }
+    }), [
+        profile, session, loading, dailyQuests, workoutIsActive
+    ])
 
 
     return (

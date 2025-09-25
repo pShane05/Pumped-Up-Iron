@@ -4,8 +4,11 @@ import { router, useRouter } from 'expo-router'
 import { COLORS, FONTS, styles } from '../app/costants'
 import { DailyQuest, QuestMap } from '../lib/dailyQuest'
 import DailyCountdown from './Countdowns'
+import { useProfileData } from '../hooks/useProfile'
 
-  export default function DailyPreviewCard(props: { quests: QuestMap | null}) {
+  export default function DailyPreviewCard( ) {
+
+    const { dailyQuests } = useProfileData()
 
   return (
     
@@ -23,7 +26,7 @@ import DailyCountdown from './Countdowns'
       <FlatList 
         style={{ width: '100%'}}
         scrollEnabled={false}
-        data={ props.quests ? Object.values(props.quests) : []}
+        data={ dailyQuests ? Object.values(dailyQuests) : []}
         renderItem={({ item }) => (
 
           <QuestPreview quest={item}/>                  

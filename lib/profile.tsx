@@ -22,7 +22,7 @@ export type Profile = {
 
 
 
-export async function giveUserGold(goldGain: number, profile: Profile | null, userId: string, updateProfile: (updates: Partial<Profile>) => Promise<void>) {
+export async function giveUserGold(goldGain: number, profile: Profile | null, userId: string, updateProfile: (updates: Partial<Profile>) => void) {
 
     if (!profile) return
 
