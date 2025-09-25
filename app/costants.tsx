@@ -228,7 +228,8 @@ export const styles = StyleSheet.create({
     width: 110,  
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5
+    margin: 5,
+    padding: 5
   },
   authContainer: {
     flex: 1,

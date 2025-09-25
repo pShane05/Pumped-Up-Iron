@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Item } from "../lib/Item"
+import { Profile } from "../lib/profile"
 
 export function useItemsByRarity(rarity: string | undefined, amount: number) {
   const [items, setItems] = useState<Item[]>([])
@@ -40,6 +41,48 @@ export function useItemsByRarity(rarity: string | undefined, amount: number) {
 
     fetchItem()
   }, [rarity])
+
+  return { items, loading, error }
+}
+
+export function useItemsByUser(profile: Profile | undefined) {
+
+  const [items, setItems] = useState<Item[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    if (!profile) return
+
+    const fetchItem = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from('user_items')
+          .select('*')
+          .eq('user_id', profile.id)
+
+        if (error) 
+          throw error
+
+        setItems(data)
+
+
+      } catch (error) {
+
+        if (error instanceof Error)
+
+          setError(error)
+          console.log(error)
+
+      } finally {
+        
+        setLoading(false)
+      }
+    }
+
+    fetchItem()
+  }, [profile])
 
   return { items, loading, error }
 }
