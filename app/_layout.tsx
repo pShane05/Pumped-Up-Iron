@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase"
 import { Session } from "@supabase/supabase-js"
 import { ActivityIndicator, View, Text } from "react-native"
 import { useFonts } from 'expo-font';
+import { ProfileContext, ProfileProvider } from "../contexts/profileContext"
 
 export default function RootLayout() {
     const [session, setSession] = useState<Session | null>(null)
@@ -62,7 +63,7 @@ export default function RootLayout() {
 
 
     return (
-        <>
+        <ProfileProvider>
             <StatusBar style="light"/>
             <Stack 
                 screenOptions={{ headerShown: false }}
@@ -71,6 +72,6 @@ export default function RootLayout() {
                 
             </Stack>
 
-        </>
+        </ProfileProvider>
     )
 }

@@ -1,45 +1,88 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { Alert } from 'react-native'
 import { Profile } from '../lib/profile'
+import { ProfileContext, useProfileContext } from '../contexts/profileContext'
 
 export function useProfile(userId: string | undefined) {
   const [profile, setProfile] = useState<Profile | undefined>(undefined)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  useEffect(() => {
-    if (!userId) return
+  const fetchProfile = useCallback( async () => {
 
-    const fetchProfile = async () => {
-      setLoading(true)
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
-
-        if (error) 
-          throw error
-
-        setProfile(data)
-
-      } catch (error) {
-
-        if (error instanceof Error)
-
-          setError(error)
-          console.log(error)
-
-      } finally {
-        
-        setLoading(false)
-      }
+    if(!userId) {
+      setProfile(undefined)
+      setLoading(false)
+      return
     }
 
-    fetchProfile()
+    setLoading(true)
+    setError(null)
+      
+    try {
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (error) 
+        throw error
+      
+      setProfile(data)
+      return data
+
+    } catch (error) {
+
+      if (error instanceof Error){
+
+        setError(error)
+        console.log("Profile fetch error: ", error)
+      }
+      throw error
+
+    } finally {
+        
+      setLoading(false)
+    }
   }, [userId])
 
-  return { profile, loading, error }
+
+  fetchProfile()
+
+
+  const refetch = useCallback(async () => {
+
+    fetchProfile()
+
+  }, [fetchProfile])
+
+  return { 
+
+    profile, 
+    loading, 
+    error, 
+    fetchProfile,
+    refetch
+  }
+}
+
+export const useProfileData = () => {
+  const { profile, session, setSession, updateProfile, refreshProfile, dailyQuests, signOut, loading, setLoading } = useProfileContext()
+
+  return {
+    profile,
+    updateProfile,
+    refreshProfile,
+    dailyQuests,
+
+    session,
+    setSession,
+    signOut,
+    loading,
+    setLoading,
+    user: session?.user,
+  }
 }

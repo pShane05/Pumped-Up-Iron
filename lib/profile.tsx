@@ -20,56 +20,11 @@ export type Profile = {
   date_started: Date
 }
 
-export async function updateProfile({ 
-    session,
-    setLoading,
-    updates,
-}:  {
-    session: Session | null,
-    setLoading: (loading: boolean) => void,
-    updates: Partial<Profile>
-}) {
 
-    try {
-        
-        if (!session?.user) throw new Error("No user on the session!")
 
-        const updateData = {
-            ...updates,
-            id: session.user.id,
+export async function giveUserGold(goldGain: number, profile: Profile | null, userId: string, updateProfile: (updates: Partial<Profile>) => Promise<void>) {
 
-            updated_at: new Date()
-        }
-
-        setLoading(true)
-
-        console.log("Updates going to DB:", updateData)
-
-        const { data, error } = await supabase.
-            from("profiles")
-            .upsert(updateData, { onConflict: "id" })
-            .select()
-
-        console.log("Database operation completed")
-
-        if (error) throw error
-
-        return data?.[0]
-        
-    } catch (error) {
-        if (error instanceof Error) {
-            Alert.alert(error.message)
-        }
-    } finally {
-        setLoading(false)
-    }
-
-}
-
-export async function giveUserGold(goldGain: number, profile: Profile | null, session: Session | null, setLoading: (item: any) => void, setProfile: (item:any) => void ) {
-
-    if (!session || !profile) return
-    console.log("profile and session valid")
+    if (!profile) return
 
     var totalGold = profile?.gold_count + goldGain
 
@@ -77,13 +32,21 @@ export async function giveUserGold(goldGain: number, profile: Profile | null, se
     console.log("current", profile.gold_count)
     console.log("total", totalGold)
 
+    try {
+        const { data, error } = await supabase
+        .from('profiles')
+        .update({ 
+            gold_count: totalGold
+        })
+        .eq('id', userId)
+        .select('gold_count')
+        .single()
 
-    setProfile(await updateProfile({
-        session,
-        setLoading,
-        updates: {
-            gold_count: totalGold,
-        }
-    }))
+        if (error) throw error
 
+        updateProfile({ gold_count: data.gold_count})
+    } catch (error) {
+        console.error('Error giving gold: ', error)
+        throw error
+    }
 }

@@ -3,31 +3,15 @@ import { COLORS, styles } from "../app/costants";
 import { useEffect, useState } from "react";
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { useWindowDimensions } from "react-native";
-import { updateProfile } from "../lib/profile";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
-import { useProfile } from "../hooks/useProfile";
+import { useProfile, useProfileData } from "../hooks/useProfile";
 import { router } from "expo-router";
 
 
 export default function CreateProfileCard(props: {session: Session | null}) {
 
-    const [session, setSession] = useState<Session | null>(props.session)
-    const [loading, setLoading] = useState(false)
-
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          setSession(session)
-          setLoading(false)
-        })
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-          setSession(session)
-        })
-    
-        return () => {
-          listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-        }
-    }, [])
+    const { session, loading, setLoading, updateProfile } = useProfileData()
 
     
     const [username, setUsername] = useState('')
@@ -81,17 +65,32 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
         const fullName = capFirstName + ' ' + capLastName;
 
-        await updateProfile({
-            session,
-            setLoading,
-            updates: {
+
+        try {
+            const { data, error } = await supabase
+            .from('profiles')
+            .upsert({ 
                 full_name: fullName,
                 username: username,
                 height_in: fullHeightIn,
                 weight_lbs: userWeight,
                 date_started: new Date(),
-            }
-        })
+            })
+            .single()
+
+            if (error) throw error
+
+            updateProfile({
+                full_name: fullName,
+                username: username,
+                height_in: fullHeightIn,
+                weight_lbs: userWeight,
+                date_started: new Date(),
+            })
+        } catch (error) {
+            console.error('Error creating profile: ', error)
+            throw error
+        }
 
         router.push('../setBirthday')
     }
@@ -105,10 +104,14 @@ export default function CreateProfileCard(props: {session: Session | null}) {
             
                 <View style={[styles.input, styles.mt25, { marginHorizontal: 20 }]}>
                     <TextInput
+                        style={{ color: COLORS.BORDER}}
                         onChangeText={(text) => setUsername(text)}        // Username input
                         value={username}
                         placeholder="Username"
                         autoCapitalize={'none'}
+                        placeholderTextColor={ COLORS.LIGHT_GRAY }
+                        selectionColor={ COLORS.CYAN }
+                        
                     />
                 </View>
 
@@ -116,19 +119,23 @@ export default function CreateProfileCard(props: {session: Session | null}) {
 
                     <View style={[styles.smallInput, styles.mt25, { marginLeft: 20 }]}>
                         <TextInput
+                            style={{ color: COLORS.BORDER}}
                             onChangeText={(text) => setFirstname(text)}                     // Name input
                             value={firstname}
                             placeholder="First Name"
                             autoCapitalize={'none'}
+                            placeholderTextColor={ COLORS.LIGHT_GRAY }
                         />
                     </View>
 
                     <View style={[styles.smallInput, styles.mt25, {marginRight: 20}]}>
                         <TextInput
+                            style={{ color: COLORS.BORDER}}
                             onChangeText={(text) => setLastname(text)}
                             value={lastname}
                             placeholder="Last Name"
                             autoCapitalize={'none'}
+                            placeholderTextColor={ COLORS.LIGHT_GRAY }
                         />
                     </View>
 

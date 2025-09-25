@@ -2,33 +2,19 @@ import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaView } from 'react-native'
-import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
 import { COLORS, FONTS, styles } from '../costants'
-import { useProfile } from '../../hooks/useProfile'
-import { Profile, updateProfile } from '../../lib/profile'
+import { useProfileData } from '../../hooks/useProfile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import LoadingScreen from '../../components/LoadingScreen'
 import { giveUserXp } from '../../lib/levels'
 
 
 export default function AvatarScreen() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [profile, setProfile] = useState<Profile | null>(null)
 
-  const router = useRouter()
+  const { session, setSession, loading, setLoading, profile, updateProfile } = useProfileData()
 
-  // Only call useProfile when we have a session
-  const profileData = useProfile(session?.user.id)
-
-  // Update profile state when profileData changes
-  useEffect(() => {
-    if (profileData?.profile) {
-      setProfile(profileData.profile)
-    }
-  }, [profileData])
   
   const gold = profile?.gold_count
   const userId = profile?.id
@@ -45,30 +31,12 @@ export default function AvatarScreen() {
     :
     "---- -- --"
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-
-      setLoading(false)
-    })
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => {
-      listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!loading && !session) {
-      router.replace('../login')
-    }
-    setProfile
-  }, [session])
-
 
   if (loading || !isDataReady) {
+
+    if (loading) console.log("loading")
+    
+    if (!isDataReady) console.log("Session: ", session, "Profile: ", profile, " Gold: ", gold, "Start date: ", startDate)
 
     return (
       <LoadingScreen />
@@ -94,7 +62,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(100, profile, session, setLoading, setProfile) 
+            await giveUserXp(100, profile, session, setLoading, updateProfile) 
           }}
         >
           <Text>
@@ -105,7 +73,7 @@ export default function AvatarScreen() {
         <Pressable 
           style={ styles.button }
           onPress={ async () => {
-            await giveUserXp(500, profile, session, setLoading, setProfile) 
+            await giveUserXp(100, profile, session, setLoading, updateProfile) 
           }}
         >
           <Text>

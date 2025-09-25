@@ -5,6 +5,7 @@ import { Session } from '@supabase/supabase-js'
 import { navigate } from 'expo-router/build/global-state/routing'
 import { useRouter } from 'expo-router'
 import { COLORS, styles } from '../app/costants'
+import { useProfileData } from '../hooks/useProfile'
 
 
 
@@ -12,8 +13,9 @@ export default function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [session, setSession] = useState<Session | null>(null)
+
+  const { session, setSession, loading, setLoading } = useProfileData()
+
   var notSession = !session;
   const router = useRouter()
 
@@ -62,8 +64,6 @@ export default function Signup() {
       return
     }
     
-
-    
   }
 
 
@@ -75,17 +75,21 @@ export default function Signup() {
 
       <View style={[styles.input, styles.mt25]}>
         <TextInput
+          style={{ color: COLORS.BORDER}}
+          selectionColor={ COLORS.CYAN }
+          placeholderTextColor={ COLORS.LIGHT_GRAY }
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
           autoCapitalize={'none'}
-          //disabled={!notSession}
-          //inputStyle={{ color: COLORS.BORDER }}
         />
       </View>
 
       <View style={styles.input}>
         <TextInput
+          style={{ color: COLORS.BORDER}}
+          selectionColor={ COLORS.CYAN }
+          placeholderTextColor={ COLORS.LIGHT_GRAY }
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
@@ -98,6 +102,9 @@ export default function Signup() {
 
       <View style={styles.input}>
         <TextInput
+          style={{ color: COLORS.BORDER}}
+          selectionColor={ COLORS.CYAN }
+          placeholderTextColor={ COLORS.LIGHT_GRAY }
           onChangeText={(text) => setConfirmPassword(text)}
           value={confirmPassword}
           secureTextEntry={true}
@@ -120,8 +127,9 @@ export default function Signup() {
 export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [session, setSession] = useState<Session | null>(null)
+  
+  const { session, loading, setLoading } = useProfileData()
+
   var notSession = !session;
   const router = useRouter()
 
@@ -148,7 +156,9 @@ export function Login() {
 
       <View style={[styles.input, styles.mt25, { marginHorizontal: 20}]}>
         <TextInput
-          style={ styles.subText }
+          style={{ color: COLORS.BORDER}}
+          selectionColor={ COLORS.CYAN }
+          placeholderTextColor={ COLORS.LIGHT_GRAY }
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
@@ -160,6 +170,9 @@ export function Login() {
 
       <View style={styles.input}>
         <TextInput
+          style={{ color: COLORS.BORDER}}
+          selectionColor={ COLORS.CYAN }
+          placeholderTextColor={ COLORS.LIGHT_GRAY }
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
@@ -172,7 +185,7 @@ export function Login() {
 
 
       <Pressable style={{ marginVertical: 20, position: 'absolute', bottom: 0}} disabled={loading || !notSession} onPress={() => signInWithEmail()}>
-            <Text style={[ styles.button, { fontFamily: 'Electrolize-Regular'} ]}>Login</Text>
+        <Text style={[ styles.button, { fontFamily: 'Electrolize-Regular'} ]}>Login</Text>
       </Pressable>
 
     </View>

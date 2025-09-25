@@ -4,6 +4,7 @@ import { Dimensions, StyleSheet } from "react-native"
 export const COLORS = {
     BLACK: '#000000',
     DARK_GRAY: '#202020',
+    LIGHT_GRAY: '#505050',
     TEAL: '#249F9F',
     RED: '#fe0000',
     GREEN: '#0dab27ff',
@@ -238,12 +239,15 @@ export const styles = StyleSheet.create({
   },
   smallInput: {
     width: '40%',
+    height: 50,
+    justifyContent: 'center',
     marginTop: 15,
     backgroundColor: COLORS.BACKGROUND,
     borderColor: COLORS.BORDER,
     borderWidth: 1,
     borderRadius: 20,
-    height: 50
+    paddingLeft: 10
+    
   },
   numberInput: {
     width: 75, 
@@ -258,14 +262,15 @@ export const styles = StyleSheet.create({
   },
   input: {
     width: '85%',
-    margin: 3,
+    height: 50,
+    justifyContent: 'center',
     marginTop: 15,
     backgroundColor: COLORS.BACKGROUND,
     borderColor: COLORS.BORDER,
     borderWidth: 1,
     borderRadius: 20,
-    height: 50,
-    fontFamily: 'Electrolize-Regular'
+    fontFamily: 'Electrolize-Regular',
+    paddingLeft: 10,
   },
   mt25: {
     marginTop: 25,

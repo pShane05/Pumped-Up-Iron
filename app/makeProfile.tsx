@@ -5,26 +5,13 @@ import { supabase } from "../lib/supabase";
 import CreateProfileCard from "../components/CreateProfile";
 import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import { useProfileData } from "../hooks/useProfile";
 
 export default function ProfileScreen() {
 
-    const [session, setSession] = useState<Session | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { session, signOut } = useProfileData()
     const router = useRouter()
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          setSession(session)
-          setLoading(false)
-        })
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-          setSession(session)
-        })
-
-        return () => {
-          listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-        }
-    }, [])
 
     return (
 
@@ -34,10 +21,12 @@ export default function ProfileScreen() {
                 <CreateProfileCard session={ session }/>
             </View>
 
-            <Pressable style={[  {  alignSelf: 'center', position: 'absolute', bottom: 50}]} onPress={() => {
-                supabase.auth.signOut()
-                router.replace('../signup')
-            }}> 
+            <Pressable style={[  {  alignSelf: 'center', position: 'absolute', bottom: 50}]} 
+                onPress={ async () => {
+                    await signOut()
+                    router.replace('../signup')
+                }
+            }> 
                 <Text style={{ color: COLORS.PINK, fontSize: 16, fontFamily: 'Electrolize-Regular'}}> Back to Signup </Text>
             </Pressable>
         </SafeAreaView>
