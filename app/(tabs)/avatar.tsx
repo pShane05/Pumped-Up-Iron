@@ -2,7 +2,7 @@ import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaView } from 'react-native'
-import { Link, useRouter } from "expo-router"
+import { Link, router, useRouter } from "expo-router"
 import { GoldCounter, XpDisplay } from '../../components/UI'
 import { COLORS, FONTS, styles } from '../costants'
 import { useProfileData } from '../../hooks/useProfile'
@@ -14,7 +14,6 @@ import { giveUserXp } from '../../lib/levels'
 export default function AvatarScreen() {
 
   const { session, loading, profile, updateProfile } = useProfileData()
-
   
   const gold = profile?.gold_count
   const userId = profile?.id
