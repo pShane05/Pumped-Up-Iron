@@ -45,7 +45,7 @@ export function useItemsByRarity(rarity: string | undefined, amount: number) {
   return { items, loading, error }
 }
 
-export function useItemsByUser(profile: Profile | undefined) {
+export function useItemsByUser(profile: Profile | null) {
 
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)

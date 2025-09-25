@@ -6,7 +6,7 @@ import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { COLORS, FONTS, imageMap, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
-import { useProfile } from '../../hooks/useProfile'
+import { useProfile, useProfileData } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
 import CountdownTimers, { WeeklyCountdown } from '../../components/Countdowns'
 import DailyCountdown from '../../components/Countdowns'
@@ -17,10 +17,12 @@ import { useItemsByRarity, useItemsByUser } from '../../hooks/useItem'
 import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
+import { giveUserGold } from '../../lib/profile'
 
 export default function ShopScreen() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  
+  const {session, setSession, loading, setLoading, profile, updateProfile, items, setItems } = useProfileData()
+  
   const today = new Date().toDateString()
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -37,14 +39,10 @@ export default function ShopScreen() {
 
   console.log(dailyItems)
 
-  const profile = useProfile(session?.user.id).profile
   const gold = profile?.gold_count
 
   const isDataReady = session && profile && gold !== undefined
   const shopImage = require('../../assets/images/ai_shop.png')
-
-  const hookUserItems = useItemsByUser(profile)
-  const [userItems, setUserItems] = useState<Item[] | null>(null)
 
   const handleItemPress = (item: Item) => {
     setSelectedItem(item)
@@ -57,10 +55,49 @@ export default function ShopScreen() {
   }
 
   const handlePurchase = async (item: Item) => {
-    // Add your purchase logic here
+    
+    
     if (gold && gold >= item.price) {
-      // Update gold count in database/state
-      // Remove item from shop if it's a one-time purchase
+
+      giveUserGold(0 - item.price, profile, profile.id, updateProfile)
+
+      const addItemToUser = async () => {
+
+        try {
+          const { error } = await supabase
+          .from('user_items')
+          .upsert({
+            id: item.id,
+            user_id: profile.id,
+            purchased_at: new Date(),
+            name: item.name,
+            price: item.price,
+            value: item.value,
+            rarity: item.rarity,
+            effect: item.effect,
+            description: item.description,
+            icon_url: item.icon_url
+          })
+          .single()
+
+          if (error) throw error
+
+          setItems((prev: Item[]) =>
+            prev ? [...prev, item] : [item]
+          )
+          
+          console.log("Items: ", items)
+        }
+
+        catch (error) {
+          console.log("Error adding item to collection: ", error)
+          throw error
+        }
+        
+      }
+
+      addItemToUser()
+
       Alert.alert(`You purchased ${item.name} for ${item.price} gold!`)
       setModalVisible(false)
     } else {
@@ -241,7 +278,7 @@ export default function ShopScreen() {
           scrollEnabled={false}
           data={dailyItems}
           renderItem={({item}) => (
-            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={userItems}/>
+            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
           )}
           
         />
@@ -261,7 +298,7 @@ export default function ShopScreen() {
           scrollEnabled={false}
           data={weeklyItems}
           renderItem={({item}) => (
-            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={userItems}/>
+            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
           )}
           
         />

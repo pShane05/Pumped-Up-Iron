@@ -71,7 +71,7 @@ export function useProfile(userId: string | undefined) {
 }
 
 export const useProfileData = () => {
-  const { profile, session, setSession, updateProfile, refreshProfile, dailyQuests, setDailyQuests, signOut, loading, setLoading } = useProfileContext()
+  const { profile, session, setSession, updateProfile, refreshProfile, dailyQuests, setDailyQuests, items, setItems, signOut, loading, setLoading } = useProfileContext()
 
   return {
     profile,
@@ -79,6 +79,8 @@ export const useProfileData = () => {
     refreshProfile,
     dailyQuests,
     setDailyQuests,
+    items,
+    setItems,
     session,
     setSession,
     signOut,

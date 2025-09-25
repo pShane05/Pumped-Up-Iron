@@ -7,6 +7,8 @@ import { useProfileQuests } from "../hooks/useDailies"
 import { supabase } from "../lib/supabase"
 import { router } from "expo-router"
 import { Alert } from "react-native"
+import { Item } from "../lib/Item"
+import { useItemsByUser } from "../hooks/useItem"
 
 type ProfileContextType = {
     profile: Profile | null
@@ -22,6 +24,9 @@ type ProfileContextType = {
 
     dailyQuests: QuestMap | null
     setDailyQuests: React.Dispatch<React.SetStateAction<QuestMap | null>>
+
+    items: Item[] | null
+    setItems: (items: (prev: Item[]) => Item[]) => void
 
     workoutIsActive: boolean
     setWorkoutIsActive: (isActive: boolean) => void
@@ -42,6 +47,9 @@ export function ProfileProvider( {children}: any) {
 
     const [dailyQuests, setDailyQuests] = useState<QuestMap | null>(null)
     const { dailyQuests: hookQuests } = useProfileQuests(profile?.id)
+
+    const [items, setItems] = useState<Item[] | null>(null)
+    const { items: hookItems } = useItemsByUser(profile)
     
 
     
@@ -95,13 +103,12 @@ export function ProfileProvider( {children}: any) {
 
     
     useEffect(() => {
-        console.log("Hook quests updated")
         setDailyQuests(hookQuests)
     }, [hookQuests])
 
     useEffect(() => {
-        console.log("Provider dailyQuests updated")
-    }, [dailyQuests])
+        setItems(hookItems)
+    }, [hookItems])
 
     // return functions
 
@@ -179,6 +186,8 @@ export function ProfileProvider( {children}: any) {
 
         dailyQuests,
         setDailyQuests,
+        items,
+        setItems,
 
         workoutIsActive,
         setWorkoutIsActive,
