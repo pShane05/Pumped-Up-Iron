@@ -19,6 +19,7 @@ export const COLORS = {
     ALT: '#0D6B93',
     BORDER: '#64DFDF',
     BACKGROUND: '#151515',
+    BACKGROUND_BROWN: '#1d0b0aff',
 
     TRANSPURPLE: 'rgba(85, 5, 119, 0.25)'
 }
