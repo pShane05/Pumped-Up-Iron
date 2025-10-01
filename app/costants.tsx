@@ -332,7 +332,7 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.PINK,
     width: '80%', 
-    height: (Dimensions.get('window').height) * .15, 
+    height: 120, 
     marginBottom: 25,
     padding: 10,
     paddingVertical: 15,

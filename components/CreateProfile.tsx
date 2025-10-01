@@ -70,6 +70,7 @@ export default function CreateProfileCard(props: {session: Session | null}) {
             const { data, error } = await supabase
             .from('profiles')
             .upsert({ 
+                id: session?.user.id,
                 full_name: fullName,
                 username: username,
                 height_in: fullHeightIn,

@@ -16,10 +16,7 @@ export default function SetLogModal(
 ) {
 
     if (!props.showModal || !props.exercise) return null
-    
-    //const [logWeight, setLogWeight] = useState<number>(50)
-    //const [logReps, setLogReps] = useState<number>(8)
-    //const [logRest, setLogRest] = useState<number>(120)
+
 
     const [stringWeight, setStringWeight] = useState<string>('')
     const [stringReps, setStringReps] = useState<string>('')
@@ -90,7 +87,7 @@ export default function SetLogModal(
                     }
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', columnGap: 20}}>
 
-                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Reps: </Text>
+                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}>Reps: </Text>
 
                         
                     
@@ -111,7 +108,7 @@ export default function SetLogModal(
                     }
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', columnGap: 20}}>
 
-                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Weight: </Text>
+                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}>Weight: </Text>
 
                         <TextInput
                             style={[styles.numberInput]}
@@ -129,7 +126,7 @@ export default function SetLogModal(
                     }
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', columnGap: 20}}>
 
-                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER }}> Rest time: </Text>
+                        <Text style={{ fontFamily: 'Electrolize-Regular', fontSize: 20, color: COLORS.BORDER, width: '50%' }}>Rest time (seconds): </Text>
 
                         <TextInput
                             style={[styles.numberInput]}

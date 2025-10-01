@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaVi
 import { Session } from '@supabase/supabase-js'
 import { Link, useRouter } from "expo-router"
 import { GoldCounter } from '../../components/UI'
-import { COLORS, FONTS } from '../costants'
+import { COLORS, FONTS, styles } from '../costants'
 import { useProfile } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
 
@@ -55,66 +55,16 @@ export default function BaseScreen() {
 
       <View style={[ styles.horizontalLine, { width: '40%', marginTop: 30 } ]} />
 
-      <View style={styles.editBar}>
+      <View style={{ justifyContent: 'center', flex: 1 }}>
 
-        <View style={ styles.editIcons }> 
-            <Text style={{ alignSelf: 'center', color: '#cbeef3' }}> [Will open edit base menu] </Text>
-        </View>
+        <Text style={[ styles.headerText, { fontSize: 32, textAlign: 'center', alignSelf: 'center', color: COLORS.PINK } ]}>
+          Base Editer Coming Soon...
+        </Text>
 
       </View>
+
+      
 
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#202020',
-    alignContent: 'center',
-    paddingTop: '20%',
-  },
-  boxView: {
-    backgroundColor: '#10002b',
-    borderRadius: 25,
-    borderColor: '#cbeef3',
-    borderWidth: 3,
-    padding: 2,
-  },
-  logout: {
-    backgroundColor: '#cbeef3', 
-    marginTop: 25,
-    width: '20%',
-    borderRadius: 20,
-    alignItems: 'center',
-    padding: 4,
-    alignSelf: 'center',
-  },
-  button: {
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: '#0D6B93',
-    borderColor: '#cbeef3',
-    borderWidth: 2,
-    marginTop: 10,
-    alignSelf: 'center',
-    color: '#cbeef3'
-  },
-  editBar: {
-    backgroundColor: '#606060',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    padding: 30,
-  },
-  editIcons: {
-    //flexDirection: 'row',
-    width: '100%',
-  },
-  horizontalLine: {
-      width: '60%',
-      height: 1,
-      backgroundColor: COLORS.TEAL, 
-      alignSelf: 'center',
-    },
-});

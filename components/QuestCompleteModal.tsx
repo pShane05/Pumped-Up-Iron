@@ -26,7 +26,7 @@ export default function QuestCompleteModal(
         >
             <View style={ styles.modalView}>
                 <Text style={[ styles.headerText, { textAlign: 'center', fontSize: 28} ]}>
-                    Daily Quest "{props.quest.name}" Complete!
+                    Daily Quest "{props.quest.name} {props.quest.goal} {props.quest.units}" Complete!
                 </Text>
 
                 <View style={[ styles.horizontalLine, { marginBottom: 25, marginTop: 15} ]}/>

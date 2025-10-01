@@ -58,10 +58,12 @@ export default function WardrobeScreen() {
                       
                     />
                 :
+                    <View style={{ flex: 1, paddingTop: 100 }}>
+                        <Text style={[ styles.headerText, { alignSelf: 'center', textAlign: 'center' } ]} >
+                            No Items in Wardrobe
+                        </Text>
+                    </View>
                     
-                    <Text style={[ styles.headerText, { alignSelf: 'center', textAlign: 'center' } ]} >
-                        No Items in Wardrobe
-                    </Text>
 
             }
 

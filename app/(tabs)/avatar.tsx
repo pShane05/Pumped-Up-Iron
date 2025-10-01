@@ -18,7 +18,7 @@ export default function AvatarScreen() {
   const gold = profile?.gold_count
   const userId = profile?.id
   const startDate = profile?.date_started; // "2000-05-17T00:00:00.000Z"
-  const isDataReady = session && profile && gold && startDate !== undefined
+  const isDataReady = session && profile && startDate !== undefined
 
   const formattedDate = 
     startDate ?
@@ -35,7 +35,7 @@ export default function AvatarScreen() {
 
     if (loading) console.log("loading")
     
-    if (!isDataReady) console.log("Session: ", session, "Profile: ", profile, " Gold: ", gold, "Start date: ", startDate)
+    if (!isDataReady) console.log("Profile: ", profile, " Gold: ", gold, "Start date: ", startDate)
 
     return (
       <LoadingScreen />
@@ -61,38 +61,13 @@ export default function AvatarScreen() {
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center', columnGap: 20 }}>
-
-        <Pressable 
-          style={ styles.button }
-          onPress={ async () => {
-            await giveUserXp(100, profile, profile.id, updateProfile) 
-          }}
-        >
-          <Text>
-            +100 xp
-          </Text>
-        </Pressable>
-
-        <Pressable 
-          style={ styles.button }
-          onPress={ async () => {
-            await giveUserXp(100, profile, profile.id, updateProfile) 
-          }}
-        >
-          <Text>
-            +500 xp
-          </Text>
-        </Pressable>
-
-      </View>
 
       
 
       <View style={{marginHorizontal: 50, position: 'absolute', bottom: '20%', paddingBottom: 20, height: '20%', justifyContent: 'space-between'}}>
 
         <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Class: 
-          <Text style={{ color: COLORS.TEAL}}>  {"Boxer"} </Text>
+          <Text style={{ color: COLORS.TEAL}}>  {"Tester"} </Text>
 
         </Text>
 
@@ -117,42 +92,3 @@ export default function AvatarScreen() {
     </SafeAreaView>
   )
 }
-
-{/*const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#202020',
-    paddingTop: '20%',
-    alignContent: 'center',
-  },
-  boxView: {
-    backgroundColor: '#10002b',
-    borderRadius: 25,
-    borderColor: '#cbeef3',
-    borderWidth: 3,
-    padding: 2,
-  },
-  logout: {
-    backgroundColor: '#cbeef3', 
-    marginTop: 25,
-    width: '20%',
-    borderRadius: 20,
-    alignItems: 'center',
-    padding: 4,
-    alignSelf: 'center',
-  },
-  button: {
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: COLORS.PINK,
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  horizontalLine: {
-    width: '60%',
-    height: 1,
-    backgroundColor: COLORS.TEAL, 
-    alignSelf: 'center',
-  },
-  
-});*/}

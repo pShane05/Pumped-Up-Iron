@@ -5,31 +5,17 @@ import { View, Text, Pressable, Alert, Platform } from "react-native"
 import RNDateTimePicker from "@react-native-community/datetimepicker"
 import { COLORS, styles } from "../app/costants"
 import { NavigatorContext } from "expo-router/build/views/Navigator"
-import { updateProfile } from "../lib/profile"
 import { router } from "expo-router"
+import { useProfileData } from "../hooks/useProfile"
 
 
 export default function BirthdayPicker(props: {session: Session | null }) {
 
-    const [session, setSession] = useState<Session | null>(props.session)
-    const [loading, setLoading] = useState(false)
+    const { session, loading, setLoading, updateProfile } = useProfileData()
     const [updated, setUpdated] = useState(false)
 
     const [userBirthday, setUserBirthday] = useState<Date | undefined>(new Date())
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-            setLoading(false)
-        })
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-        
-        return () => {
-            listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-        }
-    }, [])
 
     async function confirmBirthday() {
         
@@ -39,11 +25,7 @@ export default function BirthdayPicker(props: {session: Session | null }) {
         }
 
         await updateProfile({
-            session,
-            setLoading,
-            updates: {
-                dob: userBirthday
-            }
+            dob: userBirthday
          })
 
          router.replace('/')
@@ -58,7 +40,7 @@ export default function BirthdayPicker(props: {session: Session | null }) {
             <View style={{ marginTop: 10, alignContent: 'center'}}>
 
                 <RNDateTimePicker 
-                    value={ userBirthday } 
+                    value={ userBirthday || new Date() } 
                     display={Platform.OS === 'ios' ? "spinner"  : 'default'}
                     textColor= {COLORS.TEAL} 
                     

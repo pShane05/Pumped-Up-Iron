@@ -31,9 +31,11 @@ export default function DailyQuestScreen() {
     const [questToDisplay, setQuestToDisplay] = useState<DailyQuest | null>(null)
 
     const rewards = {
-        xp: (profile?.level) ? Math.floor(profile.level / 10) * 8 : -1,
+        xp: (profile?.level) ? Math.floor(profile.level * 10) / 2 : -1,
         gold: (profile?.level) ? Math.floor((profile.level) * .25) + 10 : -1
     }
+
+      console.log(rewards)
 
     function onQuestComplete(quest: DailyQuest | null, allQuestsComplete: boolean) {
 
@@ -112,7 +114,7 @@ export default function DailyQuestScreen() {
                 <View style={[ styles.horizontalLine, { marginTop: 40, }]} />
                 
                 <Text style={[ styles.exerciseNameText, { textAlign: 'center', color: COLORS.CYAN, marginTop: 10, fontFamily: FONTS.BODY }]}>
-                    Total Rewards:
+                    Completion Rewards:
                 </Text>
 
                 <Text style={[ styles.exerciseNameText, { 

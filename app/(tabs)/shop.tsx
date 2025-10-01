@@ -28,16 +28,11 @@ export default function ShopScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
 
-  const router = useRouter()
-
   const dailyRoll = useItemsByRarity("common", 6).items
   const weeklyRoll = useItemsByRarity("common", 12).items
 
   const [dailyItems, setDailyItems] = useState<Item[]>()
   const [weeklyItems, setWeeklyItems] = useState<Item[]>()
-
-
-  console.log(dailyItems)
 
   const gold = profile?.gold_count
 
@@ -66,7 +61,7 @@ export default function ShopScreen() {
         try {
           const { error } = await supabase
           .from('user_items')
-          .upsert({
+          .insert({
             id: item.id,
             user_id: profile.id,
             purchased_at: new Date(),
@@ -131,7 +126,7 @@ export default function ShopScreen() {
   }
   
   
-    // Load state function
+  // Load state function
   
   const loadDailyItemState = async () => {
     try {
@@ -156,26 +151,6 @@ export default function ShopScreen() {
     } catch (e) {
       alert(e)
     }
-   }
-  
-  const removeDailyShopItems = async () => {
-  
-    const key = 'daily-shop-items'
-    try {
-      await AsyncStorage.removeItem(key)
-    } catch(e) {
-      alert(e)
-    }
-  }
-
-  const removeWeeklyShopItems = async () => {
-  
-    const key = 'weekly-shop-items'
-    try {
-      await AsyncStorage.removeItem(key)
-    } catch(e) {
-      alert(e)
-    }
   }
 
   useEffect(() => {
@@ -189,29 +164,9 @@ export default function ShopScreen() {
 
     saveDailyItemState(dailyRoll)
     saveWeeklyItemState(weeklyRoll)
-    console.log("both saves: ", !(!dailyRoll || !weeklyRoll))
+
   })
 
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => {
-      listener?.subscription?.unsubscribe()     // cleanup the listener when the compnoent unmounts
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!loading && !session) {
-      router.replace('../login')
-    }
-  }, [session])
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
@@ -354,7 +309,7 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
           <Image style={{ resizeMode: 'contain', width: '100%', height: '100%',}} source={ imageMap[props.item.icon_url] }/>
         </View>
         
-        <Text style={{ color: COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 10, textAlign: 'center', }}>
+        <Text style={{ color: isOwned ? COLORS.GREEN : COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 10, textAlign: 'center', }}>
           {props.item.name}
         </Text>
         
@@ -363,11 +318,11 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
 
             <View
               style={{ 
-                height: 24, width: 24, backgroundColor: COLORS.GREEN_MUTED, borderColor: COLORS.BLACK, borderWidth: 1,
+                height: 20, width: 20, backgroundColor: COLORS.GREEN_MUTED, borderColor: COLORS.BLACK, borderWidth: 1,
                 borderRadius: 5, alignItems: 'center', justifyContent: 'center'
               }}
             >
-              <Entypo name="check" size={24} color="black" />
+              <Entypo name="check" size={16} color="black" />
             </View>
 
           ) : (

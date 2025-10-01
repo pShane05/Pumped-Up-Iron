@@ -54,7 +54,9 @@ export default function ExerciseModal(
         props.onClose()
     }
 
-    if (!props.showModal || !exerciseList) return null
+
+    if (!props.showModal || !exerciseList || !props.target) return null
+
 
     return (
         
@@ -65,13 +67,13 @@ export default function ExerciseModal(
                 top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%'}]}>
        
             <View 
-                style={{ flex: 1, rowGap: 40, height: '100%', borderRadius: 20, alignSelf: 'center', alignItems: 'center', 
-                backgroundColor: COLORS.BACKGROUND, padding: 20, margin: 20}}>
+                style={[ styles.modalView, { flex: 1, rowGap: 40, height: '100%', borderRadius: 20, alignSelf: 'center', alignItems: 'center', 
+                backgroundColor: COLORS.BACKGROUND, padding: 20, margin: 20}]}>
                 
                 {/* Header */}
                 
                 <Text style={[ styles.headerText, { textAlign: 'center'} ]}> 
-                    Select an Exercise For { '\n' + props.target?.charAt(0).toUpperCase() + props.target?.slice(1) }
+                    Select Exercises For { props.target?.charAt(0).toUpperCase() + props.target?.slice(1) }
                 </Text>
 
 
@@ -134,10 +136,10 @@ export default function ExerciseModal(
 
                 {/* Footer */}
 
-                <View style={{flex: 1, width: '75%', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontWeight: 'semibold', fontSize: 20}}>
+                <View style={{flex: 1, width: '90%', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ fontFamily: 'Electrolize-Regular', color: COLORS.BORDER, fontWeight: 'semibold', fontSize: 18, justifyContent: 'center', }}>
                         {props.selectedExercises && props.target ? 
-                            props.selectedExercises[props.target] ? 
+                            props.selectedExercises[props.target] && props.selectedExercises[props.target].length > 0 ? 
                                 props.selectedExercises[props.target].length > 1 ? 
                                     `Selected: ${props.selectedExercises[props.target].length} exercises`
                                 :   `Selected: ${props.selectedExercises[props.target].at(0)?.name}` 
