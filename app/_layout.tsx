@@ -6,6 +6,7 @@ import { Session } from "@supabase/supabase-js"
 import { ActivityIndicator, View, Text } from "react-native"
 import { useFonts } from 'expo-font';
 import { ProfileContext, ProfileProvider } from "../contexts/profileContext"
+import { COLORS } from "./costants"
 
 export default function RootLayout() {
     const [session, setSession] = useState<Session | null>(null)
@@ -54,8 +55,8 @@ export default function RootLayout() {
     if (isLoading || !fontsLoaded) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
-                <ActivityIndicator size="large" color="#fff" />
-                <Text style={{ color: '#fff', marginTop: 20 }}>{debugMessage}</Text>
+                <ActivityIndicator size="small" color={ COLORS.PINK } />
+                <Text style={{ color: COLORS.PINK, marginTop: 20 }}>{debugMessage}</Text>
                 <StatusBar style="light"/>
             </View>
         )

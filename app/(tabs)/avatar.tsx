@@ -14,7 +14,7 @@ import { Asset } from 'expo-asset'
 
 export default function AvatarScreen() {
 
-  const { session, loading, profile, updateProfile } = useProfileData()
+  const { session, loading, profile } = useProfileData()
   
   const gold = profile?.gold_count
   const userId = profile?.id
@@ -136,15 +136,15 @@ export function AvatarRender() {
 
   useEffect(() => {
     async function loadAsset() {
-      const asset = await Asset.fromModule(require('../../assets/characterlowpoly2.obj')).downloadAsync();
-      setModelUri(asset.localUri || '');
+      const asset = await Asset.fromModule(require('../../assets/characterlowpoly2.obj')).downloadAsync()
+      setModelUri(asset.localUri || '')
     }
-    loadAsset();
-  }, []);
+    loadAsset()
+  }, [])
 
-  const object = useLoader(OBJLoader, modelUri);
+  const object = useLoader(OBJLoader, modelUri)
 
-  if (!modelUri) return null;
+  if (!modelUri) return null
 
 
   return (
