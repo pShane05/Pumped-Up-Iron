@@ -105,8 +105,13 @@ export default function ShopScreen() {
   const saveDailyItemState = async (_dailyItems: Item[]) => {
     try {
       
-      let jsonValue = JSON.stringify(_dailyItems)
-      await AsyncStorage.setItem("daily-shop-items", jsonValue)
+      const data = {
+        items: _dailyItems,
+        lastReset: new Date().toISOString()
+      }
+      const strData = JSON.stringify(data)
+
+      await AsyncStorage.setItem("daily-shop-items", strData)
   
     } catch (e) {
       alert(e)
@@ -116,8 +121,12 @@ export default function ShopScreen() {
   const saveWeeklyItemState = async (_weeklyItems: Item[]) => {
     try {
       
-      let jsonValue = JSON.stringify(_weeklyItems)
-      await AsyncStorage.setItem("weekly-shop-items", jsonValue)
+      const data = {
+        items: _weeklyItems,
+        lastReset: new Date().toISOString()
+      }
+      const strData = JSON.stringify(data)
+      await AsyncStorage.setItem("weekly-shop-items", strData)
   
     } catch (e) {
       alert(e)
@@ -129,42 +138,110 @@ export default function ShopScreen() {
   
   const loadDailyItemState = async () => {
     try {
-  
-      const dailyShopItems = await AsyncStorage.getItem("daily-shop-items")
-  
-      if (dailyShopItems !== null) setDailyItems(JSON.parse(dailyShopItems))
-  
+      const stored = await AsyncStorage.getItem("daily-shop-items")
+      
+      if (!stored) {
+        return { items: null, needsReset: true }
+      }
+      
+      const data = JSON.parse(stored)
+      const lastReset = new Date(data.lastReset)
+      const now = new Date()
+      
+      // Check if we've passed midnight since last reset
+      const lastResetDate = lastReset.toDateString()
+      const currentDate = now.toDateString()
+      
+      const needsReset = lastResetDate !== currentDate
+      
+      return { items: data.items, needsReset }
     } catch (e) {
-      alert(e)
+      console.error('Error loading daily items:', e)
+      return { items: null, needsReset: true }
     }
   }
   
   const loadWeeklyItemState = async () => {
     try {
-  
-      const weeklyShopItems = await AsyncStorage.getItem("weekly-shop-items")
-    
-      console.log(weeklyShopItems ? JSON.parse(weeklyShopItems) : null )
-  
-      if (weeklyShopItems !== null) setWeeklyItems(JSON.parse(weeklyShopItems))
+      const stored = await AsyncStorage.getItem("weekly-shop-items")
+      
+      if (!stored) {
+        return { items: null, needsReset: true }
+      }
+      
+      const data = JSON.parse(stored)
+      const lastReset = new Date(data.lastReset)
+      const now = new Date()
+      
+      // Check if we've passed Sunday midnight since last reset
+      const lastResetWeek = getWeekIdentifier(lastReset)
+      const currentWeek = getWeekIdentifier(now)
+      
+      const needsReset = lastResetWeek !== currentWeek
+      
+      return { items: data.items, needsReset }
     } catch (e) {
-      alert(e)
+      console.error('Error loading weekly items:', e)
+      return { items: null, needsReset: true }
     }
   }
 
+  const getWeekIdentifier = (date: Date): string => {
+    const startOfYear = new Date(date.getFullYear(), 0, 1)
+    const pastDaysOfYear = (date.getTime() - startOfYear.getTime()) / 86400000
+    const weekNumber = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7)
+    return `${date.getFullYear()}-W${weekNumber}`
+  }
+
+
   useEffect(() => {
-    loadDailyItemState()
-    loadWeeklyItemState()
+    const initializeShop = async () => {
+    
+      const dailyCheck = await loadDailyItemState()
+    
+      if (dailyCheck.needsReset || !dailyCheck.items) {
+        console.log("daily reset", dailyCheck.items)
+        setDailyItems(dailyRoll)
+        saveDailyItemState(dailyRoll)
+      } else {
+        
+        setDailyItems(dailyCheck.items)
+      }
+    
+  
+      const weeklyCheck = await loadWeeklyItemState()
+    
+      if (weeklyCheck.needsReset || !weeklyCheck.items) {
+        console.log("weekly reset", weeklyCheck.items)
+        setWeeklyItems(weeklyRoll)
+        saveWeeklyItemState(weeklyRoll)
+      } else {
+        
+        setWeeklyItems(weeklyCheck.items)
+      }
+    }
+  
+    initializeShop()
+  
+ 
+    const interval = setInterval(async () => {
+      const dailyCheck = await loadDailyItemState()
+      const weeklyCheck = await loadWeeklyItemState()
+      
+      if (dailyCheck.needsReset) {
+        setDailyItems(dailyRoll)
+        saveDailyItemState(dailyRoll)
+      }
+      
+      if (weeklyCheck.needsReset) {
+        setWeeklyItems(weeklyRoll)
+        saveWeeklyItemState(weeklyRoll)
+      }
+    }, 60000) 
+  
+    return () => clearInterval(interval)
   }, [])
-
-  useEffect(() => {
-    setDailyItems(dailyRoll)
-    setWeeklyItems(weeklyRoll)
-
-    saveDailyItemState(dailyRoll)
-    saveWeeklyItemState(weeklyRoll)
-
-  })
+  
 
 
   const screenHeight = Dimensions.get('window').height;
