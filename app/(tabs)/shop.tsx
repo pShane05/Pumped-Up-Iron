@@ -81,7 +81,6 @@ export default function ShopScreen() {
             prev ? [...prev, item] : [item]
           )
           
-          console.log("Items: ", items)
         }
 
         catch (error) {

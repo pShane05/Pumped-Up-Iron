@@ -1,5 +1,5 @@
 import 'react-native-url-polyfill/auto'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Pressable, StyleSheet, View, Text, Alert, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Link, router, useRouter } from "expo-router"
@@ -8,8 +8,9 @@ import { COLORS, FONTS, styles } from '../costants'
 import { useProfileData } from '../../hooks/useProfile'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import LoadingScreen from '../../components/LoadingScreen'
-import { giveUserXp } from '../../lib/levels'
-
+import { Canvas, useFrame, useLoader } from '@react-three/fiber'
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js'
+import { Asset } from 'expo-asset'
 
 export default function AvatarScreen() {
 
@@ -61,34 +62,101 @@ export default function AvatarScreen() {
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
 
+      <View style={{ height: 250, marginTop: 20}}>
+      <Canvas>
+        <ambientLight color={'red'} intensity={ 0.25 }/>
+        <pointLight position={[5, 5, 5]} intensity={ 250 } color={'blue'}/>
+        <AvatarRender />
+        
+      </Canvas>
+      </View>
 
       
+      {
+      
+      <View style={{marginHorizontal: 50, position: 'absolute', bottom: '15%', paddingBottom: 50, height: '15%', justifyContent: 'space-between', rowGap: 0}}>
 
-      <View style={{marginHorizontal: 50, position: 'absolute', bottom: '20%', paddingBottom: 20, height: '20%', justifyContent: 'space-between'}}>
-
-        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Class: 
-          <Text style={{ color: COLORS.TEAL}}>  {"Tester"} </Text>
-
-        </Text>
-
-        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Lvl: 
+        
+        <Text style={{ color: COLORS.PINK, fontSize: 18, fontFamily: FONTS.BODY}}> Lvl: 
           <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  { profile?.level}  </Text>
         </Text>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Started: 
+        <Text style={{ color: COLORS.PINK, fontSize: 18, fontFamily: FONTS.BODY}}> Started: 
           <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  { formattedDate }  </Text>
         </Text>
 
-        <Text style={{ color: COLORS.PINK, fontSize: 20, fontFamily: FONTS.BODY}}> Streak: 
+        <Text style={{ color: COLORS.PINK, fontSize: 18, fontFamily: FONTS.BODY}}> Streak: 
           <Text style={{ color: COLORS.TEAL, fontFamily: FONTS.BODY}}>  {"1 Day"} </Text>
           <FontAwesome6 name="fire-flame-curved" size={20} color="#ff5e00ff" />
         </Text>
         
 
       </View>
+      
+      }
 
-       <XpDisplay userId= { userId }/>
+      <XpDisplay userId= { userId }/>
         
     </SafeAreaView>
+  )
+}
+
+export function KnotRender() {
+
+  const mesh = useRef<any>(null)
+
+  useFrame((state, delta) => {
+    if(mesh.current != null)
+      mesh.current.rotation.z += delta * 2
+  })
+
+  return (
+    <mesh 
+      position={[0, 0, 0]} 
+      rotation={[ 100, 0, 0]}
+      scale={ 0.15}
+      ref={mesh}
+    >
+      <torusKnotGeometry args={[ 10, 1, 260, 6, 10, 16]} />
+      <meshStandardMaterial color={"purple"} />
+    </mesh>
+  )
+}
+
+export function AvatarRender() {
+
+  const [modelUri, setModelUri] = useState<string>('');
+
+  const mesh = useRef<any>(null)
+
+  useFrame((state, delta) => {
+    if(mesh.current != null)
+      mesh.current.rotation.y -= delta * 0.5
+  })
+
+  useEffect(() => {
+    async function loadAsset() {
+      const asset = await Asset.fromModule(require('../../assets/Male.OBJ')).downloadAsync();
+      setModelUri(asset.localUri || '');
+    }
+    loadAsset();
+  }, []);
+
+  const object = useLoader(OBJLoader, modelUri);
+
+  if (!modelUri) return null;
+
+
+  return (
+    <mesh 
+      scale={ 1 } 
+      position={[ 0, 2, 0]}
+      rotation={[ .25, 0, 0]}
+      ref={mesh}
+    >
+      <primitive object={object} />
+      
+    </mesh>
+    
   )
 }
