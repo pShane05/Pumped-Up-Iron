@@ -65,7 +65,7 @@ export default function AvatarScreen() {
       <View style={{ height: 250, marginTop: 20}}>
       <Canvas>
         <ambientLight color={'red'} intensity={ 0.25 }/>
-        <pointLight position={[5, 5, 5]} intensity={ 250 } color={'blue'}/>
+        <pointLight position={[5, 5, 5]} intensity={ 1000 } color={'blue'}/>
         <AvatarRender />
         
       </Canvas>
@@ -136,7 +136,7 @@ export function AvatarRender() {
 
   useEffect(() => {
     async function loadAsset() {
-      const asset = await Asset.fromModule(require('../../assets/Male.OBJ')).downloadAsync();
+      const asset = await Asset.fromModule(require('../../assets/characterlowpoly2.obj')).downloadAsync();
       setModelUri(asset.localUri || '');
     }
     loadAsset();
@@ -150,7 +150,7 @@ export function AvatarRender() {
   return (
     <mesh 
       scale={ 1 } 
-      position={[ 0, 2, 0]}
+      position={[ 0, -.25, 0]}
       rotation={[ .25, 0, 0]}
       ref={mesh}
     >
