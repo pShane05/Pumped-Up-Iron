@@ -86,3 +86,46 @@ export function useItemsByUser(profile: Profile | null) {
 
   return { items, loading, error }
 }
+
+
+export function useItemsByCategory(category: string | undefined, amount: number) {
+  const [items, setItems] = useState<Item[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    if (!category) return
+
+    const fetchItem = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from('items')
+          .select('*')
+          .eq('effect', category)
+
+        if (error) 
+          throw error
+
+        const shuffled = data.sort(() => Math.random() - .5)
+        setItems(shuffled.slice(0, amount))
+
+
+      } catch (error) {
+
+        if (error instanceof Error)
+
+          setError(error)
+          console.log(error)
+
+      } finally {
+        
+        setLoading(false)
+      }
+    }
+
+    fetchItem()
+  }, [category])
+
+  return { items, loading, error }
+}

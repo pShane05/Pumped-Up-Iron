@@ -2,18 +2,15 @@ import 'react-native-url-polyfill/auto'
 import React, { useState, useEffect, } from 'react'
 import { supabase } from '../../lib/supabase'
 import { ScrollView, Image, Pressable, View, Text, Alert, Dimensions, ActivityIndicator, SafeAreaView, FlatList } from 'react-native'
-import { Session } from '@supabase/supabase-js'
-import { Link, useRouter } from "expo-router"
 import { COLORS, FONTS, imageMap, styles } from '../costants'
 import { GoldCounter } from '../../components/UI'
-import { useProfile, useProfileData } from '../../hooks/useProfile'
+import { useProfileData } from '../../hooks/useProfile'
 import LoadingScreen from '../../components/LoadingScreen'
-import CountdownTimers, { WeeklyCountdown } from '../../components/Countdowns'
+import { WeeklyCountdown } from '../../components/Countdowns'
 import DailyCountdown from '../../components/Countdowns'
 import { Item } from '../../lib/Item'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { commonUncommon } from '../../lib/randomValues'
-import { useItemsByRarity, useItemsByUser } from '../../hooks/useItem'
+import { useItemsByRarity } from '../../hooks/useItem'
 import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
@@ -202,9 +199,9 @@ export default function ShopScreen() {
       if (dailyCheck.needsReset || !dailyCheck.items) {
         console.log("daily reset", dailyCheck.items)
         setDailyItems(dailyRoll)
-        saveDailyItemState(dailyRoll)
+        await saveDailyItemState(dailyRoll)
       } else {
-        
+        console.log(dailyCheck)
         setDailyItems(dailyCheck.items)
       }
     
@@ -214,7 +211,7 @@ export default function ShopScreen() {
       if (weeklyCheck.needsReset || !weeklyCheck.items) {
         console.log("weekly reset", weeklyCheck.items)
         setWeeklyItems(weeklyRoll)
-        saveWeeklyItemState(weeklyRoll)
+        await saveWeeklyItemState(weeklyRoll)
       } else {
         
         setWeeklyItems(weeklyCheck.items)

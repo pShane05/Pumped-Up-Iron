@@ -66,7 +66,7 @@ export default function AvatarScreen() {
       <Canvas>
         <ambientLight color={'red'} intensity={ 0.25 }/>
         <pointLight position={[5, 5, 5]} intensity={ 1000 } color={'blue'}/>
-        <AvatarRender />
+        <KnotRender />
         
       </Canvas>
       </View>
