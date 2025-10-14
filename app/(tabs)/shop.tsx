@@ -30,7 +30,7 @@ export default function ShopScreen() {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
-  const [activeCategory, setActiveCategory] = useState<Category>({name: "All", icon_url: "boxes_icon.png" })
+  const [activeCategory, setActiveCategory] = useState<Category>({name: "All Items", icon_url: "boxes_icon.png" })
 
   const dailyRoll = useItemsByRarity("common", 6).items
   const weeklyRoll = useItemsByRarity("common", 12).items
@@ -259,10 +259,10 @@ export default function ShopScreen() {
 
   async function onSelectCategory(cat: Category) {
 
-    const isCatValid = cat.name == "All" || cat.name == "Weapons" || cat.name == "Armor" || cat.name == "Cosmetics"
+    const isCatValid = cat.name == "All Items" || cat.name == "Weapons" || cat.name == "Armor" || cat.name == "Cosmetics"
 
     if(!cat || !isCatValid) {
-      throw new Error("Provided category must be one of the 4 options: 'All', 'Weapons', 'Armor', 'Cosmetics'. You provided: " + cat.name)
+      throw new Error("Provided category must be one of the 4 options: 'All Items', 'Weapons', 'Armor', 'Cosmetics'. You provided: " + cat.name)
     }
 
     setActiveCategory(cat)
@@ -288,19 +288,17 @@ export default function ShopScreen() {
         <View style={[ styles.horizontalLine, { width: '40%', position: 'absolute', bottom: '70%' } ]} />
 
         <View style={{ flexDirection: 'row', columnGap: 25, position: 'absolute', bottom: '40%' }}>
-          <CatSelector category={{ name: "All", icon_url: "boxes_icon.png" }} onCategorySelect={ onSelectCategory }/>
+          <CatSelector category={{ name: "All Items", icon_url: "boxes_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Weapons", icon_url: "sword_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Armor", icon_url: "armor_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Cosmetics", icon_url: "shades_icon.png" }} onCategorySelect={ onSelectCategory }/>
         </View>
 
         <Text style={{ 
-          color: COLORS.TEAL, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, 
-          paddingHorizontal: 5, position: 'absolute', bottom: '15%', fontFamily: FONTS.HEADER  
+          color: COLORS.TEAL, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.85)', borderRadius: 25, 
+          paddingHorizontal: 5, position: 'absolute', bottom: 40, fontFamily: FONTS.HEADER  
         }}> 
-          {
-          //[Shop Category]
-          } 
+          { activeCategory.name } 
         </Text>
 
         <View style={[ styles.horizontalLine, { marginTop: 20, width: '60%', position: 'absolute', bottom: '10%'} ]} />
