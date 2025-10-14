@@ -15,6 +15,12 @@ import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
 import { giveUserGold } from '../../lib/profile'
+import { Catalogue } from '@react-three/fiber'
+
+export type Category = {
+  name: string,
+  icon_url: string
+}
 
 export default function ShopScreen() {
   
@@ -24,6 +30,7 @@ export default function ShopScreen() {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+  const [activeCategory, setActiveCategory] = useState<Category>({name: "All", icon_url: "boxes_icon.png" })
 
   const dailyRoll = useItemsByRarity("common", 6).items
   const weeklyRoll = useItemsByRarity("common", 12).items
@@ -149,8 +156,8 @@ export default function ShopScreen() {
       const lastResetDate = lastReset.toDateString()
       const currentDate = now.toDateString()
       
-      const needsReset = lastResetDate !== currentDate
-      
+      const needsReset = (lastResetDate !== currentDate) || data.items.length < 1
+
       return { items: data.items, needsReset }
     } catch (e) {
       console.error('Error loading daily items:', e)
@@ -201,7 +208,7 @@ export default function ShopScreen() {
         setDailyItems(dailyRoll)
         await saveDailyItemState(dailyRoll)
       } else {
-        console.log(dailyCheck)
+
         setDailyItems(dailyCheck.items)
       }
     
@@ -238,11 +245,28 @@ export default function ShopScreen() {
   
     return () => clearInterval(interval)
   }, [])
+
+
+  useEffect(() => {
+    
+    console.log(activeCategory)
+  }, [activeCategory])
   
 
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.4;  // Matches your titleView height
+
+  async function onSelectCategory(cat: Category) {
+
+    const isCatValid = cat.name == "All" || cat.name == "Weapons" || cat.name == "Armor" || cat.name == "Cosmetics"
+
+    if(!cat || !isCatValid) {
+      throw new Error("Provided category must be one of the 4 options: 'All', 'Weapons', 'Armor', 'Cosmetics'. You provided: " + cat.name)
+    }
+
+    setActiveCategory(cat)
+  }
 
 
   if (loading || !isDataReady) {
@@ -257,17 +281,17 @@ export default function ShopScreen() {
       <GoldCounter goldCount={ gold }/> 
 
       <View style={ styles.shopHeader }>
-        <Text style={{ color: COLORS.TEAL, fontSize: 40, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5, fontFamily: FONTS.HEADER  }}> 
+        <Text style={{ color: COLORS.BORDER, fontSize: 40, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25, paddingHorizontal: 5, fontFamily: FONTS.HEADER  }}> 
           Shop 
         </Text>
 
         <View style={[ styles.horizontalLine, { width: '40%', position: 'absolute', bottom: '70%' } ]} />
 
         <View style={{ flexDirection: 'row', columnGap: 25, position: 'absolute', bottom: '40%' }}>
-          <CatSelector />
-          <CatSelector />
-          <CatSelector />
-          <CatSelector />
+          <CatSelector category={{ name: "All", icon_url: "boxes_icon.png" }} onCategorySelect={ onSelectCategory }/>
+          <CatSelector category={{ name: "Weapons", icon_url: "sword_icon.png" }} onCategorySelect={ onSelectCategory }/>
+          <CatSelector category={{ name: "Armor", icon_url: "armor_icon.png" }} onCategorySelect={ onSelectCategory }/>
+          <CatSelector category={{ name: "Cosmetics", icon_url: "shades_icon.png" }} onCategorySelect={ onSelectCategory }/>
         </View>
 
         <Text style={{ 
@@ -353,11 +377,19 @@ export default function ShopScreen() {
 }
 
 
-export function CatSelector() {
+export function CatSelector(props: { category: Category, onCategorySelect: (cat: Category) => void }) {
+
+  if (!props.category) return
+
   return (
-    <View style={ styles.CatSelector }>
-        
-    </View>
+    <Pressable 
+      style={ styles.CatSelector }
+      onPress={ () => props.onCategorySelect(props.category) }
+    >
+      
+      <Image style={{ resizeMode: 'contain', width: '75%', height: '75%',}} source={ imageMap[props.category.icon_url] }/>
+      
+    </Pressable>
   )
 }
 

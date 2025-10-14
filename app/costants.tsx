@@ -48,6 +48,7 @@ export const imageMap: Record<string, any> = {
   'armor_icon.png': require('../assets/icons/armor_icon.png'),
   'sword_icon.png': require('../assets/icons/sword_icon.png'),
   'shades_icon.png': require('../assets/icons/shades_icon.png'),
+  'boxes_icon.png': require('../assets/icons/boxes_icon.png'),
 }
 
 export function attribute() {
@@ -220,7 +221,9 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 20,
     height: (Dimensions.get('window').width) * 0.15,
-    width: (Dimensions.get('window').width) * 0.15,      
+    width: (Dimensions.get('window').width) * 0.15,    
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   ItemSelector: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
