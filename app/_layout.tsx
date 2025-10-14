@@ -47,6 +47,8 @@ export default function RootLayout() {
             } else if (!profile?.plan_id) {
                 setIsLoading(false)
                 setTimeout(() => router.replace('/makePlan'), 100)
+            } else {
+                setIsLoading(false)
             }
         }
 

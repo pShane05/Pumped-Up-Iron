@@ -381,17 +381,24 @@ export default function ShopScreen() {
 
             <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
 
-            <FlatList 
-              style={{ width: '100%', marginTop: 20 }}
-              contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
-              numColumns={3}
-              scrollEnabled={false}
-              data={ shield } 
-              renderItem={({item}) => (
-                <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
-              )}
-              
-            />
+            <View style={{ height: 150}}>
+              <FlatList 
+                style={{ width: '100%', marginTop: 20 }}
+                contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
+                numColumns={3}
+                scrollEnabled={false}
+                data={ shield } 
+                renderItem={({item}) => (
+                  <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
+                )}
+                
+              />
+            </View>
+
+            <Text style={{ fontFamily: FONTS.BODY, fontSize: 14, color: COLORS.CYAN, paddingHorizontal: 50, textAlign: 'center', marginTop: 20}}>
+              Shields can be purchased multiple times and stacked up to 5 of each rarity. Each shield will protect you from penalties
+              for as long as the effect lasts
+            </Text>
 
           </View>
         :
@@ -460,6 +467,10 @@ export default function ShopScreen() {
                   
               />
 
+              <Text style={{ fontFamily: FONTS.BODY, fontSize: 14, color: COLORS.CYAN, paddingHorizontal: 50, textAlign: 'center', marginTop: 20}}>
+                Shields can be purchased multiple times and stacked up to 5 of each rarity. Each shield will protect you from penalties
+                for as long as the effect lasts
+              </Text>
             </View>
 
           )}

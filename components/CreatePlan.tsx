@@ -80,7 +80,11 @@ export default function CreatePlanCard() {
                 workouts_per_week: selectedGoalDays,
                 primary_focus: selectedFocusOne,
                 secondary_focus: selectedFocusTwo
+            },
+            { 
+                onConflict: 'user_id' 
             })
+            
             .single()
 
             if (error) throw error
