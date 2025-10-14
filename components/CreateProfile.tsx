@@ -9,9 +9,9 @@ import { useProfile, useProfileData } from "../hooks/useProfile";
 import { router } from "expo-router";
 
 
-export default function CreateProfileCard(props: {session: Session | null}) {
+export default function CreateProfileCard() {
 
-    const { session, loading, setLoading, updateProfile } = useProfileData()
+    const { session, loading, updateProfile } = useProfileData()
 
     
     const [username, setUsername] = useState('')

@@ -35,7 +35,6 @@ export default function DailyQuestScreen() {
         gold: (profile?.level) ? Math.floor((profile.level) * .25) + 10 : -1
     }
 
-      console.log(rewards)
 
     function onQuestComplete(quest: DailyQuest | null, allQuestsComplete: boolean) {
 
@@ -78,8 +77,7 @@ export default function DailyQuestScreen() {
       console.log("Daily Quests: ", dailyQuests)
       
       if (questData.is_new) {
-        console.log('🎉 New daily quests generated!');
-        // Maybe show a notification or animation
+        loadDailyQuests
       }
       
     } catch (err) {
@@ -91,10 +89,8 @@ export default function DailyQuestScreen() {
 
 
     // Load daily quests from supabase
-    useEffect(() => {
-        
+    useEffect(() => { 
         loadDailyQuests()           
-        console.log(dailyQuests)
     }, [])
 
 

@@ -1,17 +1,14 @@
-import { Session } from "@supabase/supabase-js"
-import { useEffect, useState } from "react"
-import { supabase } from "../lib/supabase"
+import { useState } from "react"
 import { View, Text, Pressable, Alert, Platform } from "react-native"
 import RNDateTimePicker from "@react-native-community/datetimepicker"
 import { COLORS, styles } from "../app/costants"
-import { NavigatorContext } from "expo-router/build/views/Navigator"
 import { router } from "expo-router"
 import { useProfileData } from "../hooks/useProfile"
 
 
-export default function BirthdayPicker(props: {session: Session | null }) {
+export default function BirthdayPicker() {
 
-    const { session, loading, setLoading, updateProfile } = useProfileData()
+    const { updateProfile } = useProfileData()
     const [updated, setUpdated] = useState(false)
 
     const [userBirthday, setUserBirthday] = useState<Date | undefined>(new Date())
@@ -26,9 +23,9 @@ export default function BirthdayPicker(props: {session: Session | null }) {
 
         await updateProfile({
             dob: userBirthday
-         })
+        })
 
-         router.replace('/')
+        router.replace('/makePlan')
     }
 
     return (
