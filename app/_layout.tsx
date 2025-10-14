@@ -33,7 +33,7 @@ export default function RootLayout() {
 
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('username, dob')
+                .select('*')
                 .eq('id', currentSession.user.id)
                 .single()
 
@@ -44,8 +44,9 @@ export default function RootLayout() {
                 setIsLoading(false)
                 setTimeout(() => router.replace('/setBirthday'), 100)
 
-            } else {
+            } else if (!profile?.plan_id) {
                 setIsLoading(false)
+                setTimeout(() => router.replace('/makePlan'), 100)
             }
         }
 

@@ -12,7 +12,6 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "8.4.4",
     "@react-three/fiber": "^9.3.0",
-    "@rneui/themed": "^4.0.0-rc.8",
     "@supabase/supabase-js": "^2.50.2",
     "@types/three": "^0.180.0",
     "expo": "^54.0.12",
@@ -20,9 +19,11 @@
     "expo-gl": "~16.0.7",
     "expo-router": "~6.0.10",
     "expo-status-bar": "~3.0.8",
-    "react": "19.1.0",
+    "react": "^19.1.0",
     "react-native": "0.81.4",
+    "react-native-dropdown-select-list": "^2.0.5",
     "react-native-progress": "^5.0.1",
+    "react-native-safe-area-context": "^5.6.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-wheel-picker-expo": "^0.5.4",
     "three": "^0.180.0",
@@ -30,7 +31,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~19.0.10",
+    "@types/react": "^19.2.2",
     "typescript": "~5.8.3"
   },
   "private": true
