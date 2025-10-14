@@ -67,6 +67,9 @@ export default function ShopScreen() {
   const weeklyWeapons = useItemsByCategory("Weapons", 4).items
   const weeklyArmor = useItemsByCategory("Armor", 4).items
   const weeklyCosmetics = useItemsByCategory("Cosmetics", 4).items
+  const shield = useItemsByCategory("Shield", 3).items
+
+  console.log(shield)
 
   const newWeeklyItems = {
     all: [... weeklyWeapons, ...weeklyArmor, ...weeklyCosmetics],
@@ -314,10 +317,10 @@ export default function ShopScreen() {
 
   async function onSelectCategory(cat: Category) {
 
-    const isCatValid = cat.name == "All Items" || cat.name == "Weapons" || cat.name == "Armor" || cat.name == "Cosmetics"
+    const isCatValid = cat.name == "All Items" || cat.name == "Weapons" || cat.name == "Armor" || cat.name == "Cosmetics" || "Shield"
 
     if(!cat || !isCatValid) {
-      throw new Error("Provided category must be one of the 4 options: 'All Items', 'Weapons', 'Armor', 'Cosmetics'. You provided: " + cat.name)
+      throw new Error("Provided category must be one of the 4 options: 'All Items', 'Weapons', 'Armor', 'Cosmetics', or 'Shield'. You provided: " + cat.name)
     }
 
     setActiveCategory(cat)
@@ -342,11 +345,12 @@ export default function ShopScreen() {
 
         <View style={[ styles.horizontalLine, { width: '40%', position: 'absolute', bottom: '70%' } ]} />
 
-        <View style={{ flexDirection: 'row', columnGap: 25, position: 'absolute', bottom: '40%' }}>
+        <View style={{ flexDirection: 'row', columnGap: 10, position: 'absolute', bottom: '40%' }}>
           <CatSelector category={{ name: "All Items", icon_url: "boxes_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Weapons", icon_url: "sword_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Armor", icon_url: "armor_icon.png" }} onCategorySelect={ onSelectCategory }/>
           <CatSelector category={{ name: "Cosmetics", icon_url: "shades_icon.png" }} onCategorySelect={ onSelectCategory }/>
+          <CatSelector category={{ name: "Shield", icon_url: "shield_icon.png" }} onCategorySelect={ onSelectCategory }/>
         </View>
 
         <Text style={{ 
@@ -367,55 +371,104 @@ export default function ShopScreen() {
       </View>
 
 
+      {
+        activeCategory.name === "Shield" ?
+          <View style={{ flex: 1, backgroundColor: '#25130f'}}>
+            <View style={{ height: headerHeight - 50}}/>
+            <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, fontFamily: FONTS.BODY}}> 
+              Shield 
+            </Text>
 
-      <ScrollView style={[ styles.scrollableView, { backgroundColor: '#25130f'} ]}>
-        <View style={{ height: headerHeight - 50}}/>
-        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, fontFamily: FONTS.BODY}}> 
-          Daily 
-        </Text>
+            <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
 
-        <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
+            <FlatList 
+              style={{ width: '100%', marginTop: 20 }}
+              contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
+              numColumns={3}
+              scrollEnabled={false}
+              data={ shield } 
+              renderItem={({item}) => (
+                <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
+              )}
+              
+            />
 
-        <FlatList 
-          style={{ width: '100%', marginTop: 20 }}
-          contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
-          numColumns={3}
-          scrollEnabled={false}
-          data={getCurrentDailyItems()}
-          renderItem={({item}) => (
-            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
+          </View>
+        :
+
+        <ScrollView style={[ styles.scrollableView, { backgroundColor: '#25130f'} ]}>
+          <View style={{ height: headerHeight - 50}}/>
+          <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, fontFamily: FONTS.BODY}}> 
+            Daily 
+          </Text>
+
+          <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
+
+          <FlatList 
+            style={{ width: '100%', marginTop: 20 }}
+            contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
+            numColumns={3}
+            scrollEnabled={false}
+            data={getCurrentDailyItems()}
+            renderItem={({item}) => (
+              <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
+            )}
+            
+          />
+
+          <View style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
+            <Text style={{ color: COLORS.CYAN, fontFamily: FONTS.BODY, fontSize: 14}}> Refreshes in: </Text>
+            <DailyCountdown />
+          </View>
+
+          <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, marginTop: 50, fontFamily: FONTS.BODY}}> Weekly </Text>
+          <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
+
+          <FlatList 
+            style={{ width: '100%', marginTop: 20 }}
+            contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
+            numColumns={3}
+            scrollEnabled={false}
+            data={getCurrentWeeklyItems()}
+            renderItem={({item}) => (
+              <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
+            )}
+            
+          />
+
+          <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'center'}}>
+            <Text style={{ color: COLORS.CYAN, fontFamily: FONTS.BODY, fontSize: 16}}> Refreshes in: </Text>
+            <WeeklyCountdown />
+          </View>
+
+          {
+            activeCategory.name == "All Items" && (
+
+            <View>
+              <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, marginTop: 50, fontFamily: FONTS.BODY}}> Shield </Text>
+              <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
+
+              <FlatList 
+                style={{ width: '100%', marginTop: 20 }}
+                contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
+                numColumns={3}
+                scrollEnabled={false}
+                data={shield}
+                renderItem={({item}) => (
+                  <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items} userGold={profile.gold_count}/>
+                )}
+                  
+              />
+
+            </View>
+
           )}
-          
-        />
 
-        <View style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
-          <Text style={{ color: COLORS.CYAN, fontFamily: FONTS.BODY, fontSize: 14}}> Refreshes in: </Text>
-          <DailyCountdown />
-        </View>
+          <View style={{ height: 100 }}/>
 
-        <Text style={{ color: COLORS.TEAL, alignSelf: 'center', fontSize: 20, marginTop: 50, fontFamily: FONTS.BODY}}> Weekly </Text>
-        <View style={[ styles.horizontalLine, { width: '30%', marginTop: 10 } ]} />
+        </ScrollView>
+      }
 
-        <FlatList 
-          style={{ width: '100%', marginTop: 20 }}
-          contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
-          numColumns={3}
-          scrollEnabled={false}
-          data={getCurrentWeeklyItems()}
-          renderItem={({item}) => (
-            <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
-          )}
-          
-        />
-
-        <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'center'}}>
-          <Text style={{ color: COLORS.CYAN, fontFamily: FONTS.BODY, fontSize: 16}}> Refreshes in: </Text>
-          <WeeklyCountdown />
-        </View>
-        <View style={{ height: 50 }}/>
-
-      </ScrollView>
-      
       <PurchaseModal
           session={session}
           item={selectedItem}
@@ -424,6 +477,7 @@ export default function ShopScreen() {
           onPurchase={handlePurchase}
           profile={profile}
       />
+
 
     </SafeAreaView>
   )
@@ -446,11 +500,12 @@ export function CatSelector(props: { category: Category, onCategorySelect: (cat:
   )
 }
 
-export function ItemSelector(props: { item: Item, onPress: () => void, userItems: Item[] | null }) {
+export function ItemSelector(props: { item: Item, onPress: () => void, userItems: Item[] | null, userGold: number }) {
 
   if (!props.item) return
 
   let isOwned = false
+  const isShield = props.item.category == "Shield"
 
   props.userItems?.forEach(item => {
     if (item.id == props.item.id)
@@ -461,6 +516,7 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
     <Pressable 
       style={ styles.ItemSelector }
       onPress={props.onPress}
+      disabled={isOwned && !isShield}
     >
 
         <View style={{ alignSelf: 'center', width: 50, height: 50, }}>
@@ -471,7 +527,7 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
           {props.item.name}
         </Text>
         
-        { isOwned ?
+        { isOwned && !isShield?
           (
 
             <View
@@ -486,7 +542,7 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
           ) : (
           <View style={{ flexDirection: 'row', position: 'absolute', bottom: 5, alignItems: 'center', columnGap: 2,}}>
             <Text 
-              style={{ color: COLORS.GOLD, fontFamily: FONTS.HEADER, fontSize: 16, textAlign: 'center', }}
+              style={{ color: props.item.price < props.userGold ? COLORS.GOLD : COLORS.RED, fontFamily: FONTS.HEADER, fontSize: 16, textAlign: 'center', }}
             >
               {props.item.price}
             </Text>

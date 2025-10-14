@@ -108,7 +108,11 @@ export function useItemsByCategory(category: string | undefined, amount: number)
           throw error
 
         const shuffled = data.sort(() => Math.random() - .5)
-        setItems(shuffled.slice(0, amount))
+
+        if (category == "Shield")
+          setItems(data.slice(0, amount))   // keep shield in order
+        else
+          setItems(shuffled.slice(0, amount))
 
 
       } catch (error) {
