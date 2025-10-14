@@ -4,7 +4,7 @@ export type Item = {
     price: number,
     value: number,
     rarity: string,
-    effect: string,
+    category: string,
     description: string,
     icon_url: string
 }

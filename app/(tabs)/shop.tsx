@@ -10,7 +10,7 @@ import { WeeklyCountdown } from '../../components/Countdowns'
 import DailyCountdown from '../../components/Countdowns'
 import { Item } from '../../lib/Item'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useItemsByRarity } from '../../hooks/useItem'
+import { useItemsByCategory, useItemsByRarity } from '../../hooks/useItem'
 import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
@@ -20,6 +20,13 @@ import { Catalogue } from '@react-three/fiber'
 export type Category = {
   name: string,
   icon_url: string
+}
+
+export type ItemsByCategory = {
+  all : Item[]
+  weapons : Item[]
+  armor : Item[]
+  cosmetics : Item[]
 }
 
 export default function ShopScreen() {
@@ -32,11 +39,59 @@ export default function ShopScreen() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [activeCategory, setActiveCategory] = useState<Category>({name: "All Items", icon_url: "boxes_icon.png" })
 
-  const dailyRoll = useItemsByRarity("common", 6).items
-  const weeklyRoll = useItemsByRarity("common", 12).items
+  const [dailyItems, setDailyItems] = useState<ItemsByCategory>({
+    all: [],
+    weapons: [],
+    armor: [],
+    cosmetics: [],
+  })
 
-  const [dailyItems, setDailyItems] = useState<Item[]>()
-  const [weeklyItems, setWeeklyItems] = useState<Item[]>()
+  const [weeklyItems, setWeeklyItems] = useState<ItemsByCategory>({
+    all: [],
+    weapons: [],
+    armor: [],
+    cosmetics: [],
+  })
+
+  const dailyWeapons = useItemsByCategory("Weapons", 2).items
+  const dailyArmor = useItemsByCategory("Armor", 2).items
+  const dailyCosmetics = useItemsByCategory("Cosmetics", 2).items
+
+  const newDailyItems = {
+    all: [... dailyWeapons, ...dailyArmor, ...dailyCosmetics],
+    weapons: dailyWeapons,
+    armor: dailyArmor,
+    cosmetics: dailyCosmetics
+  }
+
+  const weeklyWeapons = useItemsByCategory("Weapons", 4).items
+  const weeklyArmor = useItemsByCategory("Armor", 4).items
+  const weeklyCosmetics = useItemsByCategory("Cosmetics", 4).items
+
+  const newWeeklyItems = {
+    all: [... weeklyWeapons, ...weeklyArmor, ...weeklyCosmetics],
+    weapons: weeklyWeapons,
+    armor: weeklyArmor,
+    cosmetics: weeklyCosmetics
+  }
+
+  const getCurrentDailyItems = () => {
+    switch(activeCategory.name) {
+      case "Weapons": return dailyItems.weapons
+      case "Armor": return dailyItems.armor
+      case "Cosmetics": return dailyItems.cosmetics
+      default: return dailyItems.all
+    }
+  }
+
+  const getCurrentWeeklyItems = () => {
+    switch(activeCategory.name) {
+      case "Weapons": return weeklyItems.weapons
+      case "Armor": return weeklyItems.armor
+      case "Cosmetics": return weeklyItems.cosmetics
+      default: return weeklyItems.all
+    }
+  }
 
   const gold = profile?.gold_count
 
@@ -73,7 +128,7 @@ export default function ShopScreen() {
             price: item.price,
             value: item.value,
             rarity: item.rarity,
-            effect: item.effect,
+            category: item.category,
             description: item.description,
             icon_url: item.icon_url
           })
@@ -106,7 +161,7 @@ export default function ShopScreen() {
 
   // Async storage functions
   
-  const saveDailyItemState = async (_dailyItems: Item[]) => {
+  const saveDailyItemState = async (_dailyItems: ItemsByCategory) => {
     try {
       
       const data = {
@@ -122,7 +177,7 @@ export default function ShopScreen() {
     }
   }
 
-  const saveWeeklyItemState = async (_weeklyItems: Item[]) => {
+  const saveWeeklyItemState = async (_weeklyItems: ItemsByCategory) => {
     try {
       
       const data = {
@@ -203,10 +258,10 @@ export default function ShopScreen() {
     
       const dailyCheck = await loadDailyItemState()
     
-      if (dailyCheck.needsReset || !dailyCheck.items) {
+      if (dailyCheck.needsReset || dailyCheck.items.length < 1) {
         console.log("daily reset", dailyCheck.items)
-        setDailyItems(dailyRoll)
-        await saveDailyItemState(dailyRoll)
+        setDailyItems(newDailyItems)
+        await saveDailyItemState(newDailyItems)
       } else {
 
         setDailyItems(dailyCheck.items)
@@ -215,12 +270,12 @@ export default function ShopScreen() {
   
       const weeklyCheck = await loadWeeklyItemState()
     
-      if (weeklyCheck.needsReset || !weeklyCheck.items) {
+      if (weeklyCheck.needsReset || weeklyCheck.items.length < 1) {
         console.log("weekly reset", weeklyCheck.items)
-        setWeeklyItems(weeklyRoll)
-        await saveWeeklyItemState(weeklyRoll)
+        setWeeklyItems(newWeeklyItems)
+        await saveWeeklyItemState(newWeeklyItems)
       } else {
-        
+        console.log(weeklyCheck)
         setWeeklyItems(weeklyCheck.items)
       }
     }
@@ -233,13 +288,13 @@ export default function ShopScreen() {
       const weeklyCheck = await loadWeeklyItemState()
       
       if (dailyCheck.needsReset) {
-        setDailyItems(dailyRoll)
-        saveDailyItemState(dailyRoll)
+        setDailyItems(newDailyItems)
+        saveDailyItemState(newDailyItems)
       }
       
       if (weeklyCheck.needsReset) {
-        setWeeklyItems(weeklyRoll)
-        saveWeeklyItemState(weeklyRoll)
+        setWeeklyItems(newWeeklyItems)
+        saveWeeklyItemState(newWeeklyItems)
       }
     }, 60000) 
   
@@ -326,7 +381,7 @@ export default function ShopScreen() {
           contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
           numColumns={3}
           scrollEnabled={false}
-          data={dailyItems}
+          data={getCurrentDailyItems()}
           renderItem={({item}) => (
             <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
           )}
@@ -346,7 +401,7 @@ export default function ShopScreen() {
           contentContainerStyle={{justifyContent: 'space-around', alignItems: 'center', columnGap: 10}}
           numColumns={3}
           scrollEnabled={false}
-          data={weeklyItems}
+          data={getCurrentWeeklyItems()}
           renderItem={({item}) => (
             <ItemSelector item={item} onPress={() => handleItemPress(item)} userItems={items}/>
           )}

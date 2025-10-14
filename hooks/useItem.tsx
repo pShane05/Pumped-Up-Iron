@@ -102,7 +102,7 @@ export function useItemsByCategory(category: string | undefined, amount: number)
         const { data, error } = await supabase
           .from('items')
           .select('*')
-          .eq('effect', category)
+          .eq('category', category)
 
         if (error) 
           throw error
