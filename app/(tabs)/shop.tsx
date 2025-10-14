@@ -10,7 +10,7 @@ import { WeeklyCountdown } from '../../components/Countdowns'
 import DailyCountdown from '../../components/Countdowns'
 import { Item } from '../../lib/Item'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useItemsByCategory, useItemsByRarity } from '../../hooks/useItem'
+import { useItemsByCategory } from '../../hooks/useItem'
 import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
@@ -350,7 +350,7 @@ export default function ShopScreen() {
         </View>
 
         <Text style={{ 
-          color: COLORS.TEAL, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.85)', borderRadius: 25, 
+          color: COLORS.CYAN, fontSize: 28, backgroundColor: 'rgba(0, 0, 0, 0.85)', borderRadius: 25, 
           paddingHorizontal: 5, position: 'absolute', bottom: 40, fontFamily: FONTS.HEADER  
         }}> 
           { activeCategory.name } 
