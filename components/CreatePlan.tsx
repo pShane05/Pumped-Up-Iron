@@ -51,7 +51,7 @@ export const equipmentList: equipmentData[] = [
 
 export default function CreatePlanCard() {
 
-    const { loading, session } = useProfileData()
+    const { loading, session, updateProfile } = useProfileData()
     const [selectedEquipment, setSelectedEquipment] = useState<string[]>([])
     const [selectedFocusOne, setSelectedFocusOne] = useState<focusData | null>(null)
     const [selectedFocusTwo, setSelectedFocusTwo] = useState<focusData | null>(null)
@@ -67,7 +67,7 @@ export default function CreatePlanCard() {
     }, [selectedEquipment, selectedFocusOne, selectedFocusTwo, selectedGoalDays])
 
     
-    async function confirmProfileInfo() {
+    async function confirmPlanInfo() {
 
         try {
             const { data, error } = await supabase
@@ -85,12 +85,20 @@ export default function CreatePlanCard() {
 
             if (error) throw error
 
+            updateProfile({
+                plan_id: 1
+            })
+
         } catch (error) {
             console.error('Error creating plan: ', error)
             throw error
         }
 
         router.push('/')
+
+    }
+
+    async function assignPlan() {
 
     }
 
@@ -200,7 +208,10 @@ export default function CreatePlanCard() {
                 <View style={{ height: 50 }}/>
             </ScrollView>
 
-            <Pressable style={{ marginTop: 40, position: 'absolute', bottom: 20, alignSelf: 'center'}} disabled={loading || !isInfoComplete } onPress={() => confirmProfileInfo()}>
+            <Pressable 
+                style={{ marginTop: 40, position: 'absolute', bottom: 20, alignSelf: 'center'}} 
+                disabled={loading || !isInfoComplete } 
+                onPress={() => confirmPlanInfo()}>
                 <Text style={[ isInfoComplete ? styles.button : styles.buttonDisabled, { fontFamily: 'Electrolize-Regular' }]}> Confirm </Text> 
             </Pressable>
 
