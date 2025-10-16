@@ -69,8 +69,6 @@ export default function ShopScreen() {
   const weeklyCosmetics = useItemsByCategory("Cosmetics", 4).items
   const shield = useItemsByCategory("Shield", 3).items
 
-  console.log(shield)
-
   const newWeeklyItems = {
     all: [... weeklyWeapons, ...weeklyArmor, ...weeklyCosmetics],
     weapons: weeklyWeapons,
@@ -124,7 +122,6 @@ export default function ShopScreen() {
           const { error } = await supabase
           .from('user_items')
           .insert({
-            id: item.id,
             user_id: profile.id,
             purchased_at: new Date(),
             name: item.name,
@@ -519,8 +516,10 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
   const isShield = props.item.category == "Shield"
 
   props.userItems?.forEach(item => {
-    if (item.id == props.item.id)
-    isOwned = true
+    if (item.id == props.item.id){
+      isOwned = true
+      console.log(isOwned)
+    }
   })
 
   return (
