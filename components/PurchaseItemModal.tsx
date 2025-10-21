@@ -1,7 +1,7 @@
 import { Session } from "@supabase/supabase-js";
 import { Item } from "../lib/Item";
 import { Profile } from "../lib/profile";
-import { Modal, Pressable, View, Text, Image } from "react-native";
+import { Modal, Pressable, View, Text, Image, TouchableWithoutFeedback } from "react-native";
 import { COLORS, FONTS, imageMap, styles } from "../app/costants";
 
 export default function PurchaseModal( 
@@ -36,6 +36,7 @@ export default function PurchaseModal(
       visible={props.showModal}
       onRequestClose={props.onClose}
     >
+        <TouchableWithoutFeedback onPress={ props.onClose }>
         <View 
             style={[
                 styles.container,
@@ -44,6 +45,7 @@ export default function PurchaseModal(
                 }
             ]}
         >
+            <TouchableWithoutFeedback>
             <View style={styles.modalView}>
 
                 <Pressable 
@@ -77,10 +79,10 @@ export default function PurchaseModal(
                 </View>
 
 
-                {props.item.effect && (
+                {props.item.category && (
                     <View style={{width: '100%', marginBottom: 15,}}>
-                    <Text style={{color: COLORS.TEAL, fontFamily: FONTS.HEADER, fontSize: 16, marginBottom: 5, fontWeight: 'bold',}}>Effect:</Text>
-                    <Text style={{color: COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 14, lineHeight: 20, textAlign: 'left',}}>{props.item.effect}</Text>
+                    <Text style={{color: COLORS.TEAL, fontFamily: FONTS.HEADER, fontSize: 16, marginBottom: 5, fontWeight: 'bold',}}>Category:</Text>
+                    <Text style={{color: COLORS.BORDER, fontFamily: FONTS.BODY, fontSize: 14, lineHeight: 20, textAlign: 'left',}}>{props.item.category}</Text>
                     </View>
                 )}
 
@@ -107,7 +109,9 @@ export default function PurchaseModal(
                 </Pressable>
 
             </View>
+            </TouchableWithoutFeedback>
         </View>
+        </TouchableWithoutFeedback>
     </Modal>
   );
 }

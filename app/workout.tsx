@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import { COLORS, FONTS, imageMap, styles } from "./costants";
-import {  View, Text, Pressable, FlatList, Image, SafeAreaView } from 'react-native'
+import {  View, Text, Pressable, FlatList, Image, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { usePlanByProfile, usePlanDayByProfile } from "../hooks/usePlan"
 import { useProfile } from "../hooks/useProfile"
@@ -275,7 +275,7 @@ export default function WorkoutScreen() {
       }
     })
 
-    await giveUserXp(rewards.xp, profile, session, setLoading, setProfile)
+    await giveUserXp(rewards.xp, profile, updateProfile)
 
     setWorkoutIsActive(false)
     saveActiveState("false")
@@ -403,7 +403,7 @@ export default function WorkoutScreen() {
   else { 
 
     return (
-
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={ styles.container }>
               
         <BackButton />
@@ -508,7 +508,7 @@ export default function WorkoutScreen() {
         />
 
       </SafeAreaView>
-
+      </TouchableWithoutFeedback>
     )
   }
 }

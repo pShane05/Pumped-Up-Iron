@@ -22,7 +22,7 @@ function requireXp(level: number) {
 }
 
 
-export async function giveUserXp(xpGain: number, profile: Profile | null, userId: string, updateProfile: (item:any) => void ) {
+export async function giveUserXp(xpGain: number, profile: Profile | null, updateProfile: (item:any) => void ) {
 
     if (!profile) return
 
@@ -54,7 +54,7 @@ export async function giveUserXp(xpGain: number, profile: Profile | null, userId
             xp: totalXp,
             xp_to_next_lvl: xpToNextLvl
         })
-        .eq('id', userId)
+        .eq('id', profile.id)
         .select('gold_count')
         .single()
 

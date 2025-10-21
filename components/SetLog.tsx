@@ -57,13 +57,13 @@ export default function SetLogModal(
     if (!props.showModal || !props.exercise) return null
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback onPress={ props.onClose} accessible={false}>
         <SafeAreaView
             style={[ 
                 styles.container, 
                 { flex: 1, paddingVertical: 50, zIndex: 2, backgroundColor: 'rgba(25, 25, 25, 0.5)', position: 'absolute', 
                 top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%', justifyContent: 'center', alignItems: 'center'}]}>
-            
+            <TouchableWithoutFeedback onPress={ Keyboard.dismiss }>
             <View style={[ styles.modalView ]} >
 
                 <Pressable 
@@ -166,6 +166,7 @@ export default function SetLogModal(
                 </View>
 
             </View>
+            </TouchableWithoutFeedback>
 
         </SafeAreaView>
         </TouchableWithoutFeedback>

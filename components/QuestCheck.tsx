@@ -73,14 +73,14 @@ export default function QuestCheckModal(
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback onPress={ props.onClose } accessible={false}>
         <SafeAreaView
             style={[ 
                 styles.container, 
                 { flex: 1, paddingVertical: 50, zIndex: 2, backgroundColor: 'rgba(25, 25, 25, 0.5)', position: 'absolute', 
                 top: 0, bottom: 0, left: 0, right: 0, height: '110%', width: '100%', justifyContent: 'center', alignItems: 'center'}]}
         >
-
+            <TouchableWithoutFeedback onPress={ Keyboard.dismiss }>
             <View style={ styles.modalView}>
                 <Pressable 
                     style={{ position: 'absolute', left: 10, top: 10, backgroundColor: COLORS.BORDER, borderRadius: 5, borderColor: COLORS.BORDER, borderWidth: 1 }}
@@ -120,6 +120,7 @@ export default function QuestCheckModal(
                 </Pressable>
 
             </View> 
+            </TouchableWithoutFeedback>
 
             
 
