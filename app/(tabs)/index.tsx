@@ -1,5 +1,5 @@
 import 'react-native-url-polyfill/auto'
-import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView, ActivityIndicator } from 'react-native'
+import { ScrollView, Image, Pressable, StyleSheet, View, Text, Alert, Dimensions, SafeAreaView, ActivityIndicator, LogBox } from 'react-native'
 import { Link, useRouter } from "expo-router"
 import DailyPreviewCard from '../../components/DailiesPreview'
 import WorkoutCard from '../../components/WorkoutCard'
@@ -12,6 +12,9 @@ export default function App() {
 
   const { loading, session, signOut} = useProfileData()
   
+  LogBox.ignoreLogs([
+    'VirtualizedLists should never be nested inside plain ScrollViews',
+  ]);
   
   const router = useRouter()
   

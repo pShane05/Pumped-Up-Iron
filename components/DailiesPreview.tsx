@@ -10,6 +10,8 @@ import { useProfileData } from '../hooks/useProfile'
 
     const { dailyQuests } = useProfileData()
 
+    if (dailyQuests)
+
   return (
     
     <Pressable 

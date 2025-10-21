@@ -391,8 +391,8 @@ export default function WorkoutScreen() {
           selectedExercises={selectedExercisesByTarget}
           setSelectedExercises={ setSelectedExercisesByTarget }
           onSelectExercise={handleExerciseSelect}
-          
-          />
+          profile={ profile }
+        />
 
       </SafeAreaView>
     )

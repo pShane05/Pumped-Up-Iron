@@ -132,3 +132,45 @@ export function useAllPlans() {
     error 
   }), [plans, loading, error])
 }
+
+export function usePlanDetailsByProfile(profile: Profile | undefined) {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  const [planDetails, setPlanDetails] = useState<{workout_plan_id: number, equipment: string, primaryFocus: string, secondaryFocus: string, days: number} | null>(null)
+
+
+  useEffect(() => {
+    
+    if (!profile) return 
+
+    const fetchPlanDetails = async () => {
+      setLoading(true)
+
+      try {
+        const { data, error } = await supabase
+          .from('user_plan_details')
+          .select('*')
+          .eq('user_id', profile.id)
+          .single()
+
+        if (error) 
+          throw error
+
+        setPlanDetails(data)
+      }
+      catch {
+        if (error instanceof Error)
+
+          setError(error)
+
+      } finally {
+        
+        setLoading(false)
+      }
+    }
+
+    fetchPlanDetails()
+  }, [profile])
+
+   return { planDetails, loading, error }
+}

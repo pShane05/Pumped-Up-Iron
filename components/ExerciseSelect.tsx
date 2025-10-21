@@ -1,10 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useDebugValue, useEffect, useState } from "react";
 import { Exercise } from "../lib/exercise";
 import { useExercisesByTarget } from "../hooks/useExercises";
 import { SafeAreaView, View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { COLORS, styles } from "../app/costants";
 import { Set } from "../lib/sets";
 import { SelectionsByTarget } from "../app/workout";
+import { usePlanDetailsByProfile } from "../hooks/usePlan";
+import { useProfile } from "../hooks/useProfile";
+import { Profile } from "../lib/profile";
 
 
 export default function ExerciseModal(
@@ -15,12 +18,13 @@ export default function ExerciseModal(
         selectedExercises: SelectionsByTarget | null,
         setSelectedExercises: Dispatch<SetStateAction<SelectionsByTarget>>,
         onSelectExercise: (item: any) => void,
-
+        profile: Profile | undefined
     }) {
 
     const [exerciseList, setExerciseList] = useState<Exercise[] | null>(null)
     const selectedForTarget = props.target ? props.selectedExercises?.[props.target] : undefined;
     const { exercises, loading, error } = useExercisesByTarget(props.target)
+    const { planDetails } = usePlanDetailsByProfile(props.profile)
 
     useEffect(() => {
         if (exercises) {
@@ -48,6 +52,16 @@ export default function ExerciseModal(
             }
         })
     }*/
+
+    const equipmentCheck = (equipment: string | undefined) => {
+        
+        if (!equipment) return
+
+        if (planDetails?.equipment.includes(equipment) || planDetails?.equipment.includes("full gym"))
+            return true
+        if (equipment == "body-weight")
+            return true
+    }
 
     const handleConfirm = () => {
         
@@ -87,7 +101,7 @@ export default function ExerciseModal(
                     { (!loading && props.target) && (
 
                     <View style={{ rowGap: 5 }}>
-                        {exerciseList.map((exercise) => (
+                        {exerciseList.filter(ex => equipmentCheck(ex.equipment)).map((exercise) => (
                         <Pressable
                             key={exercise.id}
                             onPress={() => props.onSelectExercise(exercise)}

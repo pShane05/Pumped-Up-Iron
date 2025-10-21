@@ -85,12 +85,11 @@ export default function CreatePlanCard() {
 
     const [isInfoComplete, setIsInfoComplete] = useState<boolean>(false)
     const [isInfoPopulated, setIsInfoPopulated] = useState<boolean>(false)
+    const [scrollEnabled, setScrollEnabled] = useState(true)
 
     const plans = useAllPlans().plans
     const [gradedPlans, setGradedPlans] = useState<GradedPlan[]>([])
     const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
-
-    const [modalVisible, setModalVisible] = useState(false)
 
 
     useEffect(() => {
@@ -100,9 +99,6 @@ export default function CreatePlanCard() {
 
     }, [selectedEquipment, selectedFocusOne, selectedFocusTwo, selectedGoalDays])
 
-    useEffect(() => {
-        console.log(modalVisible)
-    }, [modalVisible])
 
     
     async function confirmPlanInfo() {
@@ -131,7 +127,7 @@ export default function CreatePlanCard() {
                 plan_id: selectedPlan?.id,
                 level: 1,
                 gold_count: 50,
-                
+
             })
 
         } catch (error) {
@@ -150,7 +146,6 @@ export default function CreatePlanCard() {
 
         // grade by focus
         plan.focus.forEach(item => {
-            console.log(item.name, selectedFocusOne, selectedFocusTwo)
             if(item.name == selectedFocusOne)
                 grade += 5
 
@@ -182,7 +177,6 @@ export default function CreatePlanCard() {
                 .sort((a, b) => b.grade - a.grade)
 
             setGradedPlans(graded)
-            console.log(graded)
         }
 
         updateGradedPlans()
@@ -234,7 +228,11 @@ export default function CreatePlanCard() {
                 <Text style={ styles.headerText }> Plan Setup </Text>
                 <View style={ styles.horizontalLine } />
                 
-                <ScrollView style={{width: '100%', padding: 20, marginBottom: 75 }} nestedScrollEnabled={true}>
+                <ScrollView 
+                    style={{width: '100%', padding: 20, marginBottom: 75 }} 
+                    scrollEnabled={ scrollEnabled } 
+                    nestedScrollEnabled={ true }
+                >
 
 
                     <Text 
@@ -245,7 +243,12 @@ export default function CreatePlanCard() {
 
                     <View style={{ flexDirection: 'column', width: wheelWidth, alignSelf: 'center' }} >
 
-                        <View style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5 }]}>
+                        <View 
+                            style={[styles.scrollWheel, { height: 65, width: '100%', marginTop: 5 }]}
+                            onStartShouldSetResponder={() => true}
+                            onResponderGrant={() => setScrollEnabled(false)}
+                            onResponderRelease={() => setScrollEnabled(true)}
+                        >
                             <WheelPickerExpo
                                 height={ 150 }
                                 width={ 75 }

@@ -56,13 +56,13 @@ export default function DailyQuestScreen() {
         setCompleteModalIsOpen(true)
     }
 
-    const loadDailyQuests = async () => {
+    async function loadDailyQuests() {
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
       
-      const questData = await getDailyQuests();
-      setQuestArray(questData.quests || []);
+      const questData = await getDailyQuests()
+      setQuestArray(questData.quests || [])
 
       questArray?.forEach(quest => {
 

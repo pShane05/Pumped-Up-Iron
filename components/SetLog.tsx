@@ -15,9 +15,6 @@ export default function SetLogModal(
     }
 ) {
 
-    if (!props.showModal || !props.exercise) return null
-
-
     const [stringWeight, setStringWeight] = useState<string>('')
     const [stringReps, setStringReps] = useState<string>('')
     const [stringRest, setStringRest] = useState<string>('')
@@ -56,6 +53,8 @@ export default function SetLogModal(
         props.onClose()
 
     }
+
+    if (!props.showModal || !props.exercise) return null
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
