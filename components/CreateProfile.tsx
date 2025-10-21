@@ -21,7 +21,7 @@ export default function CreateProfileCard() {
     const [firstname, setFirstname] = useState('')
     const [lastname, setLastname] = useState('')
     const [userHeightFt, setUserHeightFt] = useState<number | undefined>(undefined)
-    const [userHeightIn, setUserHeightIn] = useState<number | undefined>(undefined)
+    const [userHeightIn, setUserHeightIn] = useState<number>(0)
     const [userWeight, setUserWeight] = useState<number | undefined>(undefined)
 
     const { height, width } = useWindowDimensions()
