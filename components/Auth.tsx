@@ -29,7 +29,7 @@ export default function Signup() {
     if (error) 
       Alert.alert(error.message)
     else if (!newUser)
-      router.push('/')
+      router.replace('/')
     else {
       router.push('/makeProfile')
     }
@@ -143,7 +143,7 @@ export function Login() {
     if (error) 
       Alert.alert(error.message)
     else
-      router.push('/')
+      router.replace('/')
     setLoading(false)
   }
 

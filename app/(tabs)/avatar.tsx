@@ -62,11 +62,15 @@ export default function AvatarScreen() {
 
       <View style={[ styles.horizontalLine, { width: '60%', marginTop: 40 } ]} />
 
+      <Text style={{ color: COLORS.PINK, fontSize: 24, fontFamily: FONTS.HEADER, textAlign: 'center' }}> 
+        {profile.username} 
+      </Text>
+
       <View style={{ height: 250, marginTop: 20}}>
       <Canvas>
         <ambientLight color={'red'} intensity={ 0.25 }/>
         <pointLight position={[5, 5, 5]} intensity={ 1000 } color={'blue'}/>
-        <KnotRender />
+        <AvatarRender />
         
       </Canvas>
       </View>

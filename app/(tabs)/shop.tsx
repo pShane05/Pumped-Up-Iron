@@ -15,7 +15,6 @@ import PurchaseModal from '../../components/PurchaseItemModal'
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import Entypo from '@expo/vector-icons/Entypo'
 import { giveUserGold } from '../../lib/profile'
-import { Catalogue } from '@react-three/fiber'
 
 export type Category = {
   name: string,
@@ -31,7 +30,7 @@ export type ItemsByCategory = {
 
 export default function ShopScreen() {
   
-  const {session, setSession, loading, setLoading, profile, updateProfile, items, setItems } = useProfileData()
+  const {session, loading, profile, updateProfile, items, setItems } = useProfileData()
   
   const today = new Date().toDateString()
 
@@ -198,6 +197,7 @@ export default function ShopScreen() {
   const loadDailyItemState = async () => {
     try {
       const stored = await AsyncStorage.getItem("daily-shop-items")
+      console.log(stored)
       
       if (!stored) {
         return { items: null, needsReset: true }
@@ -211,7 +211,8 @@ export default function ShopScreen() {
       const lastResetDate = lastReset.toDateString()
       const currentDate = now.toDateString()
       
-      const needsReset = (lastResetDate !== currentDate) || data.items.length < 1
+      const needsReset = (lastResetDate !== currentDate)
+      console.log(data)
 
       return { items: data.items, needsReset }
     } catch (e) {
@@ -258,8 +259,8 @@ export default function ShopScreen() {
     
       const dailyCheck = await loadDailyItemState()
     
-      if (dailyCheck.needsReset || dailyCheck.items.length < 1) {
-        console.log("daily reset", dailyCheck.items)
+      if (dailyCheck.needsReset || dailyCheck.items.all.length < 1) {
+        console.log("daily reset", dailyCheck.items, "NEW ITEMS: ", newDailyItems)
         setDailyItems(newDailyItems)
         await saveDailyItemState(newDailyItems)
       } else {
@@ -270,7 +271,7 @@ export default function ShopScreen() {
   
       const weeklyCheck = await loadWeeklyItemState()
     
-      if (weeklyCheck.needsReset || weeklyCheck.items.length < 1) {
+      if (weeklyCheck.needsReset || weeklyCheck.items.all.length < 1) {
         console.log("weekly reset", weeklyCheck.items)
         setWeeklyItems(newWeeklyItems)
         await saveWeeklyItemState(newWeeklyItems)
@@ -510,13 +511,13 @@ export function CatSelector(props: { category: Category, onCategorySelect: (cat:
 
 export function ItemSelector(props: { item: Item, onPress: () => void, userItems: Item[] | null, userGold: number }) {
 
-  if (!props.item) return
+  if (!props.item || !props.userItems) return
 
   let isOwned = false
-  const isShield = props.item.category == "Shield"
+  const isShield = props.item.category === "Shield"
 
-  props.userItems?.forEach(item => {
-    if (item.id == props.item.id){
+  props.userItems.forEach(item => {
+    if (item.name === props.item.name){
       isOwned = true
       console.log(isOwned)
     }
@@ -537,7 +538,7 @@ export function ItemSelector(props: { item: Item, onPress: () => void, userItems
           {props.item.name}
         </Text>
         
-        { isOwned && !isShield?
+        { isOwned && !isShield ?
           (
 
             <View

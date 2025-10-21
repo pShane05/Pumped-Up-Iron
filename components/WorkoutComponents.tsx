@@ -1,12 +1,8 @@
 import { FlatList, Modal, Text, TouchableOpacity, View, Image, SafeAreaView, Pressable } from "react-native"
 import { COLORS, FONTS, styles, imageMap } from "../app/costants"
-import React, { useState } from "react"
 import { Exercise } from "../lib/exercise"
-import { Set } from "../lib/sets";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link } from "expo-router";
-import { fonts } from "@rneui/themed/dist/config";
 
 
 

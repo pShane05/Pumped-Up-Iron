@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Profile } from "../lib/profile"
 import { PlanDay } from "../lib/planDay"
@@ -89,4 +89,46 @@ export function usePlanByProfile(profile: Profile | undefined) {
   }, [profile])
 
    return { plan, loading, error }
+}
+
+export function useAllPlans() {
+
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  const [plans, setPlans] = useState<{id: number, name: string, description: string, focus: any[], days: number, equipment: string}[] | null>(null)
+
+  useEffect(() => {
+    
+    const fetchPlans = async () => {
+      setLoading(true)
+
+      try {
+        const { data, error } = await supabase
+          .from('workout_plans')
+          .select('*')
+
+        if (error) 
+          throw error
+
+        setPlans(data)
+      }
+      catch {
+        if (error instanceof Error)
+
+          setError(error)
+
+      } finally {
+        
+        setLoading(false)
+      }
+    }
+
+    fetchPlans()
+  }, [])
+
+  return useMemo(() => ({ 
+    plans, 
+    loading, 
+    error 
+  }), [plans, loading, error])
 }
