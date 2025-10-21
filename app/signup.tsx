@@ -2,7 +2,7 @@ import 'react-native-url-polyfill/auto'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import Signup from '../components/Auth'
-import { Pressable, StyleSheet, View, Text, Alert, SafeAreaView } from 'react-native'
+import { Pressable, StyleSheet, View, Text, Alert, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import { Link } from "expo-router"
 import { styles } from './costants'
@@ -19,6 +19,7 @@ export default function SignupScreen() {
     })
   }, [])
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={[ styles.container, {rowGap: 20, paddingVertical: 75, justifyContent: 'center'}]}>
 
       <View style={ [styles.boxView, { marginTop: 75, height: 450 }] }>
@@ -30,5 +31,7 @@ export default function SignupScreen() {
       <Link href={"/login"} style={[styles.altButton, {marginTop: 0, fontFamily: 'Electrolize-Regular' }]}> Sign in </Link>
 
     </SafeAreaView>
+    </TouchableWithoutFeedback>
+    
   )
 }

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Alert, SafeAreaView } from "react-native";
+import { View, Text, Pressable, Alert, SafeAreaView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { COLORS, styles } from "./costants"
 import { Link, router, useRouter } from "expo-router";
 import { supabase } from "../lib/supabase";
@@ -14,11 +14,11 @@ export default function ProfileScreen() {
 
 
     return (
-
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <SafeAreaView style={[ styles.container, { justifyContent: 'center'}]}>
 
             <View style={[styles.boxView, {height: 600}]}>
-                <CreateProfileCard session={ session }/>
+                <CreateProfileCard />
             </View>
 
             <Pressable style={[  {  alignSelf: 'center', position: 'absolute', bottom: 50}]} 
@@ -30,7 +30,7 @@ export default function ProfileScreen() {
                 <Text style={{ color: COLORS.PINK, fontSize: 16, fontFamily: 'Electrolize-Regular'}}> Back to Signup </Text>
             </Pressable>
         </SafeAreaView>
-        
+        </TouchableWithoutFeedback>
         
     )
 

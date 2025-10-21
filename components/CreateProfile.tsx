@@ -34,7 +34,7 @@ export default function CreateProfileCard() {
 
     async function confirmProfileInfo() {
 
-        if(!userHeightIn || !userHeightFt || !userWeight) {
+        if(!userHeightFt || !userWeight) {
             Alert.alert("Please fill out all fields to continue")
             return
         }
